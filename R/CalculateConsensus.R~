@@ -1,0 +1,28 @@
+CalculateConsensus <- function(input_se, input_base){
+  input_ref_allele <- as.character(rowRanges(input_se)$refAllele)
+  # We first get the ref reads per sample.
+  ref_reads <- rbind(getRefMatrix(SE_object = input_se, "A", ref_alleles = input_ref_allele), getRefMatrix(SE_object = input_se, "C", ref_alleles = input_ref_allele),
+                     getRefMatrix(SE_object = input_se, "G", ref_alleles = input_ref_allele), getRefMatrix(SE_object = input_se, "T", ref_alleles = input_ref_allele))
+  # We then get the alt reads per sample and a specific base.
+  alt_reads <- getAltMatrix(SE_object = input_se, input_base, ref_alleles = input_ref_allele)
+  # We remove the potential N at position 3107 of the human genome.
+  alt_reads <- alt_reads[!grepl("_N", rownames(alt_reads)),]
+  # We get the first part of the ref row name. This includes the position and the ref allele.
+  rows_ref_reads <- gsub(">.*", "", rownames(ref_reads))
+  # We get the first part of the alt row name. This includes the position and the ref allele.
+  rows_alt_reads <- gsub(">.*", "", rownames(alt_reads))
+  # We can then subset the ref reads matrix to only include the positions from the alt matrix.
+  keep <- rows_ref_reads %in% rows_alt_reads
+  ref_reads <- ref_reads[keep,]
+  rows_ref_reads <- rows_ref_reads[keep]
+  # We match the new ref reads matrices to be the same order as the alt read matrices.
+  ref_reads <- ref_reads[match(rows_alt_reads, rows_ref_reads),]
+  # We divide the alt matrix by alt + ref matrix.
+  consensus <- as.matrix(alt_reads / (alt_reads + ref_reads))
+  consensus[is.na(consensus)] <- -1
+  consensus[consensus > 0 & consensus < 1] <- 3
+  consensus[consensus ==  1] <- 2
+  consensus[consensus ==  0] <- 1
+  consensus[consensus == -1] <- 0
+  return(consensus)
+}
