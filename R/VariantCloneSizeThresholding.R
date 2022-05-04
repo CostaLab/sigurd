@@ -23,7 +23,7 @@ VariantQuantileThresholding <- function(se, min_coverage = 2, fraction_negative_
       mutate(n90 = apply(assays(se)[["fraction"]], 1, function(x) sum(x >  0.9)))
 
 
-  print("Thresholding using the quantile approach.")
+  print("Thresholding using the clone size approach.")
   voi_ch <- vars_tib %>% filter(.[,"mean_cov"] > min_coverage,
                                 .[,"n0"] > ceiling(fraction_negative_cells * ncol(se)),
                                 .[,paste0("n", vaf_threshold*100)] > min_clone_size) %>% .$var

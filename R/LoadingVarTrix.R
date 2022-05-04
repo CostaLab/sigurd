@@ -99,15 +99,37 @@ LoadingVarTrix <- function(samples_path, vcf_path, vcf_path_MT, patient){
   for(i in 1:length(types_unique)){
     type_use <- types_unique[i]
     if(type_use %in% c("scRNAseq_Somatic", "Amplicon_Somatic")){
+      print(paste0(type_use, " Variants: ", nrow(consensus_matrix_total[[type_use]])))
+      print(paste0(type_use, " Cells: ", ncol(consensus_matrix_total[[type_use]])))
       rownames(coverage_matrix_total[[type_use]])  <- new_names
       rownames(ref_matrix_total[[type_use]])       <- new_names
       rownames(consensus_matrix_total[[type_use]]) <- new_names
+      consensus_test <- consensus_matrix_total[[type_use]] > 0
+      keep_variants <- rowSums(consensus_test) > 0
+      keep_cells <- colSums(consensus_test) > 0
+      consensus_matrix_total[[type_use]] <- consensus_matrix_total[[type_use]][keep_variants,keep_cells]
+      coverage_matrix_total[[type_use]] <- coverage_matrix_total[[type_use]][keep_variants,keep_cells]
+      ref_matrix_total[[type_use]] <- ref_matrix_total[[type_use]][keep_variants,keep_cells]
+      print(paste0(type_use, " Variants: ", nrow(consensus_matrix_total[[type_use]])))
+      print(paste0(type_use, " Cells: ", ncol(consensus_matrix_total[[type_use]])))
     } else if(type_use %in% c("scRNAseq_MT", "Amplicon_MT")){
+      print(paste0(type_use, " Variants: ", nrow(consensus_matrix_total[[type_use]])))
+      print(paste0(type_use, " Cells: ", ncol(consensus_matrix_total[[type_use]])))
       rownames(coverage_matrix_total[[type_use]])  <- new_names_mt
       rownames(ref_matrix_total[[type_use]])       <- new_names_mt
       rownames(consensus_matrix_total[[type_use]]) <- new_names_mt
+      consensus_test <- consensus_matrix_total[[type_use]] > 0
+      keep_variants <- rowSums(consensus_test) > 0
+      keep_cells <- colSums(consensus_test) > 0
+      consensus_matrix_total[[type_use]] <- consensus_matrix_total[[type_use]][keep_variants,keep_cells]
+      coverage_matrix_total[[type_use]] <- coverage_matrix_total[[type_use]][keep_variants,keep_cells]
+      ref_matrix_total[[type_use]] <- ref_matrix_total[[type_use]][keep_variants,keep_cells]
+      print(paste0(type_use, " Variants: ", nrow(consensus_matrix_total[[type_use]])))
+      print(paste0(type_use, " Cells: ", ncol(consensus_matrix_total[[type_use]])))
     }
   }
+  rm(consensus_test, keep_variants, keep_cells)
+  gc()
 
 
   print("We transform the sparse matrices to matrices, so we can calculate the fraction.")
@@ -125,20 +147,20 @@ LoadingVarTrix <- function(samples_path, vcf_path, vcf_path_MT, patient){
     #coverage_matrix_total[[type_use]] <- coverage_matrix_total[[type_use]][1:5000,1:5000]
     #ref_matrix_total[[type_use]] <- ref_matrix_total[[type_use]][1:5000,1:5000]
     #consensus_matrix_total[[type_use]] <- coverage_matrix_total[[type_use]][1:5000,1:5000]
-    colnames(coverage_matrix_total[[type_use]]) <- make.names(colnames(coverage_matrix_total[[type_use]]))
-    rownames(coverage_matrix_total[[type_use]]) <- make.names(rownames(coverage_matrix_total[[type_use]]))
-    colnames(ref_matrix_total[[type_use]]) <- make.names(colnames(ref_matrix_total[[type_use]]))
-    rownames(ref_matrix_total[[type_use]]) <- make.names(rownames(ref_matrix_total[[type_use]]))
-    colnames(consensus_matrix_total[[type_use]]) <- make.names(colnames(consensus_matrix_total[[type_use]]))
-    rownames(consensus_matrix_total[[type_use]]) <- make.names(rownames(consensus_matrix_total[[type_use]]))
-#    coverage_matrix_total[[type_use]]                             <- as.matrix(coverage_matrix_total[[type_use]])
-#    ref_matrix_total[[type_use]]                                  <- as.matrix(ref_matrix_total[[type_use]])
-#    consensus_matrix_total[[type_use]]                            <- as.matrix(consensus_matrix_total[[type_use]])
-#    fraction_total[[type_use]]                                    <- coverage_matrix_total[[type_use]] / (ref_matrix_total[[type_use]] + coverage_matrix_total[[type_use]])
-#    fraction_total[[type_use]][is.na(fraction_total[[type_use]])] <- 0
+#    colnames(coverage_matrix_total[[type_use]]) <- make.names(colnames(coverage_matrix_total[[type_use]]))
+#    rownames(coverage_matrix_total[[type_use]]) <- make.names(rownames(coverage_matrix_total[[type_use]]))
+#    colnames(ref_matrix_total[[type_use]]) <- make.names(colnames(ref_matrix_total[[type_use]]))
+#    rownames(ref_matrix_total[[type_use]]) <- make.names(rownames(ref_matrix_total[[type_use]]))
+#    colnames(consensus_matrix_total[[type_use]]) <- make.names(colnames(consensus_matrix_total[[type_use]]))
+#    rownames(consensus_matrix_total[[type_use]]) <- make.names(rownames(consensus_matrix_total[[type_use]]))
+    coverage_matrix_total[[type_use]]                             <- as.matrix(coverage_matrix_total[[type_use]])
+    ref_matrix_total[[type_use]]                                  <- as.matrix(ref_matrix_total[[type_use]])
+    consensus_matrix_total[[type_use]]                            <- as.matrix(consensus_matrix_total[[type_use]])
     reads_total[[type_use]]                                       <- coverage_matrix_total[[type_use]] + ref_matrix_total[[type_use]]
-    fraction_total[[type_use]] <- sdiv(X = coverage_matrix_total[[type_use]], Y = reads_total[[type_use]],
-                                       names = dimnames(coverage_matrix_total[[type_use]]))
+    fraction_total[[type_use]]                                    <- coverage_matrix_total[[type_use]] / reads_total[[type_use]]
+    fraction_total[[type_use]][is.na(fraction_total[[type_use]])] <- 0
+#    fraction_total[[type_use]] <- sdiv(X = coverage_matrix_total[[type_use]], Y = reads_total[[type_use]],
+#                                       names = dimnames(coverage_matrix_total[[type_use]]))
   }
   rm(coverage_matrix_total, ref_matrix_total)
   gc()

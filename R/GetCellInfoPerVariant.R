@@ -6,7 +6,7 @@ GetCellInfoPerVariant <- function(se, voi_ch){
   cov_voi_mat <- assays(se)[["coverage"]][voi_ch,]
   af_voi_mat  <- assays(se)[["fraction"]][voi_ch,]
 
-  print("Add coverage and allele frequency info from variants of interest to cells.tib")
+  print("Add coverage and allele frequency info from variants of interest to cells_tib.")
   cells_tib <- tibble(cell = colnames(se),
                       Mean_Cov = se$depth)
   for(voi in voi_ch){
