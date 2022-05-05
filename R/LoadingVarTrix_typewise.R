@@ -49,9 +49,9 @@ LoadingVarTrix_typewise <- function(samples_path, vcf_path, patient, type_use = 
     variants_use     <- snps_list[[sample_use]]
 
     # We load the different matrices.
-    coverage_matrices[[sample_use]]  <- readMM(paste0(input_folder_use, sample_use, "/out_matrix_coverage.mtx"))
-    ref_matrices[[sample_use]]       <- readMM(paste0(input_folder_use, sample_use, "/ref_matrix_coverage.mtx"))
-    consensus_matrices[[sample_use]] <- readMM(paste0(input_folder_use, sample_use, "/out_matrix_consensus.mtx"))
+    coverage_matrices[[sample_use]]  <- Matrix::readMM(paste0(input_folder_use, sample_use, "/out_matrix_coverage.mtx"))
+    ref_matrices[[sample_use]]       <- Matrix::readMM(paste0(input_folder_use, sample_use, "/ref_matrix_coverage.mtx"))
+    consensus_matrices[[sample_use]] <- Matrix::readMM(paste0(input_folder_use, sample_use, "/out_matrix_consensus.mtx"))
 
     # We rename the rows and columns.
     colnames(coverage_matrices[[sample_use]])  <- paste0(sample_use, "_", cellbarcodes_use$V1)
