@@ -1,3 +1,5 @@
+#'@import Matrix
+#'@param X Y names
 sdiv <- function(X, Y, names = dimnames(X)) {
   sX <- summary(X)
   sY <- summary(Y)

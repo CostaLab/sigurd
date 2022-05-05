@@ -1,3 +1,5 @@
+#'@import MatrixGenerics SummarizedExperiment
+#'@param input_se input_base 
 CalculateConsensus <- function(input_se, input_base){
   input_ref_allele <- as.character(rowRanges(input_se)$refAllele)
   # We first get the ref reads per sample.

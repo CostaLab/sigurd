@@ -1,23 +1,6 @@
-samples_path <- "~/labcluster_data/scRNA/SingleCell_Variant_Correlation_Test/JAK2Amplicon/MPN_Test_Data_local.csv"
-patient <- "ET_83497"
-vcf_path <- "~/labcluster_data/scRNA/SingleCell_Variant_Correlation_Test/VariantsOfInterest/ALFA_subset_MAF2_prefix.vcf"
-vcf_path_MT <- "~/labcluster_data/mg000001/MPN/Mutations/Mitochondrial/results/chrM_Input_VCF_NoMAF_Filtering.vcf"
-
-source("~/labcluster_data/mg000001/sigurd/R/LoadingVarTrix.R")
-source("~/labcluster_data/mg000001/sigurd/R/save_loader_helper.R")
-source("~/labcluster_data/mg000001/sigurd/R/%fin%.R")
-source("~/labcluster_data/mg000001/sigurd/R/getAltMatrix.R")
-source("~/labcluster_data/mg000001/sigurd/R/getRefMatrix.R")
-source("~/labcluster_data/mg000001/sigurd/R/CalculateConsensus.R")
-source("~/labcluster_data/mg000001/sigurd/R/Merging_SE_list.R")
-source("~/labcluster_data/mg000001/sigurd/R/computeAFMutMatrix.R")
-
+#'@import Matrix SummarizedExperiment VariantAnnotation
+#'@param samples_path vcf_path vcf_path_MT patient
 LoadingMAEGATK <- function(samples_path, vcf_path, vcf_path_MT, patient){
-  suppressPackageStartupMessages(library(Matrix))
-  suppressPackageStartupMessages(library(VariantAnnotation))
-  suppressPackageStartupMessages(library(archive))
-  suppressPackageStartupMessages(library(SummarizedExperiment))
-
   print("We read in the samples file.")
   samples_file <- read.csv(samples_path)
 

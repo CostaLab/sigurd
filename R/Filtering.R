@@ -6,14 +6,9 @@
 # - all cells that do not have at least one variant with >1 (Reference),
 # - all variants that are for alternative transcripts,
 # - all variants that are always NoCall.
-
+#'@import fastmatch Matrix Seurat SummarizedExperiment
+#'@param se patient blacklisted_barcodes_path fraction_threshold path_seurat
 Filtering <- function(se, patient, blacklisted_barcodes_path = "NULL", fraction_threshold = 0.5, path_seurat = "NULL"){
-  suppressPackageStartupMessages(library(SummarizedExperiment))
-  suppressPackageStartupMessages(library(Matrix))
-  suppressPackageStartupMessages(library(Seurat))
-  suppressPackageStartupMessages(library(archive))
-  suppressPackageStartupMessages(library(fastmatch))
-
   print("We remove all blacklisted bar codes.")
   if(blacklisted_barcodes_path != "NULL"){
     print("We remove the unwanted cell barcodes.")

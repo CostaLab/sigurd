@@ -1,7 +1,6 @@
+#'@import dplyr SummarizedExperiment tibble tidyverse
+#'@param se, voi_ch voi_ch
 GetCellInfoPerVariant <- function(se, voi_ch){
-  suppressPackageStartupMessages(library(tidyverse))
-  suppressPackageStartupMessages(library(SummarizedExperiment))
-
   print("Generate matrices with coverage, allele frequency and reference / variant reads")
   cov_voi_mat <- assays(se)[["coverage"]][voi_ch,]
   af_voi_mat  <- assays(se)[["fraction"]][voi_ch,]

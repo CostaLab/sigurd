@@ -1,5 +1,7 @@
 # We define a loading function to save/load the RDS files quicker.
-save_object <- function(object, file_name, file_format=NULL){
+#'@import archive
+#'@param object file_name file_format
+save_object <- function(object, file_name, file_format = NULL){
   stopifnot(file_format %in% c("zstd", "lz4", "gzip", "bzip2", "xz", "nocomp"))
   if(file_format %in% "nocomp"){
     saveRDS(object = object, file = file_name, compress = FALSE)

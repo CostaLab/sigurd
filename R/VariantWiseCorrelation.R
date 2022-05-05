@@ -3,12 +3,9 @@
 # consensus_matrix_interesting_subset.Rds
 # Instead of running a loop, we run the script in a job array. We subset the matrices to only include the specific sample and
 # we calculate the correlations.
-
+#'@import Matrix parallel SummarizedExperiment
+#'@param variants_list n_cores p_value_adjustment
 VariantWiseCorrelation <- function(variants_list, n_cores = 1, p_value_adjustment = "fdr"){
-  suppressPackageStartupMessages(library(SummarizedExperiment))
-  suppressPackageStartupMessages(library(Matrix))
-  suppressPackageStartupMessages(library(parallel))
-
   # We correlate the somatic variants with each other and the MT variants.
   # Since we have tens of thousands of MT variants, we do not correlate them with each other.
   variants <- names(variants_list)

@@ -1,3 +1,5 @@
+#'@import SummarizedExperiment
+#'@param SE
 computeAFMutMatrix <- function(SE){
   cov <- assays(SE)[["coverage"]]+ 0.000001
   ref_allele <- as.character(rowRanges(SE)$refAllele)

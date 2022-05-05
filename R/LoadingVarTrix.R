@@ -1,9 +1,6 @@
+#'@import Matrix SummarizedExperiment VariantAnnotation
+#'@param samples_path vcf_path vcf_path_MT patient 
 LoadingVarTrix <- function(samples_path, vcf_path, vcf_path_MT, patient){
-  suppressPackageStartupMessages(library(Matrix))
-  suppressPackageStartupMessages(library(VariantAnnotation))
-  suppressPackageStartupMessages(library(archive))
-  suppressPackageStartupMessages(library(SummarizedExperiment))
-
   print("We read in the samples file.")
   samples_file <- read.csv(samples_path)
 

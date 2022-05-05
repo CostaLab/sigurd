@@ -1,3 +1,5 @@
+#'@import stats
+#'@param variant_values other_mutation all_variants_list min_intersecting_cells
 CalculateCorrelationPValue <- function(variant_values, other_mutation, all_variants_list, min_intersecting_cells = 5){
   other_variant_values <- all_variants_list[[other_mutation]]
   if(sum(names(variant_values) %in% names(other_variant_values)) == 0){

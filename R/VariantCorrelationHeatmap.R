@@ -1,14 +1,8 @@
 # We generate a heatmap showing the correlation of somatic variants with the MT variants.
+#'@import circlize ComplexHeatmap ggplot2 Matrix parallel rcompanion tidyr
+#'@param correlation_results output_path patient min_alt_cellsmin_correlation width_use height_use padding_use
 VariantCorrelationHeatmap <- function(correlation_results, output_path, patient, min_alt_cells = 5, min_correlation = 0.5,
-                                      width_use = 2000, height_use = 2000, padding_use = c(2,165,2,2)){
-  suppressPackageStartupMessages(library(ComplexHeatmap))
-  suppressPackageStartupMessages(library(Matrix))
-  suppressPackageStartupMessages(library(circlize))
-  suppressPackageStartupMessages(library(ggplot2))
-  suppressPackageStartupMessages(library(tidyr))
-  suppressPackageStartupMessages(library(parallel))
-  suppressPackageStartupMessages(library(rcompanion))
-
+                                      width_use = 2000, height_use = 2000, padding_use = c(165,165,2,2)){
   correlation_results$P_adj_logged <- -log10(correlation_results$P_adj)
   correlation_results <- subset(correlation_results, P_adj_logged > -log10(0.05))
   correlation_results <- subset(correlation_results, Cells_1_Alt >= min_alt_cells & Cells_2_Alt >= min_alt_cells)
