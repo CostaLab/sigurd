@@ -15,7 +15,7 @@ Filtering <- function(se, patient, blacklisted_barcodes_path = "NULL", fraction_
     blacklisted_barcodes <- read.table(blacklisted_barcodes_path, header = FALSE)
     blacklisted_barcodes <- blacklisted_barcodes[,1]
     barcodes_keep <- colnames(se)
-    barcodes_keep <- barcodes_keep[!barcodes_keep %fin% blacklisted_barcodes]
+    barcodes_keep <- barcodes_keep[!barcodes_keep %in% blacklisted_barcodes]
     se <- se[, barcodes_keep]
   }
 

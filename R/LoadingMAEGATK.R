@@ -58,7 +58,7 @@ LoadingMAEGATK <- function(samples_path, vcf_path, vcf_path_MT, patient){
     return(x)
     })
   # The fractions include the position 3107_N. Since this is always "mutated", we remove it.
-  for(i in 1:length(fraction)) fraction[[i]] <- fraction[[i]][!rownames(fraction[[i]]) %fin% c("3107_N.A", "3107_N.C", "3107_N.G", "3107_N.T"),]
+  for(i in 1:length(fraction)) fraction[[i]] <- fraction[[i]][!rownames(fraction[[i]]) %in% c("3107_N.A", "3107_N.C", "3107_N.G", "3107_N.T"),]
 
   print("We generate 2 maximal matrices with all the somatic/MT variants and all the cells.")
   all_cells <- lapply(consensus, colnames)
