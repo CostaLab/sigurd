@@ -1,3 +1,4 @@
+#'Supplementing scRNAseq values with Amplicon values
 #'@import archive Matrix SummarizedExperiment VariantAnnotation
 #'@param scRNAseq amplicon 
 AmpliconSupplementing <- function(scRNAseq, amplicon){
