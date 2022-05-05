@@ -1,7 +1,7 @@
-# When we load all the different types of results (scRNAseq/amplicon and MT/amplicon),
-# we might need extreme amounts of memory. To solve this issue, I will load each type separately.
-# In a following function (AmpliconSupplementing), we can add the amplicon information to the
-# scRNAseq information.
+#'When we load all the different types of results (scRNAseq/amplicon and MT/amplicon),
+#'we might need extreme amounts of memory. To solve this issue, I will load each type separately.
+#'In a following function (AmpliconSupplementing), we can add the amplicon information to the
+#'scRNAseq information.
 #'@import Matrix SummarizedExperiment VariantAnnotation
 #'@importFrom Matrix readMM
 #'@param samples_path vcf_path patient type_use 
