@@ -25,5 +25,4 @@ Imports:
     tidyr,
     tidyverse,
     VariantAnnotation
-        
-    
+RoxygenNote: 7.1.2
