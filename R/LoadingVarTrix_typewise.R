@@ -96,12 +96,14 @@ LoadingVarTrix_typewise <- function(samples_path, vcf_path, patient, type_use = 
   rownames(ref_matrix_total)       <- new_names
   rownames(consensus_matrix_total) <- new_names
 
-  keep_variants <- rowSums(coverage_matrix_total >= 2)
+  # We remove variants, that are not detected in at least 2 cells.
+  keep_variants <- rowSums(consensus_matrix_total >= 2)
   keep_variants <- keep_variants >= 2
   consensus_matrix_total <- consensus_matrix_total[keep_variants,]
   coverage_matrix_total <- coverage_matrix_total[keep_variants,]
   ref_matrix_total <- ref_matrix_total[keep_variants,]
 
+  # We remove cells that are always NoCall.
   consensus_test <- consensus_matrix_total > 0
   keep_cells <- colSums(consensus_test) > 0
   consensus_matrix_total <- consensus_matrix_total[,keep_cells]
