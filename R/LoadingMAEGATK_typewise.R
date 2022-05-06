@@ -7,6 +7,9 @@
 #'@param patient The patient you want to load.
 #'@export
 LoadingMAEGATK_typewise <- function(samples_path, vcf_path, patient, type_use = "scRNAseq_MT", chromosome_prefix = "chrM"){
+  library(Matrix)
+  library(SummarizedExperiment)
+  library(VariantAnnotation)
   print("We read in the samples file.")
   samples_file <- read.csv(samples_path)
 
@@ -21,10 +24,6 @@ LoadingMAEGATK_typewise <- function(samples_path, vcf_path, patient, type_use = 
   samples <- samples_file$sample
 
 
-  print("We load the SNV files.")
-  path_snps <- paste0(samples_file$input_folder, "/SNV.loci.txt")
-  
-  
   print("We read in the cell barcodes output by CellRanger as a list.")
   barcodes <- lapply(samples_file$cells, read.table)
   names(barcodes) <- samples
@@ -54,38 +53,47 @@ LoadingMAEGATK_typewise <- function(samples_path, vcf_path, patient, type_use = 
   input_base <- c("A", "C", "G", "T")
   print(paste0("Consensus: ", patient))
   # We first get the ref reads per sample.
-  consensus <- lapply(input_base, CalculateConsensus, input_se = se_merged, reference_reads = ref_reads, chromosome_prefix = "chrM")
+  input_ref_allele <- as.character(rowRanges(se_merged)$refAllele)
+  ref_reads <- rbind(getRefMatrix(SE_object = se_merged, "A", ref_alleles = input_ref_allele, chromosome_prefix = chromosome_prefix), 
+                     getRefMatrix(SE_object = se_merged, "C", ref_alleles = input_ref_allele, chromosome_prefix = chromosome_prefix),
+                     getRefMatrix(SE_object = se_merged, "G", ref_alleles = input_ref_allele, chromosome_prefix = chromosome_prefix), 
+                     getRefMatrix(SE_object = se_merged, "T", ref_alleles = input_ref_allele, chromosome_prefix = chromosome_prefix))
+  # We then get the alt reads per sample and a specific base.
+  alt_reads <- list(getAltMatrix(SE_object = se_merged, "A", ref_alleles = input_ref_allele, chromosome_prefix = chromosome_prefix),
+                    getAltMatrix(SE_object = se_merged, "C", ref_alleles = input_ref_allele, chromosome_prefix = chromosome_prefix),
+                    getAltMatrix(SE_object = se_merged, "G", ref_alleles = input_ref_allele, chromosome_prefix = chromosome_prefix),
+                    getAltMatrix(SE_object = se_merged, "T", ref_alleles = input_ref_allele, chromosome_prefix = chromosome_prefix))
+  consensus <- lapply(alt_reads, CalculateConsensus, reference_reads = ref_reads)
   consensus <- do.call("rbind", consensus)
+  coverage <- lapply(alt_reads, CalculateCoverage, reference_reads = ref_reads)
+  coverage <- do.call("rbind", coverage)
 
 
   print("We get the allele frequency.")
   fraction <- computeAFMutMatrix(se_merged, chromosome_prefix = "chrM")
   fraction <- data.matrix(fraction)
-  fraction <- fraction[!rownames(fraction) %in% paste0(chromosome_prefix, "_", c("3107_N.A", "3107_N.C", "3107_N.G", "3107_N.T")),]
+  fraction <- fraction[!rownames(fraction) %in% paste0(chromosome_prefix, "_", c("3107_N_A", "3107_N_C", "3107_N_G", "3107_N_T")),]
   
   
   print("We perform some filtering to reduce the memory needed.")
   keep_variants <- rowSums(consensus >= 2)
   keep_variants <- keep_variants >= 2
   consensus <- consensus[keep_variants,]
+  coverage <- coverage[keep_variants,]
   fraction <- fraction[keep_variants,]
 
   # We remove cells that are always NoCall.
   consensus_test <- consensus > 0
   keep_cells <- colSums(consensus_test) > 0
   consensus <- consensus[,keep_cells]
+  coverage <- coverage[,keep_cells]
   fraction <- fraction[,keep_cells]
 
 
   print("We add the information to the merged matrices.")
-  meta_data_MT <- data.frame(Cell = colnames(consensus))
-  se_output <- SummarizedExperiment(assays = list(consensus = consensus, fraction = fraction, coverage = reads_total),
+  coverage_depth_per_cell <- colMeans(coverage)
+  meta_data <- data.frame(Cell = colnames(consensus), AverageCoverage = coverage_depth_per_cell)
+  se_output <- SummarizedExperiment(assays = list(consensus = consensus, fraction = fraction, coverage = coverage),
                                     colData = meta_data)
-  
-  print("We generate a SummarizedExperiment object containing the fraction and the consensus matrices.")
-  # We want an assay for the Consensus information and for the fraction.
-  # As meta data we add a data frame showing the cell id, the associated patient and the sample.
-  se_MT <- SummarizedExperiment(assays = list(consensus_MT = consensus_merged, fraction_MT = fraction_merged),
-                                colData = meta_data_MT)
-  return(se_MT)
+  return(se_output)
 }

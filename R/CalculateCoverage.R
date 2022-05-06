@@ -3,7 +3,7 @@
 #'@param reference_reads Reference reads matrix.
 #'@param alternative_reads List of matrices for the alternative reads.
 #'@export
-CalculateConsensus <- function(reference_reads, alternative_reads){
+CalculateCoverage <- function(reference_reads, alternative_reads){
   # We remove the potential N at position 3107 of the human genome.
   alternative_reads <- alternative_reads[!grepl("_N", rownames(alternative_reads)),]
   # We get the first part of the ref row name. This includes the position and the ref allele.
@@ -17,12 +17,7 @@ CalculateConsensus <- function(reference_reads, alternative_reads){
   # We match the new ref reads matrices to be the same order as the alt read matrices.
   reference_reads <- reference_reads[match(rows_alt_reads, rows_ref_reads),]
   # We divide the alt matrix by alt + ref matrix.
-  consensus <- as.matrix(alternative_reads / (alternative_reads + reference_reads))
-  consensus[is.na(consensus)] <- -1
-  consensus[consensus > 0 & consensus < 1] <- 3
-  consensus[consensus ==  1] <- 2
-  consensus[consensus ==  0] <- 1
-  consensus[consensus == -1] <- 0
-  rownames(consensus) <- gsub(">", "_", rownames(consensus))
-  return(consensus)
+  coverage <- as.matrix(alternative_reads + reference_reads)
+  rownames(coverage) <- gsub(">", "_", rownames(coverage))
+  return(coverage)
 }
