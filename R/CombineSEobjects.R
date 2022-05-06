@@ -1,5 +1,5 @@
 #'We combine two SummarizedExperiment objects.
-#'@import SummarizedExperiment
+#'@import SummarizedExperiment S4Vectors
 #'@param se_somatic SummarizedExperiment object for the somatic variants.
 #'@param se_MT SummarizedExperiment object for the MT variants.
 #'@param suffixes The suffixes you want to add to the meta data.frame.

@@ -19,6 +19,7 @@ Imports:
     Matrix,
     parallel,
     rcompanion,
+    S4Vectors,
     Seurat,
     SummarizedExperiment,
     tidyr,
