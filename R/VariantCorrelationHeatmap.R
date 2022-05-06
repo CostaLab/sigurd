@@ -1,5 +1,5 @@
 #'We generate a heatmap showing the correlation of somatic variants with the MT variants.
-#'@import circlize ComplexHeatmap ggplot2 Matrix parallel rcompanion tidyr
+#'@import circlize ComplexHeatmap ggplot2 Matrix parallel rcompanion tidyr grid
 #'@param correlation_results Data.frame with the correlation results.
 #'@param output_path Path to the output folder.
 #'@param patient The patient for this heatmap.
@@ -68,8 +68,8 @@ VariantCorrelationHeatmap <- function(correlation_results, output_path, patient,
                   column_title = paste0("Patient ", patient, "\nLogged adj. P values between the mutations"),
                   row_title = "", show_row_names = TRUE, show_column_names = TRUE,
                   col = col_fun, left_annotation = annotation_left, top_annotation = annotation_top,
-                  column_title_gp = gpar(fontsize = 40), row_title_gp = gpar(fontsize = 40),
-                  column_names_gp = gpar(fontsize = 40), row_names_gp = gpar(fontsize = 40),
+                  column_title_gp = grid::gpar(fontsize = 40), row_title_gp = grid::gpar(fontsize = 40),
+                  column_names_gp = grid::gpar(fontsize = 40), row_names_gp = grid::gpar(fontsize = 40),
                   column_names_rot = 45,
                   row_names_side = "left",
                   heatmap_legend_param = list(labels_gp = gpar(fontsize = 40), title_gp = gpar(fontsize = 40, fontface = "bold")),
