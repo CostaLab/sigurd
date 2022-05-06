@@ -1,3 +1,4 @@
+#'We get variants of interest using a clone size thresholding.
 #'@import Matrix SummarizedExperiment tidyverse
 #'@param se min_coverage fraction_negative_cells min_clone_size vaf_threshold
 VariantCloneSizeThresholding <- function(se, min_coverage = 2, fraction_negative_cells = 0.9, min_clone_size = 10, vaf_threshold = 0.5){

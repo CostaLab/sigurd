@@ -1,3 +1,4 @@
+#'We get the reference values from the MAEGATK result.
 #'@import SummarizedExperiment
 #'@param SE_object letter ref_alleles
 getRefMatrix <- function(SE_object, letter, ref_alleles){

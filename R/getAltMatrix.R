@@ -1,3 +1,4 @@
+#'We get the alt values from the MAEGATK results.
 #'@import SummarizedExperiment
 #'@param SE_object letter ref_alleles
 getAltMatrix <- function(SE_object, letter, ref_alleles){

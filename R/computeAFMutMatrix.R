@@ -1,3 +1,4 @@
+#'Calculate the allele frequency per variant.
 #'@import SummarizedExperiment
 #'@param SE
 computeAFMutMatrix <- function(SE){

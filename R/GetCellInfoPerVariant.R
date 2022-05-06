@@ -1,3 +1,4 @@
+#'We get the variant information per cell.
 #'@import dplyr SummarizedExperiment tibble tidyverse
 #'@param se, voi_ch voi_ch
 GetCellInfoPerVariant <- function(se, voi_ch){

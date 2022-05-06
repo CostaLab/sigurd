@@ -1,3 +1,4 @@
+#'We calculate the consensus information from the MAEGATK results.
 #'@import MatrixGenerics SummarizedExperiment
 #'@param input_se input_base 
 CalculateConsensus <- function(input_se, input_base){

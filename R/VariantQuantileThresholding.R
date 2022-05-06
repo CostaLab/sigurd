@@ -1,3 +1,4 @@
+#'We get variants of interest using the quantile thresholding.
 #'@import SummarizedExperiment tidyverse
 #'@param se min_coverage
 VariantQuantileThresholding <- function(se, min_coverage = 2){

@@ -1,4 +1,4 @@
-# We define a loading function to save/load the RDS files quicker.
+#'We define a loading function to save the RDS files quicker.
 #'@import archive
 #'@param object file_name file_format
 save_object <- function(object, file_name, file_format = NULL){
@@ -15,10 +15,4 @@ save_object <- function(object, file_name, file_format = NULL){
   }else{
     saveRDS(object = object, file = file_name, compress = file_format)
   }
-}
-load_object <- function(file_name){
-  con <- archive::file_read(file = file_name)
-  res <- readRDS(file = con)
-  close(con)
-  return(res)
 }

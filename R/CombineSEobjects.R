@@ -1,6 +1,7 @@
+#'We combine two SummarizedExperiment objects.
 #'@import SummarizedExperiment
 #'@param se_somatic se_MT suffixes min_intersecting_cells
-combineSEobjects <- function(se_somatic, se_MT, suffixes = c("_somatic", "_MT")){
+CombineSEobjects <- function(se_somatic, se_MT, suffixes = c("_somatic", "_MT")){
   features <- combine_NAMES(names(se_somatic), names(se_MT))
   cells <- combine_NAMES(colnames(se_somatic), colnames(se_MT))
 

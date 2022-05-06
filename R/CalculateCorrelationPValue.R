@@ -1,3 +1,4 @@
+#'We perform the correlation of SNVs and calculate the P values.
 #'@import stats
 #'@param variant_values other_mutation all_variants_list min_intersecting_cells
 CalculateCorrelationPValue <- function(variant_values, other_mutation, all_variants_list, min_intersecting_cells = 5){

@@ -1,4 +1,4 @@
-# We generate a heatmap showing the correlation of somatic variants with the MT variants.
+#'We generate a heatmap showing the correlation of somatic variants with the MT variants.
 #'@import circlize ComplexHeatmap ggplot2 Matrix parallel rcompanion tidyr
 #'@param correlation_results output_path patient min_alt_cellsmin_correlation width_use height_use padding_use
 VariantCorrelationHeatmap <- function(correlation_results, output_path, patient, min_alt_cells = 5, min_correlation = 0.5,

@@ -1,3 +1,4 @@
+#'We load the MAEGATK output and transform it to be compatible with the VarTrix output.
 #'@import Matrix SummarizedExperiment VariantAnnotation
 #'@param samples_path vcf_path vcf_path_MT patient
 LoadingMAEGATK <- function(samples_path, vcf_path, vcf_path_MT, patient){

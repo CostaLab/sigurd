@@ -1,3 +1,4 @@
+#'Calculate the variant burden per cell.
 #'@import Matrix SummarizedExperiment
 #'@param se
 VariantBurden <- function(se){

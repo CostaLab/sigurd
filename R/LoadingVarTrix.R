@@ -1,3 +1,4 @@
+#'We load the VarTrix results for one patient and merge all types together.
 #'@import Matrix SummarizedExperiment VariantAnnotation
 #'@param samples_path vcf_path vcf_path_MT patient 
 LoadingVarTrix <- function(samples_path, vcf_path, vcf_path_MT, patient){

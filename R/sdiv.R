@@ -1,3 +1,4 @@
+#'Division of sparse matrix.
 #'@import Matrix
 #'@param X Y names
 sdiv <- function(X, Y, names = dimnames(X)) {

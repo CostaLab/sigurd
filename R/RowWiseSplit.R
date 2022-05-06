@@ -1,5 +1,5 @@
-# We get the filtered results, we have from the 01_FilteringSampleWise. We now split the results into the
-# individual columns and save them in a list object.
+#'We get the filtered results, we have from the 01_FilteringSampleWise. We now split the results into the
+#'individual columns and save them in a list object.
 #'@import Matrix SummarizedExperiment parallel
 #'@param se n_cores
 RowWiseSplit <- function(se, n_cores = 1){
