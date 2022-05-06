@@ -1,6 +1,10 @@
 #'We load the MAEGATK output and transform it to be compatible with the VarTrix output.
 #'@import Matrix SummarizedExperiment VariantAnnotation
-#'@param samples_path vcf_path vcf_path_MT patient
+#'@param samples_path Path to the csv file with the samples to be loaded.
+#'@param vcf_path Path to the VCF file with the somatic variants.
+#'@param vcf_path_MT Path to the VCF file with the MT variants.
+#'@param patient The patient you want to load.
+#'@export
 LoadingMAEGATK <- function(samples_path, vcf_path, vcf_path_MT, patient){
   print("We read in the samples file.")
   samples_file <- read.csv(samples_path)

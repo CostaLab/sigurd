@@ -1,6 +1,8 @@
 #'Supplementing scRNAseq values with Amplicon values
 #'@import archive Matrix SummarizedExperiment VariantAnnotation
-#'@param scRNAseq amplicon 
+#'@param scRNAseq The SummarizedExperiment object containing the scRNAseq data. 
+#'@param amplicon The SummarizedExperiment object containing the amplicon data.
+#'@export
 AmpliconSupplementing <- function(scRNAseq, amplicon){
   # We supplement the scRNAseq data with the amplicon data.
   new_meta_data <- merge(colData(scRNAseq), colData(amplicon), by = "Cell", all.x = TRUE, all.y = TRUE,

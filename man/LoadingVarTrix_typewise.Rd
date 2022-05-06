@@ -15,7 +15,13 @@ LoadingVarTrix_typewise(
 )
 }
 \arguments{
-\item{samples_path}{vcf_path patient type_use}
+\item{samples_path}{Path to the csv file with the samples to be loaded.}
+
+\item{vcf_path}{Path to the VCF file with the variants.}
+
+\item{patient}{The patient you want to load.}
+
+\item{type_use}{The type of input. Has to be one of: scRNAseq_Somatic, Amplicon_Somatic, scRNAseq_MT, Amplicon_MT.}
 }
 \description{
 When we load all the different types of results (scRNAseq/amplicon and MT/amplicon),

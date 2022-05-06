@@ -7,7 +7,13 @@
 LoadingVarTrix(samples_path, vcf_path, vcf_path_MT, patient)
 }
 \arguments{
-\item{samples_path}{vcf_path vcf_path_MT patient}
+\item{samples_path}{Path to the csv file with the samples to be loaded.}
+
+\item{vcf_path}{Path to the VCF file with the somatic variants.}
+
+\item{vcf_path_MT}{Path to the VCF file with the MT variants.}
+
+\item{patient}{Patient to be loaded.}
 }
 \description{
 We load the VarTrix results for one patient and merge all types together.

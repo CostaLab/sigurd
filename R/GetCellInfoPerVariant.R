@@ -1,6 +1,8 @@
 #'We get the variant information per cell.
 #'@import dplyr SummarizedExperiment tibble tidyverse
-#'@param se, voi_ch voi_ch
+#'@param se SummarizedExperiment object.
+#'@param voi_ch Variants of interest.
+#'@export
 GetCellInfoPerVariant <- function(se, voi_ch){
   print("Generate matrices with coverage, allele frequency and reference / variant reads")
   cov_voi_mat <- assays(se)[["coverage"]][voi_ch,]

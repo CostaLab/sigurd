@@ -7,7 +7,9 @@
 AmpliconSupplementing(scRNAseq, amplicon)
 }
 \arguments{
-\item{scRNAseq}{amplicon}
+\item{scRNAseq}{The SummarizedExperiment object containing the scRNAseq data.}
+
+\item{amplicon}{The SummarizedExperiment object containing the amplicon data.}
 }
 \description{
 Supplementing scRNAseq values with Amplicon values

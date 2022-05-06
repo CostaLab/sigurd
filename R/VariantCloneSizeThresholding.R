@@ -1,6 +1,11 @@
 #'We get variants of interest using a clone size thresholding.
 #'@import Matrix SummarizedExperiment tidyverse
-#'@param se min_coverage fraction_negative_cells min_clone_size vaf_threshold
+#'@param se SummarizedExperiment object.
+#'@param min_coverage Minimum coverage a variant needs to have.
+#'@param fraction_negative_cells The fraction of negative cells needed. 
+#'@param min_clone_size minimum number of cells.
+#'@param vaf_threshold Variant Allele Threshold. Cells above this threshold are considered mutated.
+#'@export
 VariantCloneSizeThresholding <- function(se, min_coverage = 2, fraction_negative_cells = 0.9, min_clone_size = 10, vaf_threshold = 0.5){
   # This function is adapted from the Peter van Galen.
   print("Get the mean allele frequency and coverage.")

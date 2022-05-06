@@ -1,6 +1,9 @@
 #'Division of sparse matrix.
 #'@import Matrix
-#'@param X Y names
+#'@param X First sparse matrix.
+#'@param Y Second sparse matrix.
+#'@param names The dimension names (dimnames(X)).
+#'@export
 sdiv <- function(X, Y, names = dimnames(X)) {
   sX <- summary(X)
   sY <- summary(Y)

@@ -1,6 +1,10 @@
 #'We perform the correlation of SNVs and calculate the P values.
 #'@import stats
-#'@param variant_values other_mutation all_variants_list min_intersecting_cells
+#'@param variant_values The fraction values you are analysing. A vector.
+#'@param other_mutation All other variants you have. A vector of variant names.
+#'@param all_variants_list List of fraction values for all the variants you want to compare your variant with.
+#'@param min_intersecting_cells Minimum number of intersecting cells. Correlations with less than this will not be performed.
+#'@export
 CalculateCorrelationPValue <- function(variant_values, other_mutation, all_variants_list, min_intersecting_cells = 5){
   other_variant_values <- all_variants_list[[other_mutation]]
   if(sum(names(variant_values) %in% names(other_variant_values)) == 0){

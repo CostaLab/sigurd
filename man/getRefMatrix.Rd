@@ -7,7 +7,11 @@
 getRefMatrix(SE_object, letter, ref_alleles)
 }
 \arguments{
-\item{SE_object}{letter ref_alleles}
+\item{SE_object}{SummarizedExperiment object.}
+
+\item{letter}{The base you are analysing. You get a matrix that shows which cells have how many referecen reads for this letter.}
+
+\item{ref_alleles}{The reference alleles.}
 }
 \description{
 We get the reference values from the MAEGATK result.

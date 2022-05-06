@@ -16,7 +16,21 @@ VariantCorrelationHeatmap(
 )
 }
 \arguments{
-\item{correlation_results}{output_path patient min_alt_cellsmin_correlation width_use height_use padding_use}
+\item{correlation_results}{Data.frame with the correlation results.}
+
+\item{output_path}{Path to the output folder.}
+
+\item{patient}{The patient for this heatmap.}
+
+\item{min_alt_cells}{Minimum number of mutated cells needed, otherwise a correlation will not be plotted.}
+
+\item{min_correlation}{Minimum correlation needed.}
+
+\item{width_use}{Width of the heatmap in px.}
+
+\item{height_use}{Height of the heatmap in px.}
+
+\item{padding_use}{Space around the heatmap in mm. If this is to low, the variant names might be cut off.}
 }
 \description{
 We generate a heatmap showing the correlation of somatic variants with the MT variants.

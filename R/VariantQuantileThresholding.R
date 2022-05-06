@@ -1,6 +1,8 @@
 #'We get variants of interest using the quantile thresholding.
 #'@import SummarizedExperiment tidyverse
-#'@param se min_coverage
+#'@param se SummarizedExperiment object.
+#'@param min_coverage Minimum coverage needed.
+#'@export
 VariantQuantileThresholding <- function(se, min_coverage = 2){
   # This function is adapted from the Peter van Galen.
   print("Get the mean allele frequency and coverage.")

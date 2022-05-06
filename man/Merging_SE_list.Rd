@@ -4,7 +4,10 @@
 \alias{Merging_SE_list}
 \title{Merging list of SummarizedExperiment objects.}
 \usage{
-Merging_SE_list(x)
+Merging_SE_list(se)
+}
+\arguments{
+\item{se}{SummarizedExperiment object}
 }
 \description{
 Merging list of SummarizedExperiment objects.

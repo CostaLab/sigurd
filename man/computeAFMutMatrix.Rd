@@ -6,6 +6,9 @@
 \usage{
 computeAFMutMatrix(SE)
 }
+\arguments{
+\item{SE}{SummarizedExperiment object.}
+}
 \description{
 Calculate the allele frequency per variant.
 }

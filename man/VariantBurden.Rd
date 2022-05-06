@@ -6,6 +6,9 @@
 \usage{
 VariantBurden(se)
 }
+\arguments{
+\item{se}{SummarizedExperiment object}
+}
 \description{
 Calculate the variant burden per cell.
 }

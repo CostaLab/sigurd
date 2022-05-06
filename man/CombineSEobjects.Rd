@@ -7,7 +7,11 @@
 CombineSEobjects(se_somatic, se_MT, suffixes = c("_somatic", "_MT"))
 }
 \arguments{
-\item{se_somatic}{se_MT suffixes min_intersecting_cells}
+\item{se_somatic}{SummarizedExperiment object for the somatic variants.}
+
+\item{se_MT}{SummarizedExperiment object for the MT variants.}
+
+\item{suffixes}{The suffixes you want to add to the meta data.frame.}
 }
 \description{
 We combine two SummarizedExperiment objects.

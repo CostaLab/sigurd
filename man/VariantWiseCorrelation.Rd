@@ -11,7 +11,11 @@ we calculate the correlations.}
 VariantWiseCorrelation(variants_list, n_cores = 1, p_value_adjustment = "fdr")
 }
 \arguments{
-\item{variants_list}{n_cores p_value_adjustment}
+\item{variants_list}{List of fraction values.}
+
+\item{n_cores}{Number of cores you want to use. Numeric.}
+
+\item{p_value_adjustment}{Method for P value adjustment. See p.adjust for details.}
 }
 \description{
 We get some descriptive statistics for each sample. We use the genotyping results for this.

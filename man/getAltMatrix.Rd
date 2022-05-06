@@ -7,7 +7,11 @@
 getAltMatrix(SE_object, letter, ref_alleles)
 }
 \arguments{
-\item{SE_object}{letter ref_alleles}
+\item{SE_object}{SummarizedExperiment object.}
+
+\item{letter}{The base you want to use. Character.}
+
+\item{ref_alleles}{The reference alleles.}
 }
 \description{
 We get the alt values from the MAEGATK results.

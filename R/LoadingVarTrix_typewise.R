@@ -3,8 +3,11 @@
 #'In a following function (AmpliconSupplementing), we can add the amplicon information to the
 #'scRNAseq information.
 #'@import Matrix SummarizedExperiment VariantAnnotation
-#'@importFrom Matrix readMM
-#'@param samples_path vcf_path patient type_use 
+#'@param samples_path Path to the csv file with the samples to be loaded.
+#'@param vcf_path Path to the VCF file with the variants.
+#'@param patient The patient you want to load.
+#'@param type_use The type of input. Has to be one of: scRNAseq_Somatic, Amplicon_Somatic, scRNAseq_MT, Amplicon_MT.
+#'@export
 LoadingVarTrix_typewise <- function(samples_path, vcf_path, patient, type_use = "scRNAseq_Somatic"){
   print("We read in the samples file.")
   samples_file <- read.csv(samples_path)

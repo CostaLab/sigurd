@@ -1,6 +1,8 @@
 #'We calculate the consensus information from the MAEGATK results.
 #'@import MatrixGenerics SummarizedExperiment
-#'@param input_se input_base 
+#'@param input_se Input SummarizedExperiment object.
+#'@param input_base The reference allele we want to use. Use input_base <- c("A", "C", "G", "T") with lapply.
+#'@export
 CalculateConsensus <- function(input_se, input_base){
   input_ref_allele <- as.character(rowRanges(input_se)$refAllele)
   # We first get the ref reads per sample.

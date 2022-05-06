@@ -13,7 +13,15 @@ VariantCloneSizeThresholding(
 )
 }
 \arguments{
-\item{se}{min_coverage fraction_negative_cells min_clone_size vaf_threshold}
+\item{se}{SummarizedExperiment object.}
+
+\item{min_coverage}{Minimum coverage a variant needs to have.}
+
+\item{fraction_negative_cells}{The fraction of negative cells needed.}
+
+\item{min_clone_size}{minimum number of cells.}
+
+\item{vaf_threshold}{Variant Allele Threshold. Cells above this threshold are considered mutated.}
 }
 \description{
 We get variants of interest using a clone size thresholding.

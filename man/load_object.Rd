@@ -6,6 +6,9 @@
 \usage{
 load_object(file_name)
 }
+\arguments{
+\item{file_name}{The path to the file.}
+}
 \description{
 We define a loading function to load the RDS files quicker.
 }

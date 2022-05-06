@@ -4,7 +4,10 @@
 #'Instead of running a loop, we run the script in a job array. We subset the matrices to only include the specific sample and
 #'we calculate the correlations.
 #'@import Matrix parallel SummarizedExperiment
-#'@param variants_list n_cores p_value_adjustment
+#'@param variants_list List of fraction values.
+#'@param n_cores Number of cores you want to use. Numeric.
+#'@param p_value_adjustment Method for P value adjustment. See p.adjust for details.
+#'@export
 VariantWiseCorrelation <- function(variants_list, n_cores = 1, p_value_adjustment = "fdr"){
   # We correlate the somatic variants with each other and the MT variants.
   # Since we have tens of thousands of MT variants, we do not correlate them with each other.

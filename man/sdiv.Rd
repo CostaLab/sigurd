@@ -7,7 +7,11 @@
 sdiv(X, Y, names = dimnames(X))
 }
 \arguments{
-\item{X}{Y names}
+\item{X}{First sparse matrix.}
+
+\item{Y}{Second sparse matrix.}
+
+\item{names}{The dimension names (dimnames(X)).}
 }
 \description{
 Division of sparse matrix.

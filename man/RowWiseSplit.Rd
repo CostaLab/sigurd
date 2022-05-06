@@ -8,7 +8,9 @@ individual columns and save them in a list object.}
 RowWiseSplit(se, n_cores = 1)
 }
 \arguments{
-\item{se}{n_cores}
+\item{se}{SummarizedExperiment object.}
+
+\item{n_cores}{Number of cores to use.}
 }
 \description{
 We get the filtered results, we have from the 01_FilteringSampleWise. We now split the results into the

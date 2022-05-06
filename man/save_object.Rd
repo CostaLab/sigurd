@@ -7,7 +7,11 @@
 save_object(object, file_name, file_format = NULL)
 }
 \arguments{
-\item{object}{file_name file_format}
+\item{object}{The R object to be save.}
+
+\item{file_name}{The path were the file shall be save.}
+
+\item{file_format}{The format of the save file. Has to be one of: zstd, lz4, gzip, bzip2, xz, nocomp.}
 }
 \description{
 We define a loading function to save the RDS files quicker.

@@ -7,7 +7,12 @@
 #'- all variants that are for alternative transcripts,
 #'- all variants that are always NoCall.
 #'@import fastmatch Matrix Seurat SummarizedExperiment
-#'@param se patient blacklisted_barcodes_path fraction_threshold path_seurat
+#'@param se SummarizedExperiment object.
+#'@param patient Patient you are analysing. Character.
+#'@param blacklisted_barcodes_path Barcodes you want to remove. Path to a file with one column without header.
+#'@param fraction_threshold Variants with an VAF below this threshold are set to 0. Numeric.
+#'@param path_seurat Path to a Seurat object.
+#'@export
 Filtering <- function(se, patient, blacklisted_barcodes_path = "NULL", fraction_threshold = 0.5, path_seurat = "NULL"){
   print("We remove all blacklisted bar codes.")
   if(blacklisted_barcodes_path != "NULL"){

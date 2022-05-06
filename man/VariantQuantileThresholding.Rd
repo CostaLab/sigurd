@@ -7,7 +7,9 @@
 VariantQuantileThresholding(se, min_coverage = 2)
 }
 \arguments{
-\item{se}{min_coverage}
+\item{se}{SummarizedExperiment object.}
+
+\item{min_coverage}{Minimum coverage needed.}
 }
 \description{
 We get variants of interest using the quantile thresholding.

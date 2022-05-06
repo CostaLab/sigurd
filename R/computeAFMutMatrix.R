@@ -1,6 +1,7 @@
 #'Calculate the allele frequency per variant.
 #'@import SummarizedExperiment
-#'@param SE
+#'@param SE SummarizedExperiment object.
+#'@export
 computeAFMutMatrix <- function(SE){
   cov <- assays(SE)[["coverage"]]+ 0.000001
   ref_allele <- as.character(rowRanges(SE)$refAllele)

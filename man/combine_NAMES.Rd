@@ -7,7 +7,9 @@
 combine_NAMES(x, y)
 }
 \arguments{
-\item{x}{y}
+\item{x}{First vector of names.}
+
+\item{y}{Second vector of names.}
 }
 \description{
 We combine two vectors of names.

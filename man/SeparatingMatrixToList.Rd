@@ -5,10 +5,12 @@
 \title{We separate a matrix of variant information to a list.
 Each variant is an entry in the list.}
 \usage{
-SeparatingMatrixToList(row_to_save, total_matrix)
+SeparatingMatrixToList(row_use, total_matrix)
 }
 \arguments{
-\item{row_to_save}{total_matrix}
+\item{row_use}{The row the separate.}
+
+\item{total_matrix}{The matrix to be split.}
 }
 \description{
 We separate a matrix of variant information to a list.

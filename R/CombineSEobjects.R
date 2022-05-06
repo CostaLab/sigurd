@@ -1,6 +1,9 @@
 #'We combine two SummarizedExperiment objects.
 #'@import SummarizedExperiment
-#'@param se_somatic se_MT suffixes min_intersecting_cells
+#'@param se_somatic SummarizedExperiment object for the somatic variants.
+#'@param se_MT SummarizedExperiment object for the MT variants.
+#'@param suffixes The suffixes you want to add to the meta data.frame.
+#'@export
 CombineSEobjects <- function(se_somatic, se_MT, suffixes = c("_somatic", "_MT")){
   features <- combine_NAMES(names(se_somatic), names(se_MT))
   cells <- combine_NAMES(colnames(se_somatic), colnames(se_MT))

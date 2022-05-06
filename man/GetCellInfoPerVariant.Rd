@@ -7,7 +7,9 @@
 GetCellInfoPerVariant(se, voi_ch)
 }
 \arguments{
-\item{se, }{voi_ch voi_ch}
+\item{se}{SummarizedExperiment object.}
+
+\item{voi_ch}{Variants of interest.}
 }
 \description{
 We get the variant information per cell.
