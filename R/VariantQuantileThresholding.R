@@ -1,5 +1,5 @@
 #'We get variants of interest using the quantile thresholding.
-#'@import SummarizedExperiment tidyverse
+#'@import dplyr SummarizedExperiment tidyverse
 #'@param se SummarizedExperiment object.
 #'@param min_coverage Minimum coverage needed.
 #'@export
@@ -23,8 +23,7 @@ VariantQuantileThresholding <- function(se, min_coverage = 2){
 
   
   print("Thresholding using the quantile approach.")
-  voi_ch <- vars_tib %>% filter(.[,"mean_cov"] > min_coverage,
-                                .[,"q10"] < 0.1,
-                                .[,"q90"] > 0.9) %>% .$var
+  voi_ch <- subset(vars_tib, mean_cov > min_coverage & q10 < 0.1 & q90 > 0.9)$var
+  
   return(voi_ch)
 }
