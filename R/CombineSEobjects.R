@@ -1,5 +1,5 @@
 #'We combine two SummarizedExperiment objects.
-#'@import SummarizedExperiment S4Vectors
+#'@import SummarizedExperiment BiocGenerics
 #'@param se_somatic SummarizedExperiment object for the somatic variants.
 #'@param se_MT SummarizedExperiment object for the MT variants.
 #'@param suffixes The suffixes you want to add to the meta data.frame.
@@ -13,7 +13,7 @@ CombineSEobjects <- function(se_somatic, se_MT, suffixes = c("_somatic", "_MT"))
   meta_data <- merge(meta_data_somatic, meta_data_MT, by = "Cell", all = TRUE, suffixes = suffixes)
   meta_data <- meta_data[match(cells, meta_data$Cell),]
   
-  assays_combined <- mendoapply(combine, assays(se_somatic), assays(se_MT))
+  assays_combined <- S4Vectors::mendoapply(BiocGenerics::combine, assays(se_somatic), assays(se_MT))
   se_combined <- SummarizedExperiment(assays = assays_combined,
                                       colData = meta_data)
   return(se_combined)
