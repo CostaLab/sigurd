@@ -3,6 +3,7 @@
 #'@param object The R object to be save.
 #'@param file_name The path were the file shall be save.
 #'@param file_format The format of the save file. Has to be one of: zstd, lz4, gzip, bzip2, xz, nocomp.
+#'@export
 save_object <- function(object, file_name, file_format = NULL){
   stopifnot(file_format %in% c("zstd", "lz4", "gzip", "bzip2", "xz", "nocomp"))
   if(file_format %in% "nocomp"){
