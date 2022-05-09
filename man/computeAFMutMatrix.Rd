@@ -4,7 +4,7 @@
 \alias{computeAFMutMatrix}
 \title{Calculate the allele frequency per variant.}
 \usage{
-computeAFMutMatrix(SE)
+computeAFMutMatrix(SE, chromosome_prefix = "chrM")
 }
 \arguments{
 \item{SE}{SummarizedExperiment object.}

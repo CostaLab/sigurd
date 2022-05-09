@@ -4,14 +4,16 @@
 \alias{getRefMatrix}
 \title{We get the reference values from the MAEGATK result.}
 \usage{
-getRefMatrix(SE_object, letter, ref_alleles)
+getRefMatrix(SE_object, letter, chromosome_prefix = "chrM")
 }
 \arguments{
 \item{SE_object}{SummarizedExperiment object.}
 
 \item{letter}{The base you are analysing. You get a matrix that shows which cells have how many referecen reads for this letter.}
 
-\item{ref_alleles}{The reference alleles.}
+\item{chromosome_prefix}{The chromosome prefix used.}
+
+\item{ref_allele}{The reference alleles.}
 }
 \description{
 We get the reference values from the MAEGATK result.

@@ -7,9 +7,6 @@
 #'@param patient The patient you want to load.
 #'@export
 LoadingMAEGATK_typewise <- function(samples_path, vcf_path, patient, type_use = "scRNAseq_MT", chromosome_prefix = "chrM"){
-  library(Matrix)
-  library(SummarizedExperiment)
-  library(VariantAnnotation)
   print("We read in the samples file.")
   samples_file <- read.csv(samples_path)
 
@@ -50,23 +47,26 @@ LoadingMAEGATK_typewise <- function(samples_path, vcf_path, patient, type_use = 
   gc()
 
 
-  input_base <- c("A", "C", "G", "T")
-  print(paste0("Consensus: ", patient))
+  print("We calculate the coverage information.")
   # We first get the ref reads per sample.
-  input_ref_allele <- as.character(rowRanges(se_merged)$refAllele)
-  ref_reads <- rbind(getRefMatrix(SE_object = se_merged, "A", ref_alleles = input_ref_allele, chromosome_prefix = chromosome_prefix), 
-                     getRefMatrix(SE_object = se_merged, "C", ref_alleles = input_ref_allele, chromosome_prefix = chromosome_prefix),
-                     getRefMatrix(SE_object = se_merged, "G", ref_alleles = input_ref_allele, chromosome_prefix = chromosome_prefix), 
-                     getRefMatrix(SE_object = se_merged, "T", ref_alleles = input_ref_allele, chromosome_prefix = chromosome_prefix))
+  ref_reads <- rbind(getRefMatrix(SE_object = se_merged, letter = "A", chromosome_prefix = chromosome_prefix), 
+                     getRefMatrix(SE_object = se_merged, letter = "C", chromosome_prefix = chromosome_prefix),
+                     getRefMatrix(SE_object = se_merged, letter = "G", chromosome_prefix = chromosome_prefix), 
+                     getRefMatrix(SE_object = se_merged, letter = "T", chromosome_prefix = chromosome_prefix))
   # We then get the alt reads per sample and a specific base.
-  alt_reads <- list(getAltMatrix(SE_object = se_merged, "A", ref_alleles = input_ref_allele, chromosome_prefix = chromosome_prefix),
-                    getAltMatrix(SE_object = se_merged, "C", ref_alleles = input_ref_allele, chromosome_prefix = chromosome_prefix),
-                    getAltMatrix(SE_object = se_merged, "G", ref_alleles = input_ref_allele, chromosome_prefix = chromosome_prefix),
-                    getAltMatrix(SE_object = se_merged, "T", ref_alleles = input_ref_allele, chromosome_prefix = chromosome_prefix))
-  consensus <- lapply(alt_reads, CalculateConsensus, reference_reads = ref_reads)
-  consensus <- do.call("rbind", consensus)
-  coverage <- lapply(alt_reads, CalculateCoverage, reference_reads = ref_reads)
+  alt_reads <- list(getAltMatrix(SE_object = se_merged, letter = "A", chromosome_prefix = chromosome_prefix),
+                    getAltMatrix(SE_object = se_merged, letter = "C", chromosome_prefix = chromosome_prefix),
+                    getAltMatrix(SE_object = se_merged, letter = "G", chromosome_prefix = chromosome_prefix),
+                    getAltMatrix(SE_object = se_merged, letter = "T", chromosome_prefix = chromosome_prefix))
+  coverage <- lapply(alt_reads, CalculateCoverage, ref_reads = ref_reads)
   coverage <- do.call("rbind", coverage)
+  rm(ref_reads, alt_reads)
+
+
+  print("We calculate the consensus information.")
+  consensus <- CalculateConsensus(SE = se_merged, chromosome_prefix = chromosome_prefix)
+  # We order the consensus matrix like the coverage matrix.
+  consensus <- consensus[match(rownames(coverage), rownames(consensus)),]
 
 
   print("We get the allele frequency.")
