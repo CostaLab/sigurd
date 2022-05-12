@@ -11,7 +11,8 @@ LoadingVarTrix_typewise(
   samples_path,
   vcf_path,
   patient,
-  type_use = "scRNAseq_Somatic"
+  type_use = "scRNAseq_Somatic",
+  chromosome_prefix = "chrM"
 )
 }
 \arguments{

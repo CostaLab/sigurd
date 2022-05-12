@@ -21,11 +21,6 @@ LoadingMAEGATK_typewise <- function(samples_path, vcf_path, patient, type_use = 
   samples <- samples_file$sample
 
 
-  print("We read in the cell barcodes output by CellRanger as a list.")
-  barcodes <- lapply(samples_file$cells, read.table)
-  names(barcodes) <- samples
-
-
   print("We load the MAEGATK output files.")
   se_ls <- list()
   for(i in 1:nrow(samples_file)){

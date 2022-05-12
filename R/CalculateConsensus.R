@@ -18,9 +18,9 @@ CalculateConsensus <- function(SE, chromosome_prefix = "chrM"){
   # If there are several types of reads present at a position, we can simply add the values.
   # So, a position with A and T would have a value of 9.
   reads[[1]][reads[[1]] > 0] <- 8
-  reads[[2]][reads[[1]] > 0] <- 4
-  reads[[3]][reads[[1]] > 0] <- 2
-  reads[[4]][reads[[1]] > 0] <- 1
+  reads[[2]][reads[[2]] > 0] <- 4
+  reads[[3]][reads[[3]] > 0] <- 2
+  reads[[4]][reads[[4]] > 0] <- 1
   # We add the values together.
   # The row names are the names from the first matrix and not accurate any more.
   # The only relevant parts are the position and the reference base.
