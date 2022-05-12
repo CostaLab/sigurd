@@ -1,34 +1,52 @@
 #'We calculate the consensus information from the MAEGATK results.
-#'@import MatrixGenerics SummarizedExperiment
-#'@param input_se Input SummarizedExperiment object.
-#'@param input_base The reference allele we want to use. Use input_base <- c("A", "C", "G", "T") with lapply.
+#'@import dplyr MatrixGenerics SummarizedExperiment
+#'@param SE SummarizedExperiment object.
+#'@param chromosome_prefix The chromosome name used as a prefix.
 #'@export
-CalculateConsensus <- function(input_se, input_base){
-  input_ref_allele <- as.character(rowRanges(input_se)$refAllele)
-  # We first get the ref reads per sample.
-  ref_reads <- rbind(getRefMatrix(SE_object = input_se, "A", ref_alleles = input_ref_allele), getRefMatrix(SE_object = input_se, "C", ref_alleles = input_ref_allele),
-                     getRefMatrix(SE_object = input_se, "G", ref_alleles = input_ref_allele), getRefMatrix(SE_object = input_se, "T", ref_alleles = input_ref_allele))
-  # We then get the alt reads per sample and a specific base.
-  alt_reads <- getAltMatrix(SE_object = input_se, input_base, ref_alleles = input_ref_allele)
-  # We remove the potential N at position 3107 of the human genome.
-  alt_reads <- alt_reads[!grepl("_N", rownames(alt_reads)),]
-  # We get the first part of the ref row name. This includes the position and the ref allele.
-  rows_ref_reads <- gsub(">.*", "", rownames(ref_reads))
-  # We get the first part of the alt row name. This includes the position and the ref allele.
-  rows_alt_reads <- gsub(">.*", "", rownames(alt_reads))
-  # We can then subset the ref reads matrix to only include the positions from the alt matrix.
-  keep <- rows_ref_reads %in% rows_alt_reads
-  ref_reads <- ref_reads[keep,]
-  rows_ref_reads <- rows_ref_reads[keep]
-  # We match the new ref reads matrices to be the same order as the alt read matrices.
-  ref_reads <- ref_reads[match(rows_alt_reads, rows_ref_reads),]
-  # We divide the alt matrix by alt + ref matrix.
-  consensus <- as.matrix(alt_reads / (alt_reads + ref_reads))
-  consensus[is.na(consensus)] <- -1
-  consensus[consensus > 0 & consensus < 1] <- 3
-  consensus[consensus ==  1] <- 2
-  consensus[consensus ==  0] <- 1
-  consensus[consensus == -1] <- 0
-  rownames(consensus) <- gsub(">", ".", rownames(consensus))
+CalculateConsensus <- function(SE, chromosome_prefix = "chrM"){
+  # 0 NoCall      = coverage is 0.
+  # 1 Reference   = only reference reads.
+  # 2 Alternative = only alternative reads of one variant.
+  # 3 Both        = reads for reference and one or more variants.
+  
+  # We get the read information per position.
+  letter <- c("A", "C", "G", "T")
+  ref_allele <- as.character(rowRanges(SE)$refAllele)
+  reads <- lapply(letter, getReadMatrix, SE = SE, chromosome_prefix = chromosome_prefix)
+  # Since we have always the same 4 bases, we get all possible combinations by assigning numeric values.
+  # A = 8, C = 4, G = 2, T = 1.
+  # If there are several types of reads present at a position, we can simply add the values.
+  # So, a position with A and T would have a value of 9.
+  reads[[1]][reads[[1]] > 0] <- 8
+  reads[[2]][reads[[2]] > 0] <- 4
+  reads[[3]][reads[[3]] > 0] <- 2
+  reads[[4]][reads[[4]] > 0] <- 1
+  # We add the values together.
+  # The row names are the names from the first matrix and not accurate any more.
+  # The only relevant parts are the position and the reference base.
+  variants_matrix <- reads[[1]] + reads[[2]] + reads[[3]] + reads[[4]]
+  rm(reads)
+  gc()
+  
+  # We get the position according to their reference base.
+  # Now, we have a list for each set of position with the same base reference.
+  variants_matrix_ls <- list(A = variants_matrix[grep("_A_", rownames(variants_matrix)),],
+                             C = variants_matrix[grep("_C_", rownames(variants_matrix)),],
+                             G = variants_matrix[grep("_G_", rownames(variants_matrix)),],
+                             T = variants_matrix[grep("_T_", rownames(variants_matrix)),])
+  rm(variants_matrix)
+  gc()
+  
+  # Now, we check the consensus value for all positions with the same reference base.
+  # Then we can rbind these matrices again and return one large consensus matrix in the end.
+  consensus_a <- lapply(c("C", "G", "T"), get_consensus, ref_base = "A", input_matrix = as.matrix(variants_matrix_ls[[1]]))
+  consensus_a <- do.call("rbind", consensus_a)
+  consensus_c <- lapply(c("A", "G", "T"), get_consensus, ref_base = "C", input_matrix = as.matrix(variants_matrix_ls[[2]]))
+  consensus_c <- do.call("rbind", consensus_c)
+  consensus_g <- lapply(c("A", "C", "T"), get_consensus, ref_base = "G", input_matrix = as.matrix(variants_matrix_ls[[3]]))
+  consensus_g <- do.call("rbind", consensus_g)
+  consensus_t <- lapply(c("A", "C", "G"), get_consensus, ref_base = "T", input_matrix = as.matrix(variants_matrix_ls[[4]]))
+  consensus_t <- do.call("rbind", consensus_t)
+  consensus <- rbind(consensus_a, consensus_c, consensus_g, consensus_t)
   return(consensus)
 }

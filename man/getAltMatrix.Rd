@@ -4,14 +4,16 @@
 \alias{getAltMatrix}
 \title{We get the alt values from the MAEGATK results.}
 \usage{
-getAltMatrix(SE_object, letter, ref_alleles)
+getAltMatrix(SE_object, letter, chromosome_prefix = "chrM")
 }
 \arguments{
 \item{SE_object}{SummarizedExperiment object.}
 
 \item{letter}{The base you want to use. Character.}
 
-\item{ref_alleles}{The reference alleles.}
+\item{chromosome_prefix}{The chromosome prefix used.}
+
+\item{ref_allele}{The reference alleles.}
 }
 \description{
 We get the alt values from the MAEGATK results.

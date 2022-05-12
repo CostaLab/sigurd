@@ -4,12 +4,12 @@
 \alias{CalculateConsensus}
 \title{We calculate the consensus information from the MAEGATK results.}
 \usage{
-CalculateConsensus(input_se, input_base)
+CalculateConsensus(SE, chromosome_prefix = "chrM")
 }
 \arguments{
-\item{input_se}{Input SummarizedExperiment object.}
+\item{SE}{SummarizedExperiment object.}
 
-\item{input_base}{The reference allele we want to use. Use input_base <- c("A", "C", "G", "T") with lapply.}
+\item{chromosome_prefix}{The chromosome name used as a prefix.}
 }
 \description{
 We calculate the consensus information from the MAEGATK results.
