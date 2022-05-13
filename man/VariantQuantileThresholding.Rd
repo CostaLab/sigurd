@@ -4,12 +4,21 @@
 \alias{VariantQuantileThresholding}
 \title{We get variants of interest using the quantile thresholding.}
 \usage{
-VariantQuantileThresholding(se, min_coverage = 2)
+VariantQuantileThresholding(
+  SE,
+  min_coverage = 2,
+  quantiles = c(0.1, 0.9),
+  thresholds = c(0.1, 0.9)
+)
 }
 \arguments{
-\item{se}{SummarizedExperiment object.}
+\item{SE}{SummarizedExperiment object.}
 
 \item{min_coverage}{Minimum coverage needed.}
+
+\item{quantiles}{The lower and upper quantile you want to use.}
+
+\item{thresholds}{The VAF thresholds you want to use for the quantiles.}
 }
 \description{
 We get variants of interest using the quantile thresholding.

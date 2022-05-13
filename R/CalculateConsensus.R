@@ -30,10 +30,14 @@ CalculateConsensus <- function(SE, chromosome_prefix = "chrM"){
   
   # We get the position according to their reference base.
   # Now, we have a list for each set of position with the same base reference.
-  variants_matrix_ls <- list(A = variants_matrix[grep("_A_", rownames(variants_matrix)),],
-                             C = variants_matrix[grep("_C_", rownames(variants_matrix)),],
-                             G = variants_matrix[grep("_G_", rownames(variants_matrix)),],
-                             T = variants_matrix[grep("_T_", rownames(variants_matrix)),])
+  variants_matrix_ls <- list(A = variants_matrix[grep("_A_", rownames(variants_matrix), value = TRUE),],
+                             C = variants_matrix[grep("_C_", rownames(variants_matrix), value = TRUE),],
+                             G = variants_matrix[grep("_G_", rownames(variants_matrix), value = TRUE),],
+                             T = variants_matrix[grep("_T_", rownames(variants_matrix), value = TRUE),],
+                             N = variants_matrix[grep("_N_", rownames(variants_matrix), value = TRUE),])
+  variants_matrix_ls[["N"]] <- matrix(variants_matrix_ls[["N"]], nrow = 1, ncol = length(variants_matrix_ls[["N"]]))
+  colnames(variants_matrix_ls[["N"]]) <- colnames(variants_matrix)
+  rownames(variants_matrix_ls[["N"]]) <- paste0(chromosome_prefix, "_3107_N_A")
   rm(variants_matrix)
   gc()
   
@@ -47,6 +51,8 @@ CalculateConsensus <- function(SE, chromosome_prefix = "chrM"){
   consensus_g <- do.call("rbind", consensus_g)
   consensus_t <- lapply(c("A", "C", "G"), get_consensus, ref_base = "T", input_matrix = as.matrix(variants_matrix_ls[[4]]))
   consensus_t <- do.call("rbind", consensus_t)
-  consensus <- rbind(consensus_a, consensus_c, consensus_g, consensus_t)
+  consensus_n <- lapply(c("A", "C", "G", "T"), get_consensus, ref_base = "N", input_matrix = variants_matrix_ls[[5]])
+  consensus_n <- do.call("rbind", consensus_n)
+  consensus <- rbind(consensus_a, consensus_c, consensus_g, consensus_t, consensus_n)
   return(consensus)
 }

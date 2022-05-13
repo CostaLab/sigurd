@@ -6,7 +6,6 @@
 \usage{
 LoadingMAEGATK_typewise(
   samples_path,
-  vcf_path,
   patient,
   type_use = "scRNAseq_MT",
   chromosome_prefix = "chrM"
@@ -15,13 +14,9 @@ LoadingMAEGATK_typewise(
 \arguments{
 \item{samples_path}{Path to the csv file with the samples to be loaded.}
 
-\item{vcf_path}{Path to the VCF file with the somatic variants.}
-
 \item{patient}{The patient you want to load.}
 
 \item{type_use}{The type of input. Has to be one of: scRNAseq_MT, Amplicon_MT.}
-
-\item{vcf_path_MT}{Path to the VCF file with the MT variants.}
 }
 \description{
 We load the MAEGATK output and transform it to be compatible with the VarTrix output.

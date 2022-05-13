@@ -1,12 +1,10 @@
 #'We load the MAEGATK output and transform it to be compatible with the VarTrix output.
-#'@import Matrix SummarizedExperiment VariantAnnotation
+#'@import Matrix SummarizedExperiment
 #'@param samples_path Path to the csv file with the samples to be loaded.
-#'@param vcf_path Path to the VCF file with the somatic variants.
-#'@param vcf_path_MT Path to the VCF file with the MT variants.
 #'@param type_use The type of input. Has to be one of: scRNAseq_MT, Amplicon_MT.
 #'@param patient The patient you want to load.
 #'@export
-LoadingMAEGATK_typewise <- function(samples_path, vcf_path, patient, type_use = "scRNAseq_MT", chromosome_prefix = "chrM"){
+LoadingMAEGATK_typewise <- function(samples_path, patient, type_use = "scRNAseq_MT", chromosome_prefix = "chrM"){
   print("We read in the samples file.")
   samples_file <- read.csv(samples_path)
 
@@ -42,34 +40,23 @@ LoadingMAEGATK_typewise <- function(samples_path, vcf_path, patient, type_use = 
   gc()
 
 
-  print("We calculate the coverage information.")
-  # We first get the ref reads per sample.
-  ref_reads <- rbind(getRefMatrix(SE_object = se_merged, letter = "A", chromosome_prefix = chromosome_prefix), 
-                     getRefMatrix(SE_object = se_merged, letter = "C", chromosome_prefix = chromosome_prefix),
-                     getRefMatrix(SE_object = se_merged, letter = "G", chromosome_prefix = chromosome_prefix), 
-                     getRefMatrix(SE_object = se_merged, letter = "T", chromosome_prefix = chromosome_prefix))
-  # We then get the alt reads per sample and a specific base.
-  alt_reads <- list(getAltMatrix(SE_object = se_merged, letter = "A", chromosome_prefix = chromosome_prefix),
-                    getAltMatrix(SE_object = se_merged, letter = "C", chromosome_prefix = chromosome_prefix),
-                    getAltMatrix(SE_object = se_merged, letter = "G", chromosome_prefix = chromosome_prefix),
-                    getAltMatrix(SE_object = se_merged, letter = "T", chromosome_prefix = chromosome_prefix))
-  coverage <- lapply(alt_reads, CalculateCoverage, ref_reads = ref_reads)
-  coverage <- do.call("rbind", coverage)
-  rm(ref_reads, alt_reads)
+  print("We get the allele frequency.")
+  fraction <- computeAFMutMatrix(se_merged, chromosome_prefix = chromosome_prefix)
+  fraction <- data.matrix(fraction)
+  #fraction <- fraction[!rownames(fraction) %in% paste0(chromosome_prefix, "_", c("3107_N_A", "3107_N_C", "3107_N_G", "3107_N_T")),]
 
+
+  print("We calculate the coverage information.")
+  coverage <- CalculateCoverage(SE = se_merged, chromosome_prefix = chromosome_prefix)
+  coverage <- coverage[match(rownames(fraction), rownames(coverage)),]
+  
 
   print("We calculate the consensus information.")
   consensus <- CalculateConsensus(SE = se_merged, chromosome_prefix = chromosome_prefix)
   # We order the consensus matrix like the coverage matrix.
-  consensus <- consensus[match(rownames(coverage), rownames(consensus)),]
+  consensus <- consensus[match(rownames(fraction), rownames(consensus)),]
 
 
-  print("We get the allele frequency.")
-  fraction <- computeAFMutMatrix(se_merged, chromosome_prefix = "chrM")
-  fraction <- data.matrix(fraction)
-  fraction <- fraction[!rownames(fraction) %in% paste0(chromosome_prefix, "_", c("3107_N_A", "3107_N_C", "3107_N_G", "3107_N_T")),]
-  
-  
   print("We perform some filtering to reduce the memory needed.")
   keep_variants <- rowSums(consensus >= 2)
   keep_variants <- keep_variants >= 2
@@ -86,7 +73,11 @@ LoadingMAEGATK_typewise <- function(samples_path, vcf_path, patient, type_use = 
 
 
   print("We add the information to the merged matrices.")
-  coverage_depth_per_cell <- colMeans(coverage)
+  coverage_depth_per_cell <- rownames(coverage)
+  coverage_depth_per_cell <- gsub("_._.$", "", coverage_depth_per_cell)
+  coverage_depth_per_cell <- !duplicated(coverage_depth_per_cell)
+  coverage_depth_per_cell <- coverage[coverage_depth_per_cell,]
+  coverage_depth_per_cell <- colMeans(coverage_depth_per_cell)
   meta_data <- data.frame(Cell = colnames(consensus), AverageCoverage = coverage_depth_per_cell)
   se_output <- SummarizedExperiment(assays = list(consensus = consensus, fraction = fraction, coverage = coverage),
                                     colData = meta_data)

@@ -9,10 +9,6 @@
 #'@param type_use The type of input. Has to be one of: scRNAseq_Somatic, Amplicon_Somatic, scRNAseq_MT, Amplicon_MT.
 #'@export
 LoadingVarTrix_typewise <- function(samples_path, vcf_path, patient, type_use = "scRNAseq_Somatic", chromosome_prefix = "chrM"){
-  library(Matrix)
-  library(SummarizedExperiment)
-  library(VariantAnnotation)
-  print("TEST")
   print("We read in the samples file.")
   samples_file <- read.csv(samples_path)
 

@@ -2,15 +2,15 @@
 % Please edit documentation in R/CalculateCoverage.R
 \name{CalculateCoverage}
 \alias{CalculateCoverage}
-\title{We calculate the consensus information from the MAEGATK results.}
+\title{We calculate the coverage information per variant from the MAEGATK results.}
 \usage{
-CalculateCoverage(alt_reads, ref_reads, chromosome_prefix)
+CalculateCoverage(SE, chromosome_prefix = "chrM")
 }
 \arguments{
-\item{chromosome_prefix}{List of matrices for the alternative reads.}
-
 \item{SE}{SummarizedExperiment object.}
+
+\item{chromosome_prefix}{List of matrices for the alternative reads.}
 }
 \description{
-We calculate the consensus information from the MAEGATK results.
+We calculate the coverage information per variant from the MAEGATK results.
 }

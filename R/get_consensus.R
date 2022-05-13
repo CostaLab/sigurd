@@ -11,11 +11,18 @@ get_consensus <- function(alt_base, ref_base, input_matrix, chromosome_prefix = 
   ref_numeric <- base_numeric[ref_base]
   other_values <- 1:sum(base_numeric)
   other_values <- other_values[!other_values %in% base_numeric[c(alt_base, ref_base)]]
+  # It is possible, that a variant only has reads for a different alternative allele.
+  # So, there are only C reads for the position 3107_N.
+  # That means, that 3107_N>C has a value of 2 (Alt), while 3107_N>A would have a value of 3 (Both).
+  # Both is not accurate in this context. Therefore, we set these cases to 0 (NoCall). 
+  other_homo_values <- base_numeric[!base_numeric %in% base_numeric[c(alt_base, ref_base)]]
+
   
   output_matrix <- input_matrix
   output_matrix[input_matrix == ref_numeric] <- 1
   output_matrix[input_matrix == letter_numeric] <- 2
   output_matrix[input_matrix %in% other_values] <- 3
+  output_matrix[input_matrix %in% other_homo_values] <- 0
   
   rownames(output_matrix) <- paste0(chromosome_prefix, "_", gsub("[^[:digit:]., ]", "", rownames(output_matrix)), "_", ref_base, "_", alt_base)
   return(output_matrix)
