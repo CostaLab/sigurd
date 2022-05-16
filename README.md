@@ -12,4 +12,11 @@ We employ a imputation approach that utilizes the correlation between mitochondr
 
 ## Installation
 
-You can install 
+You can install sigurd using the following code:
+
+```{r}
+install.packages("devtools")
+devtools::install_github("https://github.com/CostaLab/sigurd.git", build_vignettes = FALSE)
+require(sigurd)
+```
+
