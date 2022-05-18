@@ -10,8 +10,8 @@ AmpliconSupplementing <- function(scRNAseq, amplicon){
                          suffixes = c("scRNAseq", "Amplicon"))
 
   print("We get all cells and variants.")
-  all_cells <- unique(colnames(scRNAseq), colnames(amplicon))
-  all_variants <- unique(rownames(scRNAseq), rownames(amplicon))
+  all_cells <- unique(c(colnames(scRNAseq), colnames(amplicon)))
+  all_variants <- unique(c(rownames(scRNAseq), rownames(amplicon)))
 
   print("We generate our output matrices.")
   consensus <- matrix(0, ncol = length(all_cells), nrow = length(all_variants))
@@ -25,16 +25,17 @@ AmpliconSupplementing <- function(scRNAseq, amplicon){
   fraction[rownames(scRNAseq), colnames(scRNAseq)] <- as.matrix(assays(scRNAseq)$fraction)
   reads[rownames(scRNAseq), colnames(scRNAseq)] <- as.matrix(assays(scRNAseq)$coverage)
 
-  #consensus[rownames(amplicon), colnames(amplicon)] <- as.matrix(assays(amplicon)$consensus)
-  #fraction[rownames(amplicon), colnames(amplicon)] <- as.matrix(assays(amplicon)$fraction)
-  #reads[rownames(amplicon), colnames(amplicon)] <- as.matrix(assays(amplicon)$coverage)
-
   print("We add the the amplicon information.")
-  assays(scRNAseq)[["consensus"]][rownames(amplicon), colnames(amplicon)] <- as.matrix(assays(amplicon)$consensus)
-  assays(scRNAseq)[["fraction"]][rownames(amplicon), colnames(amplicon)] <- as.matrix(assays(amplicon)$fraction)
-  assays(scRNAseq)[["coverage"]][rownames(amplicon), colnames(amplicon)] <- as.matrix(assays(amplicon)$coverage)
+  consensus[rownames(amplicon), colnames(amplicon)] <- as.matrix(assays(amplicon)$consensus)
+  fraction[rownames(amplicon), colnames(amplicon)] <- as.matrix(assays(amplicon)$fraction)
+  reads[rownames(amplicon), colnames(amplicon)] <- as.matrix(assays(amplicon)$coverage)
 
-  #se <- SummarizedExperiment(assays = list(consensus = consensus, fraction = fraction, coverage = reads),
-  #                           colData = new_meta_data)
-  return(scRNAseq)
+  #print("We add the the amplicon information.")
+  #assays(scRNAseq)[["consensus"]][rownames(amplicon), colnames(amplicon)] <- as.matrix(assays(amplicon)$consensus)
+  #assays(scRNAseq)[["fraction"]][rownames(amplicon), colnames(amplicon)] <- as.matrix(assays(amplicon)$fraction)
+  #assays(scRNAseq)[["coverage"]][rownames(amplicon), colnames(amplicon)] <- as.matrix(assays(amplicon)$coverage)
+
+  se <- SummarizedExperiment(assays = list(consensus = consensus, fraction = fraction, coverage = reads),
+                             colData = new_meta_data)
+  return(se)
 }

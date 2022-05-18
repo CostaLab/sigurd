@@ -15,6 +15,7 @@ We employ a imputation approach that utilizes the correlation between mitochondr
 You can install sigurd using the following code:
 
 ```{r}
+# Does not work yet.
 install.packages("devtools")
 devtools::install_github("https://github.com/CostaLab/sigurd.git", build_vignettes = FALSE)
 require(sigurd)

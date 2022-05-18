@@ -272,7 +272,7 @@ LoadingVarTrix_typewise <- function(samples_path, vcf_path, patient, type_use = 
                                       colData = meta_data)
     return(se_merged)
 
-  } else if(type_use %in% c("scRNAseq_somatic", "Amplicon_somatic.")){
+  } else if(type_use %in% c("scRNAseq_Somatic", "Amplicon_Somatic")){
     print("We read in the different sparse genotype matrices as a list.")
     print("We have a slot per type of input data.")
     coverage_matrices <- list()

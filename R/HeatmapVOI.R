@@ -1,5 +1,5 @@
 #'We plot a heatmap of a set of Variants Of Interest using the Variant Allele Frequency values of a SummarizedExperiment object.
-#'@import ComplexHeatmap SummarizedExperiment circlize ggsci
+#'@import ComplexHeatmap SummarizedExperiment circlize ggsci Seurat
 #'@param SE SummarizedExperiment object.
 #'@param voi Variants Of Interest.
 #'@param annotation_trait Cell Annotation at the bottom of the heat map. 
@@ -19,6 +19,7 @@ HeatmapVoi <- function(SE, voi, annotation_trait = NULL){
   fraction <- assays(SE)[["fraction"]][voi,]
   if(!is.null(annotation_trait)){
     colours_use <- colours_list[1:length(unique(colData(SE)[,annotation_trait]))]
+    #colours_use <- DiscretePalette(length(unique(colData(SE)[,annotation_trait])))
     names(colours_use) <- unique(colData(SE)[,annotation_trait])
     ha <- ComplexHeatmap::columnAnnotation(annotation_trait = colData(SE)[,annotation_trait],
                                            col = list(annotation_trait = colours_use))
