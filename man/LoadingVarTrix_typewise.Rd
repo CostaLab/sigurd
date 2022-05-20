@@ -8,7 +8,8 @@ In a following function (AmpliconSupplementing), we can add the amplicon informa
 scRNAseq information.}
 \usage{
 LoadingVarTrix_typewise(
-  samples_path,
+  samples_file,
+  samples_path = NULL,
   vcf_path,
   patient,
   type_use = "scRNAseq_Somatic",

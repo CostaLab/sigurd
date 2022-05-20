@@ -19,9 +19,10 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-```{r vignette0}
+```{r vignetteLibraries, warning = FALSE, message = FALSE, output = FALSE}
 suppressPackageStartupMessages(require(sigurd))
 suppressPackageStartupMessages(require(SummarizedExperiment))
+suppressPackageStartupMessages(require(VariantAnnotation))
 ```
 
 **R version**: `r R.version.string`
@@ -31,12 +32,25 @@ suppressPackageStartupMessages(require(SummarizedExperiment))
 
 # Your input file.
 
-
-
 ```{r InputFile, warning = FALSE, message = FALSE, output = FALSE}
-sample_file <- read.csv("data/SigurdInput.csv")
-system.file("SigurdInput.csv", package = "sigurd")
+sample_path <- system.file("extdata", "Input_Example.csv", package = "sigurd")
+sample_file <- read.csv(sample_path)
 print(sample_file)
+
+```
+
+```{r InputVCF, warning = FALSE, message = FALSE, output = FALSE}
+vcf_path <- system.file("extdata", "ALFA_subset_MAF2_prefix.vcf", package = "sigurd")
+vcf <- readVcf(vcf_path)
+vcf_info <- info(vcf)
+print(vcf)
+print(vcf_info)
+
+vcf_path_mt <- system.file("extdata", "chrM_Input_VCF_NoMAF_Filtering.vcf", package = "sigurd")
+vcf_mt <- readVcf(vcf_path_mt)
+vcf_mt_info <- info(vcf_mt)
+print(vcf_mt)
+print(vcf_mt_info)
 
 ```
 
@@ -44,6 +58,41 @@ print(sample_file)
 
 ```{r LoadData, warning = FALSE, message = FALSE, output = FALSE}
 
+ET_83497_scRNAseq_Somatic <- LoadingVarTrix_typewise(samples_path = sample_path, vcf_path = vcf_path, patient = "ET_83497", type_use = "scRNAseq_Somatic")
+ET_83497_scRNAseq_Somatic_filtering <- Filtering(ET_83497_scRNAseq_Somatic)
+rm(ET_83497_scRNAseq_Somatic)
+gc()
+
+
+#ET_83497_scRNAseq_MT <- LoadingMAEGATK_typewise(samples_path = sample_path, patient = "ET_83497", type_use = "scRNAseq_MT", chromosome_prefix = "chrM")
+#ET_83497_scRNAseq_MT_filtering <- Filtering(ET_83497_scRNAseq_MT)
+#rm(ET_83497_scRNAseq_MT)
+#gc()
+
+ET_83497_scRNAseq_MT <- LoadingVarTrix_typewise(samples_path = sample_path, patient = "ET_83497", vcf_path = vcf_path_mt, type_use = "scRNAseq_MT")
+ET_83497_scRNAseq_MT_filtering <- Filtering(ET_83497_scRNAseq_MT)
+rm(ET_83497_scRNAseq_MT)
+gc()
+
+
+voi_ch <- VariantQuantileThresholding(SE = ET_83497_scRNAseq_MT_filtering, min_coverage = 2, quantiles = c(0.1, 0.9), thresholds = c(0.1, 0.9))
+hm <- HeatmapVoi(SE = ET_83497_scRNAseq_MT_filtering, voi = voi_ch)
+
+
+ET_83497_combined <- CombineSEobjects(se_somatic = ET_83497_scRNAseq_Somatic_filtering, se_MT = ET_83497_scRNAseq_MT_filtering, suffixes = c("_somatic", "_MT"))
+
+voi_ch <- VariantQuantileThresholding(SE = ET_83497_combined, min_coverage = 2, quantiles = c(0.1, 0.9), thresholds = c(0.1, 0.9))
+hm <- HeatmapVoi(SE = ET_83497_combined, voi = voi_ch)
+
+rm(ET_83497_scRNAseq_Somatic, se_mpn_scRNAseq_MT)
+gc()
+
+ET_83497_split_rows <- RowWiseSplit(ET_83497_combined)
+
+results_correlation_fishertest  <- VariantWiseFisherTest(ET_83497_split_rows, n_cores = 1)
+results_correlation_correlation <- VariantWiseCorrelation(ET_83497_split_rows, n_cores = 1)
+rm(ET_83497_split_rows)
+gc()
 
 ```
 
@@ -52,7 +101,7 @@ print(sample_file)
 You can also embed plots, for example:
 
 ```{r pressure, echo=FALSE}
-plot(pressure)
+
 ```
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
