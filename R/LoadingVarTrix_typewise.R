@@ -3,24 +3,35 @@
 #'In a following function (AmpliconSupplementing), we can add the amplicon information to the
 #'scRNAseq information.
 #'@import Matrix SummarizedExperiment VariantAnnotation
-#'@param samples_path Path to the csv file with the samples to be loaded.
+#'@param samples_path Path to the input folder. Must include a barcodes file.
+#'@param samples_file Path to the csv file with the samples to be loaded.
 #'@param vcf_path Path to the VCF file with the variants.
 #'@param patient The patient you want to load.
 #'@param type_use The type of input. Has to be one of: scRNAseq_Somatic, Amplicon_Somatic, scRNAseq_MT, Amplicon_MT.
 #'@export
-LoadingVarTrix_typewise <- function(samples_file, samples_path = NULL, vcf_path, patient, type_use = "scRNAseq_Somatic", chromosome_prefix = "chrM"){
-  print("We read in the samples file.")
-  samples_file <- read.csv(samples_file)
+LoadingVarTrix_typewise <- function(samples_file, samples_path = NULL, vcf_path, patient, type_use = "scRNAseq_Somatic"){
+  if(!is.null(samples_path)){
+    samples <- list.files(samples_path)
+    samples <- grep(patient, samples, value = TRUE)
+  
+    barcodes_files <- list.files(path = samples_path, pattern = "barcodes")
+    barcodes_files <- unlist(lapply(paste0(samples_path, samples, "/"), list.files, pattern = "barcodes", full.names = TRUE))
+  
+    samples_file <- data.frame(patient = patient, sample = samples, input_folder = samples_path, cells = barcodes_files)
+  } else{
+    print("We read in the samples file.")
+    samples_file <- read.csv(samples_file)
 
 
-  print("We subset to the patient of interest.")
-  samples_file <- samples_file[grep("vartrix", samples_file$source, ignore.case = TRUE),]
-  samples_file <- samples_file[grep(patient, samples_file$patient),]
-  samples_file <- samples_file[grep(type_use, samples_file$type),]
+    print("We subset to the patient of interest.")
+    samples_file <- samples_file[grep("vartrix", samples_file$source, ignore.case = TRUE),]
+    samples_file <- samples_file[grep(patient, samples_file$patient),]
+    samples_file <- samples_file[grep(type_use, samples_file$type),]
 
 
-  print("We get the different samples.")
-  samples <- samples_file$sample
+    print("We get the different samples.")
+    samples <- samples_file$sample
+  }
 
 
   print("We load the SNV files.")

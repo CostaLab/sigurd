@@ -5,18 +5,23 @@
 \title{We load the MAEGATK output and transform it to be compatible with the VarTrix output.}
 \usage{
 LoadingMAEGATK_typewise(
-  samples_path,
+  samples_file,
+  samples_path = NULL,
   patient,
   type_use = "scRNAseq_MT",
   chromosome_prefix = "chrM"
 )
 }
 \arguments{
-\item{samples_path}{Path to the csv file with the samples to be loaded.}
+\item{samples_file}{Path to the csv file with the samples to be loaded.}
+
+\item{samples_path}{Path to the input folder.}
 
 \item{patient}{The patient you want to load.}
 
-\item{type_use}{The type of input. Has to be one of: scRNAseq_MT, Amplicon_MT.}
+\item{type_use}{The type of input. Has to be one of: scRNAseq_MT, Amplicon_MT. Only used if samples_path is not NULL.}
+
+\item{chromosome_prefix}{The prefix you want use. Default: "chrM"}
 }
 \description{
 We load the MAEGATK output and transform it to be compatible with the VarTrix output.

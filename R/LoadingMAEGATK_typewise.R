@@ -1,22 +1,28 @@
 #'We load the MAEGATK output and transform it to be compatible with the VarTrix output.
 #'@import Matrix SummarizedExperiment
-#'@param samples_path Path to the csv file with the samples to be loaded.
-#'@param type_use The type of input. Has to be one of: scRNAseq_MT, Amplicon_MT.
+#'@param samples_path Path to the input folder.
+#'@param samples_file Path to the csv file with the samples to be loaded.
+#'@param type_use The type of input. Has to be one of: scRNAseq_MT, Amplicon_MT. Only used if samples_path is not NULL.
 #'@param patient The patient you want to load.
+#'@param chromosome_prefix The prefix you want use. Default: "chrM"
 #'@export
-LoadingMAEGATK_typewise <- function(samples_path, patient, type_use = "scRNAseq_MT", chromosome_prefix = "chrM"){
-  print("We read in the samples file.")
-  samples_file <- read.csv(samples_path)
+LoadingMAEGATK_typewise <- function(samples_file, samples_path = NULL, patient, type_use = "scRNAseq_MT", chromosome_prefix = "chrM"){
+  if(!is.null(samples_path)){
+    samples <- list.files(samples_path)
+    samples <- grep(patient, samples, value = TRUE)
+    samples_file <- data.frame(patient = patient, sample = samples, input_folder = samples_path)
+  } else{
+    print("We read in the samples file.")
+    samples_file <- read.csv(samples_path)
 
+    print("We subset to the patient of interest.")
+    samples_file <- samples_file[grep("maegatk|mgatk", samples_file$source, ignore.case = TRUE),]
+    samples_file <- samples_file[grep(patient, samples_file$patient),]
+    samples_file <- samples_file[grep(type_use, samples_file$type),]
 
-  print("We subset to the patient of interest.")
-  samples_file <- samples_file[grep("maegatk|mgatk", samples_file$source, ignore.case = TRUE),]
-  samples_file <- samples_file[grep(patient, samples_file$patient),]
-  samples_file <- samples_file[grep(type_use, samples_file$type),]
-
-
-  print("We get the different samples.")
-  samples <- samples_file$sample
+    print("We get the different samples.")
+    samples <- samples_file$sample
+  }
 
 
   print("We load the MAEGATK output files.")

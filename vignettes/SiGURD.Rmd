@@ -58,7 +58,7 @@ print(vcf_mt_info)
 
 ```{r LoadData, warning = FALSE, message = FALSE, output = FALSE}
 
-ET_83497_scRNAseq_Somatic <- LoadingVarTrix_typewise(samples_path = sample_path, vcf_path = vcf_path, patient = "ET_83497", type_use = "scRNAseq_Somatic")
+ET_83497_scRNAseq_Somatic <- LoadingVarTrix_typewise(samples_file = sample_path, vcf_path = vcf_path, patient = "ET_83497", type_use = "scRNAseq_Somatic")
 ET_83497_scRNAseq_Somatic_filtering <- Filtering(ET_83497_scRNAseq_Somatic)
 rm(ET_83497_scRNAseq_Somatic)
 gc()
@@ -69,7 +69,7 @@ gc()
 #rm(ET_83497_scRNAseq_MT)
 #gc()
 
-ET_83497_scRNAseq_MT <- LoadingVarTrix_typewise(samples_path = sample_path, patient = "ET_83497", vcf_path = vcf_path_mt, type_use = "scRNAseq_MT")
+ET_83497_scRNAseq_MT <- LoadingVarTrix_typewise(samples_file = sample_path, patient = "ET_83497", vcf_path = vcf_path_mt, type_use = "scRNAseq_MT")
 ET_83497_scRNAseq_MT_filtering <- Filtering(ET_83497_scRNAseq_MT)
 rm(ET_83497_scRNAseq_MT)
 gc()

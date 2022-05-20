@@ -12,12 +12,13 @@ LoadingVarTrix_typewise(
   samples_path = NULL,
   vcf_path,
   patient,
-  type_use = "scRNAseq_Somatic",
-  chromosome_prefix = "chrM"
+  type_use = "scRNAseq_Somatic"
 )
 }
 \arguments{
-\item{samples_path}{Path to the csv file with the samples to be loaded.}
+\item{samples_file}{Path to the csv file with the samples to be loaded.}
+
+\item{samples_path}{Path to the input folder. Must include a barcodes file.}
 
 \item{vcf_path}{Path to the VCF file with the variants.}
 
