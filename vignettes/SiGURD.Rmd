@@ -31,8 +31,12 @@ suppressPackageStartupMessages(require(SummarizedExperiment))
 
 # Your input file.
 
+
+
 ```{r InputFile, warning = FALSE, message = FALSE, output = FALSE}
-sample_file <- read.csv("data/")
+sample_file <- read.csv("data/SigurdInput.csv")
+system.file("SigurdInput.csv", package = "sigurd")
+print(sample_file)
 
 ```
 
