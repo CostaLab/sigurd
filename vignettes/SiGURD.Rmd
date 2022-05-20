@@ -1,0 +1,54 @@
+---
+title: "SiGURD vignette"
+author: 
+- name: Martin Grasshoff
+  affilitation: Institute for Computational Genomics,
+               Faculty of Medicine,
+               RWTH Aachen University,
+               Aachen, 52074 Germany
+- name: Ivan G. Costa
+  affiliation:
+     - Institute for Computational Genomics,
+       Faculty of Medicine,
+       RWTH Aachen University,
+       Aachen, 52074 Germany
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r vignette0}
+suppressPackageStartupMessages(require(sigurd))
+suppressPackageStartupMessages(require(SummarizedExperiment))
+```
+
+**R version**: `r R.version.string`
+
+**Package version**: `r packageVersion("CrossTalkeR")`
+
+
+# Your input file.
+
+```{r InputFile, warning = FALSE, message = FALSE, output = FALSE}
+sample_file <- read.csv("data/")
+
+```
+
+# Load the input data.
+
+```{r LoadData, warning = FALSE, message = FALSE, output = FALSE}
+
+
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
