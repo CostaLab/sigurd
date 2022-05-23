@@ -63,10 +63,10 @@ We load the data per patient and merge all the associated samples automatically.
 In the input file, you have to include which software tool was used for the analysis. 
 The source can either be vartrix or maegatk/mgatk. The respective loading function will then only load the files intended for it.
 The types of data available are:
-* scRNAseq_Somatic: the standard 10X results analysed for somatic variants.
-* scRNAseq_MT: the standard 10X results analysed for MT variants. 
-* Amplicon_Somatic: amplicon data analysed for somatic variants.
-* Amplicon_MT: amplicon data analysed for MT variants.
+- scRNAseq_Somatic: the standard 10X results analysed for somatic variants.
+- scRNAseq_MT: the standard 10X results analysed for MT variants. 
+- Amplicon_Somatic: amplicon data analysed for somatic variants.
+- Amplicon_MT: amplicon data analysed for MT variants.
 
 Since the MT results are denser, they take longer to load. 
 
@@ -80,8 +80,6 @@ ET_83497_combined <- CombineSEobjects(se_somatic = ET_83497_scRNAseq_Somatic, se
 rm(ET_83497_scRNAseq_Somatic, ET_83497_scRNAseq_MT)
 ET_83497_combined <- Filtering(ET_83497_combined, min_cells = 2, fraction_threshold = 0.05)
 ET_83497_combined <- VariantBurden(ET_83497_combined)
-
-save_object(ET_83497_combined, "/home/grasshoff/labcluster_data/mg000001/sigurd_test_scripts/Test_Data_Generation/results_for_html_example/ET_83497_combined.Rds", "lz4")
 
 ```
 
@@ -109,15 +107,10 @@ Since the possible number of tests/correlations is quite large, you can use mult
 ```{r VariantAssociation, warning = FALSE, message = FALSE, output = FALSE}
 ET_83497_split_rows <- RowWiseSplit(ET_83497_combined, remove_nocalls = FALSE)
 
-save_object(ET_83497_split_rows, "/home/grasshoff/labcluster_data/mg000001/sigurd_test_scripts/Test_Data_Generation/results_for_html_example/ET_83497_split_rows.Rds", "lz4")
-variants_list <- load_object("/home/grasshoff/labcluster_data/mg000001/sigurd_test_scripts/Test_Data_Generation/results_for_html_example/ET_83497_split_rows.Rds")
-
 results_fishertest  <- VariantWiseFisherTest(ET_83497_split_rows, n_cores = 1)
 results_correlation <- VariantWiseCorrelation(ET_83497_split_rows, n_cores = 1)
 rm(ET_83497_split_rows)
 
-save_object(results_fishertest, "/home/grasshoff/labcluster_data/mg000001/sigurd_test_scripts/Test_Data_Generation/results_for_html_example/results_fishertest.Rds", "lz4")
-save_object(results_correlation, "/home/grasshoff/labcluster_data/mg000001/sigurd_test_scripts/Test_Data_Generation/results_for_html_example/results_correlation.Rds", "lz4")
-
-variant_association_heatmap <- VariantCorrelationHeatmap(results_correlation, patient = "ET_83497", min_alt_cells = 3)
+variant_association_heatmap <- VariantFisherTestHeatmap(results_fishertest, patient = "ET_83497", min_alt_cells = 3)
+print(variant_association_heatmap)
 ```

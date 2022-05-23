@@ -19,5 +19,46 @@ You can install sigurd using the following code:
 install.packages("devtools")
 devtools::install_github("https://github.com/CostaLab/sigurd.git", build_vignettes = FALSE)
 require(sigurd)
+
 ```
+
+# SiGURD 
+
+We have provided a small example data set for SiGURD. It consists of chromosome 9 and MT for one MPN sample.
+
+The sample is currently located on the cluster.
+
+```{r}
+
+vignette('CrossTalkeR')
+
+```
+
+# Current Features v0.5.0
+
+- Loading data from VarTrix and MAEGATK.
+- Transforming the data to be compatible for joint analysis.
+- Calculating the variant burden per cell.
+- Thresholding variants using the approach described by Miller et al. [1]
+- Finding associated variants using correlation or the Fisher Test.
+
+# Future 
+- Memory optimization
+
+# References
+
+[1] Miller, T.E., et al. Mitochondrial variant enrichment from high-throughput single-cell RNA sequencing resolves clonal populations. Nat Biotechnol (2022). [link](https://doi.org/10.1038/s41587-022-01210-8)
+
+
+
+
+
+
+
+
+
+
+
+
+
 

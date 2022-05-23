@@ -8,13 +8,12 @@
 #'- all variants that are always NoCall.
 #'@import fastmatch Matrix Seurat SummarizedExperiment
 #'@param se SummarizedExperiment object.
-#'@param patient Patient you are analysing. Character.
 #'@param blacklisted_barcodes_path Barcodes you want to remove. Path to a file with one column without header.
 #'@param fraction_threshold Variants with an VAF below this threshold are set to 0. Numeric.
 #'@param min_cells In how many cells should a variant be present to be included? Numeric. Default = 2.
 #'@param path_seurat Path to a Seurat object. Cells not present in the object will be removed.
 #'@export
-Filtering <- function(se, patient, blacklisted_barcodes_path = NULL, fraction_threshold = NULL, path_seurat = NULL, min_cells = 2){
+Filtering <- function(se, blacklisted_barcodes_path = NULL, fraction_threshold = NULL, path_seurat = NULL, min_cells = 2){
   print("We remove all blacklisted bar codes.")
   if(!is.null(blacklisted_barcodes_path)){
     print("We remove the unwanted cell barcodes.")

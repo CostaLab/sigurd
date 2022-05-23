@@ -13,7 +13,6 @@ We want to remove:
 \usage{
 Filtering(
   se,
-  patient,
   blacklisted_barcodes_path = NULL,
   fraction_threshold = NULL,
   path_seurat = NULL,
@@ -22,8 +21,6 @@ Filtering(
 }
 \arguments{
 \item{se}{SummarizedExperiment object.}
-
-\item{patient}{Patient you are analysing. Character.}
 
 \item{blacklisted_barcodes_path}{Barcodes you want to remove. Path to a file with one column without header.}
 

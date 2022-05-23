@@ -1,16 +1,11 @@
 #'We generate a heatmap showing the Fisher test of somatic variants with the MT variants.
 #'@import circlize ComplexHeatmap ggplot2 Matrix parallel rcompanion tidyr grid
 #'@param fisher_results Data.frame with the correlation results.
-#'@param output_path Path to the output folder.
 #'@param patient The patient for this heatmap.
 #'@param min_alt_cells Minimum number of mutated cells needed, otherwise an association will not be plotted.
 #'@param min_oddsratio Minimum correlation needed. 
-#'@param width_use Width of the heatmap in px.
-#'@param height_use Height of the heatmap in px.
-#'@param padding_use Space around the heatmap in mm. If this is to low, the variant names might be cut off.
 #'@export
-VariantFisherTestHeatmap <- function(fisher_results, output_path = NULL, patient, min_alt_cells = 5, min_oddsratio = 1,
-                                     width_use = 2000, height_use = 2000, padding_use = c(165,165,2,2)){
+VariantFisherTestHeatmap <- function(fisher_results, patient, min_alt_cells = 5, min_oddsratio = 1){
   fisher_results$P_adj_logged <- -log10(fisher_results$P_adj)
   fisher_results <- subset(fisher_results, P_adj_logged > -log10(0.05))
   fisher_results <- subset(fisher_results, Cells_Alt_1_2 >= min_alt_cells)
@@ -64,25 +59,13 @@ VariantFisherTestHeatmap <- function(fisher_results, output_path = NULL, patient
   print("Since we can have no results left after the subsetting, we check if the P value matrix has values.")
   if(all(dim(p_values) > 0)){
     print("Generating the actual heat map.")
-    p1 <- Heatmap(p_values, name = "-log10(P)",
-                  column_title = paste0("Patient ", patient, "\nLogged adj. P values between the variants"),
-                  row_title = "", show_row_names = TRUE, show_column_names = TRUE,
-                  col = col_fun, left_annotation = annotation_left, top_annotation = annotation_top,
-                  column_title_gp = grid::gpar(fontsize = 40), row_title_gp = grid::gpar(fontsize = 40),
-                  column_names_gp = grid::gpar(fontsize = 40), row_names_gp = grid::gpar(fontsize = 40),
-                  column_names_rot = 45,
-                  row_names_side = "left",
-                  heatmap_legend_param = list(labels_gp = gpar(fontsize = 40), title_gp = gpar(fontsize = 40, fontface = "bold")),
-                  cluster_columns = FALSE, cluster_rows = FALSE, use_raster = FALSE, show_row_dend = FALSE, show_column_dend = FALSE)
-    
-    
-    if(!is.null(output_path)){
-      print("Saving the png.")
-      png(paste0(output_path, "FisherTest_Pvalue_", patient, ".png"), width = width_use, height = height_use, units = "px", type = "cairo", antialias = "none")
-      draw(p1, padding = unit(padding_use, "mm"))
-      dev.off()
-    } else{
-      return(p1)
-    }
+    p <- Heatmap(p_values, name = "-log10(P)",
+                 column_title = paste0("Patient ", patient, "\nLogged adj. P values between the variants"),
+                 row_title = "", show_row_names = TRUE, show_column_names = TRUE,
+                 col = col_fun, left_annotation = annotation_left, top_annotation = annotation_top,
+                 column_names_rot = 45, row_names_side = "left",
+                 column_names_gp = grid::gpar(hjust = 1),
+                 cluster_columns = FALSE, cluster_rows = FALSE, use_raster = FALSE, show_row_dend = FALSE, show_column_dend = FALSE)
   }
+  return(p)
 }
