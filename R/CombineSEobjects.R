@@ -14,6 +14,9 @@ CombineSEobjects <- function(se_somatic, se_MT, suffixes = c("_somatic", "_MT"))
   meta_data <- meta_data[match(cells, meta_data$Cell),]
   
   assays_combined <- S4Vectors::mendoapply(BiocGenerics::combine, assays(se_somatic), assays(se_MT))
+  assays_combined[["consensus"]][is.na(assays_combined[["consensus"]])] <- 0
+  assays_combined[["fraction"]][is.na(assays_combined[["fraction"]])] <- 0
+  assays_combined[["coverage"]][is.na(assays_combined[["coverage"]])] <- 0
   se_combined <- SummarizedExperiment(assays = assays_combined,
                                       colData = meta_data)
   return(se_combined)

@@ -11,11 +11,12 @@
 #'@param patient Patient you are analysing. Character.
 #'@param blacklisted_barcodes_path Barcodes you want to remove. Path to a file with one column without header.
 #'@param fraction_threshold Variants with an VAF below this threshold are set to 0. Numeric.
-#'@param path_seurat Path to a Seurat object.
+#'@param min_cells In how many cells should a variant be present to be included? Numeric. Default = 2.
+#'@param path_seurat Path to a Seurat object. Cells not present in the object will be removed.
 #'@export
-Filtering <- function(se, patient, blacklisted_barcodes_path = "NULL", fraction_threshold = 0.5, path_seurat = "NULL"){
+Filtering <- function(se, patient, blacklisted_barcodes_path = NULL, fraction_threshold = NULL, path_seurat = NULL, min_cells = 2){
   print("We remove all blacklisted bar codes.")
-  if(blacklisted_barcodes_path != "NULL"){
+  if(!is.null(blacklisted_barcodes_path)){
     print("We remove the unwanted cell barcodes.")
     blacklisted_barcodes <- read.table(blacklisted_barcodes_path, header = FALSE)
     blacklisted_barcodes <- blacklisted_barcodes[,1]
@@ -24,7 +25,7 @@ Filtering <- function(se, patient, blacklisted_barcodes_path = "NULL", fraction_
     se <- se[, barcodes_keep]
   }
 
-  if(path_seurat != "NULL"){
+  if(!is.null(path_seurat)){
     print("We load the Seurat object.")
     scrna <- load_object(path_seurat)
 
@@ -39,22 +40,23 @@ Filtering <- function(se, patient, blacklisted_barcodes_path = "NULL", fraction_
   se <- se[keep_variants,]
 
 
-  print("We assume that cells with a fraction smaller than our threshold are actually reference.")
-  print("We set consensus values to 1 (Ref) and fraction values to 0.")
-  print(paste0("We do not set fractions between ", fraction_threshold, " and 1 to 1."))
-  print("This way, we retain the heterozygous information.")
-  assays(se)$consensus[assays(se)$fraction > 0 & assays(se)$fraction < fraction_threshold] <- 1
-  assays(se)$fraction[assays(se)$fraction > 0 & assays(se)$fraction < fraction_threshold] <- 0
-
+  if(!is.null(fraction_threshold)){
+    print("We assume that cells with a fraction smaller than our threshold are actually reference.")
+    print("We set consensus values to 1 (Ref) and fraction values to 0.")
+    print(paste0("We do not set fractions between ", fraction_threshold, " and 1 to 1."))
+    print("This way, we retain the heterozygous information.")
+    assays(se)$consensus[assays(se)$fraction > 0 & assays(se)$fraction < fraction_threshold] <- 1
+    assays(se)$fraction[assays(se)$fraction > 0 & assays(se)$fraction < fraction_threshold] <- 0
+  }
 
   print("We remove all the variants that are always NoCall.")
   consensus_test <- assays(se)$consensus > 0
   keep_variants <- rowSums(consensus_test) > 0
   se <- se[keep_variants,]
 
-  print("We remove variants, that are not at least detected in 2 cells.")
+  print(paste0("We remove variants, that are not at least detected in ", min_cells, " cells."))
   keep_variants <- rowSums(assays(se)$consensus >= 2)
-  keep_variants <- keep_variants >= 2
+  keep_variants <- keep_variants >= min_cells
   se <- se[keep_variants,]
 
 

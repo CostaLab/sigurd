@@ -19,7 +19,7 @@ CalculateFisherTestPValue <- function(variant_values, other_mutation, all_varian
     other_variant_values <- other_variant_values[names(variant_values)]
     # We need to have some mutations in both sets.
     # If this is not the case, we are returning NA.
-    if(any(all(diff(variant_values) == 0), all(diff(other_variant_values) == 0))){
+    if(any(!any(variant_values == 1), !any(other_variant_values == 1))){
       #print("There aren't mutated cells in both sets.")
       result <- c(NA,NA,NA,NA,NA,NA)
       return(result)

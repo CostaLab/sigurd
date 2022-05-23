@@ -38,6 +38,9 @@ sample_file <- read.csv(sample_path)
 print(sample_file)
 
 ```
+# Your vcf files.
+
+These files are needed for VarTrix and not MGATK/MAEGATK. Since MAEGATK only analyses the mitochondrial genome, you only need to decide on a chromosomal prefix for your data. See the loading of data below.
 
 ```{r InputVCF, warning = FALSE, message = FALSE, output = FALSE}
 vcf_path <- system.file("extdata", "ALFA_subset_MAF2_prefix.vcf", package = "sigurd")
@@ -54,54 +57,67 @@ print(vcf_mt_info)
 
 ```
 
-# Load the input data.
+# Loading and filtering the input data.
+
+We load the data per patient and merge all the associated samples automatically.
+In the input file, you have to include which software tool was used for the analysis. 
+The source can either be vartrix or maegatk/mgatk. The respective loading function will then only load the files intended for it.
+The types of data available are:
+* scRNAseq_Somatic: the standard 10X results analysed for somatic variants.
+* scRNAseq_MT: the standard 10X results analysed for MT variants. 
+* Amplicon_Somatic: amplicon data analysed for somatic variants.
+* Amplicon_MT: amplicon data analysed for MT variants.
+
+Since the MT results are denser, they take longer to load. 
 
 ```{r LoadData, warning = FALSE, message = FALSE, output = FALSE}
 
 ET_83497_scRNAseq_Somatic <- LoadingVarTrix_typewise(samples_file = sample_path, vcf_path = vcf_path, patient = "ET_83497", type_use = "scRNAseq_Somatic")
-ET_83497_scRNAseq_Somatic_filtering <- Filtering(ET_83497_scRNAseq_Somatic)
-rm(ET_83497_scRNAseq_Somatic)
-gc()
 
+ET_83497_scRNAseq_MT <- LoadingVarTrix_typewise(samples_file = sample_path, vcf_path = vcf_path_mt, patient = "ET_83497", type_use = "scRNAseq_MT")
 
-#ET_83497_scRNAseq_MT <- LoadingMAEGATK_typewise(samples_path = sample_path, patient = "ET_83497", type_use = "scRNAseq_MT", chromosome_prefix = "chrM")
-#ET_83497_scRNAseq_MT_filtering <- Filtering(ET_83497_scRNAseq_MT)
-#rm(ET_83497_scRNAseq_MT)
-#gc()
+ET_83497_combined <- CombineSEobjects(se_somatic = ET_83497_scRNAseq_Somatic, se_MT = ET_83497_scRNAseq_MT, suffixes = c("_somatic", "_MT"))
+rm(ET_83497_scRNAseq_Somatic, ET_83497_scRNAseq_MT)
+ET_83497_combined <- Filtering(ET_83497_combined, min_cells = 2, fraction_threshold = 0.05)
+ET_83497_combined <- VariantBurden(ET_83497_combined)
 
-ET_83497_scRNAseq_MT <- LoadingVarTrix_typewise(samples_file = sample_path, patient = "ET_83497", vcf_path = vcf_path_mt, type_use = "scRNAseq_MT")
-ET_83497_scRNAseq_MT_filtering <- Filtering(ET_83497_scRNAseq_MT)
-rm(ET_83497_scRNAseq_MT)
-gc()
+save_object(ET_83497_combined, "/home/grasshoff/labcluster_data/mg000001/sigurd_test_scripts/Test_Data_Generation/results_for_html_example/ET_83497_combined.Rds", "lz4")
 
+```
 
-voi_ch <- VariantQuantileThresholding(SE = ET_83497_scRNAseq_MT_filtering, min_coverage = 2, quantiles = c(0.1, 0.9), thresholds = c(0.1, 0.9))
-hm <- HeatmapVoi(SE = ET_83497_scRNAseq_MT_filtering, voi = voi_ch)
+# Determing MT variants of interest.
 
+This thresholding was adapted from Miller et al.
+https://github.com/petervangalen/MAESTER-2021
+https://www.nature.com/articles/s41587-022-01210-8
 
-ET_83497_combined <- CombineSEobjects(se_somatic = ET_83497_scRNAseq_Somatic_filtering, se_MT = ET_83497_scRNAseq_MT_filtering, suffixes = c("_somatic", "_MT"))
+The heatmap needs some time to plot, since the cells are clustered. 
 
+```{r VariantsOfInterest, warning = FALSE, message = FALSE, output = FALSE}
 voi_ch <- VariantQuantileThresholding(SE = ET_83497_combined, min_coverage = 2, quantiles = c(0.1, 0.9), thresholds = c(0.1, 0.9))
 hm <- HeatmapVoi(SE = ET_83497_combined, voi = voi_ch)
+print(hm)
+```
 
-rm(ET_83497_scRNAseq_Somatic, se_mpn_scRNAseq_MT)
-gc()
+# Association of Variants
 
-ET_83497_split_rows <- RowWiseSplit(ET_83497_combined)
+Using Fisher's Exact test, we find co-present variants. You can also use the correlation between variants.
+For this, we combine the somatic and the MT results.
+Since the possible number of tests/correlations is quite large, you can use multiple cores to perform the calculations.
 
-results_correlation_fishertest  <- VariantWiseFisherTest(ET_83497_split_rows, n_cores = 1)
-results_correlation_correlation <- VariantWiseCorrelation(ET_83497_split_rows, n_cores = 1)
+
+```{r VariantAssociation, warning = FALSE, message = FALSE, output = FALSE}
+ET_83497_split_rows <- RowWiseSplit(ET_83497_combined, remove_nocalls = FALSE)
+
+save_object(ET_83497_split_rows, "/home/grasshoff/labcluster_data/mg000001/sigurd_test_scripts/Test_Data_Generation/results_for_html_example/ET_83497_split_rows.Rds", "lz4")
+variants_list <- load_object("/home/grasshoff/labcluster_data/mg000001/sigurd_test_scripts/Test_Data_Generation/results_for_html_example/ET_83497_split_rows.Rds")
+
+results_fishertest  <- VariantWiseFisherTest(ET_83497_split_rows, n_cores = 1)
+results_correlation <- VariantWiseCorrelation(ET_83497_split_rows, n_cores = 1)
 rm(ET_83497_split_rows)
-gc()
 
+save_object(results_fishertest, "/home/grasshoff/labcluster_data/mg000001/sigurd_test_scripts/Test_Data_Generation/results_for_html_example/results_fishertest.Rds", "lz4")
+save_object(results_correlation, "/home/grasshoff/labcluster_data/mg000001/sigurd_test_scripts/Test_Data_Generation/results_for_html_example/results_correlation.Rds", "lz4")
+
+variant_association_heatmap <- VariantCorrelationHeatmap(results_correlation, patient = "ET_83497", min_alt_cells = 3)
 ```
-
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.

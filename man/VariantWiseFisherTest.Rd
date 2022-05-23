@@ -3,7 +3,7 @@
 %   R/VariantWiseFisherTest2.R
 \name{VariantWiseFisherTest}
 \alias{VariantWiseFisherTest}
-\title{We perfrom the Fisher test to determine which variants are associated.}
+\title{We perform the Fisher test to determine which variants are associated.}
 \usage{
 VariantWiseFisherTest(variants_list, n_cores = 1, p_value_adjustment = "fdr")
 
@@ -17,7 +17,7 @@ VariantWiseFisherTest(variants_list, n_cores = 1, p_value_adjustment = "fdr")
 \item{p_value_adjustment}{Method for P value adjustment. See p.adjust for details.}
 }
 \description{
-We perfrom the Fisher test to determine which variants are associated.
+We perform the Fisher test to determine which variants are associated.
 
-We perfrom the Fisher test to determine which variants are associated.
+We perform the Fisher test to determine which variants are associated.
 }

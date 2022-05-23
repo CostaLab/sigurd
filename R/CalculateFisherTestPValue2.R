@@ -1,4 +1,4 @@
-#'We perform the Fisher Testest of SNVs and calculate the P values.
+#'We perform the Fisher test of SNVs and calculate the P values.
 #'@import stats
 #'@param variant_values The fraction values you are analysing. A vector.
 #'@param other_mutation All other variants you have. A vector of variant names.

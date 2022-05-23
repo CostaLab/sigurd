@@ -1,4 +1,4 @@
-#'We perfrom the Fisher test to determine which variants are associated.
+#'We perform the Fisher test to determine which variants are associated. 
 #'@import Matrix parallel SummarizedExperiment
 #'@param variants_list List of fraction values.
 #'@param n_cores Number of cores you want to use. Numeric.
@@ -15,7 +15,7 @@ VariantWiseFisherTest <- function(variants_list, n_cores = 1, p_value_adjustment
   number_of_variants <- length(variants)
   for(i in 1:length(variants)){
     variant_use <- variants[i]
-    print(paste0("Correlating Variant: ", variant_use, ", ", i, " out of ", number_of_variants))
+    print(paste0("Testing Variant: ", variant_use, ", ", i, " out of ", number_of_variants))
     variants_values_use <- variants_list[[variant_use]]
     variants_list_use <- variants_list[names(variants_list) != variant_use]
     all_variants <- names(variants_list_use)

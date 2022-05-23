@@ -5,12 +5,14 @@
 \title{We separate a matrix of variant information to a list.
 Each variant is an entry in the list.}
 \usage{
-SeparatingMatrixToList(row_use, total_matrix)
+SeparatingMatrixToList(row_use, total_matrix, remove_nocalls = TRUE)
 }
 \arguments{
 \item{row_use}{The row the separate.}
 
 \item{total_matrix}{The matrix to be split.}
+
+\item{remove_nocalls}{Do you want to remove NoCall cells?}
 }
 \description{
 We separate a matrix of variant information to a list.

@@ -13,7 +13,7 @@ LoadingMAEGATK_typewise <- function(samples_file, samples_path = NULL, patient, 
     samples_file <- data.frame(patient = patient, sample = samples, input_folder = samples_path)
   } else{
     print("We read in the samples file.")
-    samples_file <- read.csv(samples_path)
+    samples_file <- read.csv(samples_file)
 
     print("We subset to the patient of interest.")
     samples_file <- samples_file[grep("maegatk|mgatk", samples_file$source, ignore.case = TRUE),]

@@ -5,12 +5,14 @@
 \title{We get the filtered results, we have from the 01_FilteringSampleWise. We now split the results into the
 individual columns and save them in a list object.}
 \usage{
-RowWiseSplit(se, n_cores = 1)
+RowWiseSplit(se, n_cores = 1, remove_nocalls = TRUE)
 }
 \arguments{
 \item{se}{SummarizedExperiment object.}
 
 \item{n_cores}{Number of cores to use.}
+
+\item{remove_nocalls}{Do you want to remove NoCall cells?}
 }
 \description{
 We get the filtered results, we have from the 01_FilteringSampleWise. We now split the results into the
