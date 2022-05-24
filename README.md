@@ -8,14 +8,13 @@ Ivan G. Costa<sup>1</sup>
 **Motivation:** With the advent of single RNA seq assays, it became possible to determine the mutational status for each individual cell. Single cell RNA seq data is by its very nature sparse and the probability of hitting a specific variants of interest is therefore very low. While this issue can be overcome using modified amplicon assays, it is also possible to impute the mutational status using the correlation between detected mitochondrial and somatic variants. 
 
 **Results:** Sigurd is an R package for the analysis of single cell data. We determine the overall variant burden per cell and also the number of interesting mitochondrial variants using previously published approaches. 
-We employ a imputation approach that utilizes the correlation between mitochondrial variants and somatic variants. Mitochondrial mutations that are significantly correlated to somatic mutations are used as stand-ins.
+We employ a imputation approach that utilizes the correlation between mitochondrial variants and somatic variants. Mitochondrial mutations that are significantly associated to somatic mutations are used as stand-ins.
 
 ## Installation
 
-You can install sigurd using the following code:
+You can install sigurd using the following code. The vignette requires data that is currently not published, but is provided as a reference.
 
 ```{r}
-# Does not work yet. The repository is not yet public.
 install.packages("devtools")
 devtools::install_github("https://github.com/CostaLab/sigurd.git", build_vignettes = FALSE)
 require(sigurd)
@@ -29,8 +28,8 @@ We have provided a small example data set for SiGURD. It consists of chromosome 
 The sample is currently located on the cluster.
 
 ```{r}
-
-vignette('CrossTalkeR')
+# This will be included for published data.
+# vignette('sigurd')
 
 ```
 
@@ -39,15 +38,19 @@ vignette('CrossTalkeR')
 - Loading data from VarTrix and MAEGATK.
 - Transforming the data to be compatible for joint analysis.
 - Calculating the variant burden per cell.
-- Thresholding variants using the approach described by Miller et al. [1]
+- Thresholding variants using the approach described by Miller et al. [2]
 - Finding associated variants using correlation or the Fisher Test.
 
 # Future 
 - Memory optimization
+- Loading of CB sniffer results
+- Providing data for the vignette
 
 # References
+[1] VarTrix. [github](https://github.com/10XGenomics/vartrix)
+[2] Miller, T.E., et al. Mitochondrial variant enrichment from high-throughput single-cell RNA sequencing resolves clonal populations. Nat Biotechnol (2022). [link](https://doi.org/10.1038/s41587-022-01210-8). See also: [MAEGATK Analysis](https://github.com/petervangalen/MAESTER-2021), [Data](https://vangalenlab.bwh.harvard.edu/resources/maester-2021/)
 
-[1] Miller, T.E., et al. Mitochondrial variant enrichment from high-throughput single-cell RNA sequencing resolves clonal populations. Nat Biotechnol (2022). [link](https://doi.org/10.1038/s41587-022-01210-8)
+
 
 
 
