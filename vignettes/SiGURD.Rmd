@@ -78,7 +78,7 @@ ET_83497_scRNAseq_MT <- LoadingVarTrix_typewise(samples_file = sample_path, vcf_
 
 ET_83497_combined <- CombineSEobjects(se_somatic = ET_83497_scRNAseq_Somatic, se_MT = ET_83497_scRNAseq_MT, suffixes = c("_somatic", "_MT"))
 rm(ET_83497_scRNAseq_Somatic, ET_83497_scRNAseq_MT)
-ET_83497_combined <- Filtering(ET_83497_combined, min_cells = 2, fraction_threshold = 0.05)
+ET_83497_combined <- Filtering(ET_83497_combined, min_cells_per_variant = 2, fraction_threshold = 0.05)
 ET_83497_combined <- VariantBurden(ET_83497_combined)
 
 ```

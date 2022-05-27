@@ -1,4 +1,4 @@
-#'Filtering the loaded genotyping data.
+#'Filtering the loaded genotyping data using big matrices.
 #'
 #'@description
 #'We filter a SummarizedExperiment object to exclude variants and cells.
@@ -14,7 +14,7 @@
 #'   \item all variants that are always NoCall,
 #'   \item set variants with a VAF below a threshold to reference.
 #' }
-#'@import fastmatch Matrix Seurat SummarizedExperiment
+#'@import Matrix Seurat SummarizedExperiment bigmemory
 #'@param se SummarizedExperiment object.
 #'@param blacklisted_barcodes_path Barcodes you want to remove. Path to a file with one column without header.
 #'@param fraction_threshold Variants with an VAF below this threshold are set to 0. Numeric.
@@ -27,8 +27,7 @@
 #'   se_geno <- Filtering(se_geno, min_cells_per_variant = 2, fraction_threshold = 0.05)
 #' }
 #'@export
-Filtering <- function(se, blacklisted_barcodes_path = NULL, fraction_threshold = NULL, path_seurat = NULL, min_cells_per_variant = 2){
-  print("We remove all blacklisted bar codes.")
+Filtering_big <- function(se, blacklisted_barcodes_path = NULL, fraction_threshold = NULL, path_seurat = NULL, min_cells_per_variant = 2){
   if(!is.null(blacklisted_barcodes_path)){
     print("We remove the unwanted cell barcodes.")
     blacklisted_barcodes <- read.table(blacklisted_barcodes_path, header = FALSE)
@@ -80,5 +79,10 @@ Filtering <- function(se, blacklisted_barcodes_path = NULL, fraction_threshold =
   consensus_test <- assays(se)$consensus > 0
   keep_cells <- colSums(consensus_test) > 0
   se <- se[,keep_cells]
+
+  print("We change the matrices back to big matrices.")
+  assays(se)[["consensus"]] <- as.big.matrix(assays(se)[["consensus"]])
+  assays(se)[["fraction"]] <- as.big.matrix(assays(se)[["fraction"]])
+  assays(se)[["coverage"]] <- as.big.matrix(assays(se)[["coverage"]])
   return(se)
 }

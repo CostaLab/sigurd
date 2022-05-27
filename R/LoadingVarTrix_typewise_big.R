@@ -1,8 +1,10 @@
+#'Loading VarTrix results using big.matrix
+#'
 #'When we load all the different types of results (scRNAseq/amplicon and MT/amplicon),
 #'we might need extreme amounts of memory. To solve this issue, I will load each type separately.
 #'In a following function (AmpliconSupplementing), we can add the amplicon information to the
 #'scRNAseq information.
-#'@import Matrix SummarizedExperiment VariantAnnotation
+#'@import bigmemory Matrix SummarizedExperiment VariantAnnotation
 #'@param samples_path Path to the input folder. Must include a barcodes file.
 #'@param samples_file Path to the csv file with the samples to be loaded.
 #'@param vcf_path Path to the VCF file with the variants.
@@ -10,7 +12,13 @@
 #'@param type_use The type of input. Has to be one of: scRNAseq_Somatic, Amplicon_Somatic, scRNAseq_MT, Amplicon_MT.
 #'@param min_reads The minimum number of reads we want. Otherwise we treat this as a NoCall.
 #'@export
-LoadingVarTrix_typewise <- function(samples_file, samples_path = NULL, vcf_path, patient, type_use = "scRNAseq_Somatic", min_reads = 3){
+LoadingVarTrix_typewise_big <- function(samples_file, samples_path = NULL, vcf_path, patient, type_use = "scRNAseq_Somatic", min_reads = 3){
+  #library(bigmemory)
+  #samples_file <- "~/labcluster/MPN/AdamBenabid/JAK2_AmpliconLibrary/SpecificScripts/SigurdInput.csv"
+  #samples_path <- NULL
+  #vcf_path <- "~/labcluster_data/scRNA/SingleCell_Variant_Correlation_Test/VariantsOfInterest/ALFA_subset_MAF2_prefix.vcf"
+  #patient <- "AB5_UMIs"
+  #type_use <- "Amplicon_Somatic"
   if(!is.null(samples_path)){
     samples <- list.files(samples_path)
     samples <- grep(patient, samples, value = TRUE)
@@ -131,30 +139,45 @@ LoadingVarTrix_typewise <- function(samples_file, samples_path = NULL, vcf_path,
 
 
   print("We transform the sparse matrices to matrices, so we can calculate the fraction.")
+  
+  # For test purposes
   #coverage_matrix_total_ori <- coverage_matrix_total
   #ref_matrix_total_ori <- ref_matrix_total
   #consensus_matrix_total_ori <- consensus_matrix_total
   #coverage_matrix_total <- coverage_matrix_total_ori
   #ref_matrix_total <- ref_matrix_total_ori
   #consensus_matrix_total <- consensus_matrix_total_ori
-
   #coverage_matrix_total <- coverage_matrix_total[1:5000,1:5000]
   #ref_matrix_total <- ref_matrix_total[1:5000,1:5000]
   #consensus_matrix_total <- coverage_matrix_total[1:5000,1:5000]
+
+  # Using sparse matrices
   #colnames(coverage_matrix_total) <- make.names(colnames(coverage_matrix_total))
   #rownames(coverage_matrix_total) <- make.names(rownames(coverage_matrix_total))
   #colnames(ref_matrix_total) <- make.names(colnames(ref_matrix_total))
   #rownames(ref_matrix_total) <- make.names(rownames(ref_matrix_total))
   #colnames(consensus_matrix_total) <- make.names(colnames(consensus_matrix_total))
   #rownames(consensus_matrix_total) <- make.names(rownames(consensus_matrix_total))
-  coverage_matrix_total                             <- as.matrix(coverage_matrix_total)
-  ref_matrix_total                                  <- as.matrix(ref_matrix_total)
-  consensus_matrix_total                            <- as.matrix(consensus_matrix_total)
-  reads_total                                       <- coverage_matrix_total + ref_matrix_total
-  fraction_total                                    <- coverage_matrix_total / reads_total
-  fraction_total[is.na(fraction_total)] <- 0
   #fraction_total <- sdiv(X = coverage_matrix_total, Y = reads_total,
   #                       names = dimnames(coverage_matrix_total))
+  
+  # Using matrix
+  #coverage_matrix_total                             <- as.matrix(coverage_matrix_total)
+  #ref_matrix_total                                  <- as.matrix(ref_matrix_total)
+  #consensus_matrix_total                            <- as.matrix(consensus_matrix_total)
+  #reads_total                                       <- coverage_matrix_total + ref_matrix_total
+  #fraction_total                                    <- coverage_matrix_total / reads_total
+  #fraction_total[is.na(fraction_total)] <- 0
+  #rm(coverage_matrix_total, ref_matrix_total)
+  #gc()
+
+  # Using big.matrix
+  coverage_matrix_total                             <- as.big.matrix(as.matrix(coverage_matrix_total))
+  ref_matrix_total                                  <- as.big.matrix(as.matrix(ref_matrix_total))
+  consensus_matrix_total                            <- as.big.matrix(as.matrix(consensus_matrix_total))
+  reads_total                                       <- coverage_matrix_total[,] + ref_matrix_total[,]
+  fraction_total                                    <- coverage_matrix_total[,] / reads_total[,]
+  fraction_total[is.na(fraction_total)] <- 0
   rm(coverage_matrix_total, ref_matrix_total)
   gc()
 
