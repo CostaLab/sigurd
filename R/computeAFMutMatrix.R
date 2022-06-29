@@ -3,7 +3,7 @@
 #'@param SE SummarizedExperiment object.
 #'@export
 computeAFMutMatrix <- function(SE, chromosome_prefix = "chrM"){
-  cov <- assays(SE)[["coverage"]] #+ 0.000001
+  cov <- assays(SE)[["coverage"]] + 0.000001
   ref_allele <- as.character(rowRanges(SE)$refAllele)
 
   getMutMatrix <- function(letter){
@@ -13,5 +13,5 @@ computeAFMutMatrix <- function(SE, chromosome_prefix = "chrM"){
     return(mat[toupper(ref_allele) != letter,])
   }
 
-  rbind(getMutMatrix("A"), getMutMatrix("C"), getMutMatrix("G"), getMutMatrix("T"))
+  rbind(as.matrix(getMutMatrix("A")), as.matrix(getMutMatrix("C")), as.matrix(getMutMatrix("G")), as.matrix(getMutMatrix("T")))
 }
