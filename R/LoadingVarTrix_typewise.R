@@ -10,33 +10,39 @@
 #'@param type_use The type of input. Has to be one of: scRNAseq_Somatic, Amplicon_Somatic, scRNAseq_MT, Amplicon_MT.
 #'@param min_reads The minimum number of reads we want. Otherwise we treat this as a NoCall.
 #'@export
-LoadingVarTrix_typewise <- function(samples_file, samples_path = NULL, vcf_path, patient, type_use = "scRNAseq_Somatic", min_reads = 3){
-  if(!is.null(samples_path)){
-    samples <- list.files(samples_path)
-    samples <- grep(patient, samples, value = TRUE)
-  
-    barcodes_files <- list.files(path = samples_path, pattern = "barcodes")
-    barcodes_files <- unlist(lapply(paste0(samples_path, samples, "/"), list.files, pattern = "barcodes", full.names = TRUE))
-  
-    samples_file <- data.frame(patient = patient, sample = samples, input_folder = samples_path, cells = barcodes_files)
+LoadingVarTrix_typewise <- function(samples_file, samples_path = NULL, barcodes_path = NULL, snp_path = NULL, vcf_path, patient, sample = NULL, type_use = "scRNAseq_Somatic", min_reads = 3){
+  if(all(!is.null(samples_path), !is.null(barcodes_path), !is.null(sample), !is.null(snp_path))){
+    #samples <- list.files(samples_path)
+    #samples <- grep(patient, samples, value = TRUE)
+    
+    #barcodes_files <- list.files(path = samples_path, pattern = "barcodes")
+    #barcodes_files <- unlist(lapply(paste0(samples_path, samples, "/"), list.files, pattern = "barcodes", full.names = TRUE))
+    
+    #samples_file <- data.frame(patient = patient, sample = samples, input_folder = samples_path, cells = barcodes_files)
+    samples_file <- data.frame(patient = patient, sample = sample, input_folder = samples_path, cells = barcodes_path)
+    samples <- samples_file$sample
   } else{
     print("We read in the samples file.")
     samples_file <- read.csv(samples_file, stringsAsFactors = FALSE)
-
-
+    
+    
     print("We subset to the patient of interest.")
     samples_file <- samples_file[grep("vartrix", samples_file$source, ignore.case = TRUE),]
     samples_file <- samples_file[samples_file$patient == patient,]
     samples_file <- samples_file[samples_file$type == type_use,]
-
-
+    
+    
     print("We get the different samples.")
     samples <- samples_file$sample
   }
 
 
   print("We load the SNV files.")
-  path_snps <- paste0(samples_file$input_folder, "/SNV.loci.txt")
+  if(!is.null(snp_path)){
+    path_snps <- snp_path
+  } else{
+    path_snps <- paste0(samples_file$input_folder, "/SNV.loci.txt")
+  }
 
 
   print("We read the variants.")
@@ -131,6 +137,7 @@ LoadingVarTrix_typewise <- function(samples_file, samples_path = NULL, vcf_path,
 
 
   print("We transform the sparse matrices to matrices, so we can calculate the fraction.")
+  # For test purposes
   #coverage_matrix_total_ori <- coverage_matrix_total
   #ref_matrix_total_ori <- ref_matrix_total
   #consensus_matrix_total_ori <- consensus_matrix_total

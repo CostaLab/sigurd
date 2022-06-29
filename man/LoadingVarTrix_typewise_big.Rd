@@ -7,8 +7,11 @@
 LoadingVarTrix_typewise_big(
   samples_file,
   samples_path = NULL,
+  barcodes_path = NULL,
+  snp_path = NULL,
   vcf_path,
   patient,
+  sample = NULL,
   type_use = "scRNAseq_Somatic",
   min_reads = 3
 )
@@ -16,7 +19,9 @@ LoadingVarTrix_typewise_big(
 \arguments{
 \item{samples_file}{Path to the csv file with the samples to be loaded.}
 
-\item{samples_path}{Path to the input folder. Must include a barcodes file.}
+\item{samples_path}{Path to the input folder.}
+
+\item{barcodes_path}{Path to the barcodes file.}
 
 \item{vcf_path}{Path to the VCF file with the variants.}
 
