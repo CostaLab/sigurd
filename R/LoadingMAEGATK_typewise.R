@@ -48,7 +48,7 @@ LoadingMAEGATK_typewise <- function(samples_file, samples_path = NULL, patient, 
 
   print("We get the allele frequency.")
   fraction <- computeAFMutMatrix(se_merged, chromosome_prefix = chromosome_prefix)
-  fraction <- data.matrix(fraction)
+  #fraction <- data.matrix(fraction)
   #fraction <- fraction[!rownames(fraction) %in% paste0(chromosome_prefix, "_", c("3107_N_A", "3107_N_C", "3107_N_G", "3107_N_T")),]
 
 

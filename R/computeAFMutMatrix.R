@@ -13,5 +13,5 @@ computeAFMutMatrix <- function(SE, chromosome_prefix = "chrM"){
     return(mat[toupper(ref_allele) != letter,])
   }
 
-  rbind(getMutMatrix("A"), getMutMatrix("C"), getMutMatrix("G"), getMutMatrix("T"))
+  rbind(as.matrix(getMutMatrix("A")), as.matrix(getMutMatrix("C")), as.matrix(getMutMatrix("G")), as.matrix(getMutMatrix("T")))
 }
