@@ -10,15 +10,17 @@
 #'@param type_use The type of input. Has to be one of: scRNAseq_Somatic, Amplicon_Somatic, scRNAseq_MT, Amplicon_MT.
 #'@param min_reads The minimum number of reads we want. Otherwise we treat this as a NoCall.
 #'@export
-LoadingVarTrix_typewise <- function(samples_file, samples_path = NULL, vcf_path, patient, type_use = "scRNAseq_Somatic", min_reads = 3){
+LoadingVarTrix_typewise <- function(samples_file, samples_path = NULL, barcodes_path = NULL, snp_path = NULL, vcf_path, patient, sample = NULL, type_use = "scRNAseq_Somatic", min_reads = 3){
   if(!is.null(samples_path)){
-    samples <- list.files(samples_path)
-    samples <- grep(patient, samples, value = TRUE)
+    #samples <- list.files(samples_path)
+    #samples <- grep(patient, samples, value = TRUE)
   
-    barcodes_files <- list.files(path = samples_path, pattern = "barcodes")
-    barcodes_files <- unlist(lapply(paste0(samples_path, samples, "/"), list.files, pattern = "barcodes", full.names = TRUE))
+    #barcodes_files <- list.files(path = samples_path, pattern = "barcodes")
+    #barcodes_files <- unlist(lapply(paste0(samples_path, samples, "/"), list.files, pattern = "barcodes", full.names = TRUE))
   
-    samples_file <- data.frame(patient = patient, sample = samples, input_folder = samples_path, cells = barcodes_files)
+    #samples_file <- data.frame(patient = patient, sample = samples, input_folder = samples_path, cells = barcodes_files)
+    samples_file <- data.frame(patient = patient, sample = sample, input_folder = samples_path, cells = barcodes_path)
+    samples <- samples_file$sample
   } else{
     print("We read in the samples file.")
     samples_file <- read.csv(samples_file, stringsAsFactors = FALSE)
