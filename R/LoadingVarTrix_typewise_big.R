@@ -14,12 +14,6 @@
 #'@param min_reads The minimum number of reads we want. Otherwise we treat this as a NoCall.
 #'@export
 LoadingVarTrix_typewise_big <- function(samples_file, samples_path = NULL, barcodes_path = NULL, snp_path = NULL, vcf_path, patient, sample = NULL, type_use = "scRNAseq_Somatic", min_reads = 3){
-  #library(bigmemory)
-  #samples_file <- "~/labcluster/MPN/AdamBenabid/JAK2_AmpliconLibrary/SpecificScripts/SigurdInput.csv"
-  #samples_path <- NULL
-  #vcf_path <- "~/labcluster_data/scRNA/SingleCell_Variant_Correlation_Test/VariantsOfInterest/ALFA_subset_MAF2_prefix.vcf"
-  #patient <- "AB5_UMIs"
-  #type_use <- "Amplicon_Somatic"
   if(all(!is.null(samples_path), !is.null(barcodes_path), !is.null(sample), !is.null(snp_path))){
     #samples <- list.files(samples_path)
     #samples <- grep(patient, samples, value = TRUE)

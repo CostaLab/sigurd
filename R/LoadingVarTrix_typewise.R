@@ -18,6 +18,7 @@ LoadingVarTrix_typewise <- function(samples_file, samples_path = NULL, barcodes_
     #barcodes_files <- list.files(path = samples_path, pattern = "barcodes")
     #barcodes_files <- unlist(lapply(paste0(samples_path, samples, "/"), list.files, pattern = "barcodes", full.names = TRUE))
     
+
     #samples_file <- data.frame(patient = patient, sample = samples, input_folder = samples_path, cells = barcodes_files)
     samples_file <- data.frame(patient = patient, sample = sample, input_folder = samples_path, cells = barcodes_path)
     samples <- samples_file$sample

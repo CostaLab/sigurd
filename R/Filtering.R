@@ -48,9 +48,9 @@ Filtering <- function(se, blacklisted_barcodes_path = NULL, fraction_threshold =
     se <- se[,seu_cells]
   }
 
-  print("We remove all variants for alternative transcripts.")
-  keep_variants <- !grepl("_ENST", rownames(se))
-  se <- se[keep_variants,]
+  #print("We remove all variants for alternative transcripts.")
+  #keep_variants <- !grepl("_ENST", rownames(se))
+  #se <- se[keep_variants,]
 
 
   if(!is.null(fraction_threshold)){
