@@ -11,7 +11,7 @@
 #'@param min_reads The minimum number of reads we want. Otherwise we treat this as a NoCall.
 #'@export
 LoadingVarTrix_typewise <- function(samples_file, samples_path = NULL, barcodes_path = NULL, snp_path = NULL, vcf_path, patient, sample = NULL, type_use = "scRNAseq_Somatic", min_reads = 3){
-  if(!is.null(samples_path)){
+  if(all(!is.null(samples_path), !is.null(barcodes_path), !is.null(sample), !is.null(snp_path))){
     #samples <- list.files(samples_path)
     #samples <- grep(patient, samples, value = TRUE)
   
@@ -38,7 +38,11 @@ LoadingVarTrix_typewise <- function(samples_file, samples_path = NULL, barcodes_
 
 
   print("We load the SNV files.")
-  path_snps <- paste0(samples_file$input_folder, "/SNV.loci.txt")
+  if(!is.null(snp_path)){
+    path_snps <- snp_path
+  } else{
+    path_snps <- paste0(samples_file$input_folder, "/SNV.loci.txt")
+  }
 
 
   print("We read the variants.")
