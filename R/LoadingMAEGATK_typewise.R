@@ -6,7 +6,8 @@
 #'@param patient The patient you want to load.
 #'@param chromosome_prefix The prefix you want use. Default: "chrM"
 #'@export
-LoadingMAEGATK_typewise <- function(samples_file, samples_path = NULL, patient, type_use = "scRNAseq_MT", chromosome_prefix = "chrM"){
+LoadingMAEGATK_typewise <- function(samples_file, samples_path = NULL, patient, type_use = "scRNAseq_MT", chromosome_prefix = "chrM",
+                                    min_cells = 2){
   if(!is.null(samples_path)){
     samples <- list.files(samples_path)
     samples <- grep(patient, samples, value = TRUE)
@@ -52,7 +53,7 @@ LoadingMAEGATK_typewise <- function(samples_file, samples_path = NULL, patient, 
   #fraction <- fraction[!rownames(fraction) %in% paste0(chromosome_prefix, "_", c("3107_N_A", "3107_N_C", "3107_N_G", "3107_N_T")),]
 
 
-  print("We calculate the coverage information.")
+  print("We get the coverage information.")
   coverage <- CalculateCoverage(SE = se_merged, chromosome_prefix = chromosome_prefix)
   coverage <- coverage[match(rownames(fraction), rownames(coverage)),]
   
@@ -64,13 +65,14 @@ LoadingMAEGATK_typewise <- function(samples_file, samples_path = NULL, patient, 
 
 
   print("We perform some filtering to reduce the memory needed.")
+  print(paste0("We remove variants, which are not detected in at least ", min_cells, "."))
   keep_variants <- rowSums(consensus >= 2)
-  keep_variants <- keep_variants >= 2
+  keep_variants <- keep_variants >= min_cells
   consensus <- consensus[keep_variants,]
   coverage <- coverage[keep_variants,]
   fraction <- fraction[keep_variants,]
 
-  # We remove cells that are always NoCall.
+  print("We remove cells that are always NoCall.")
   consensus_test <- consensus > 0
   keep_cells <- colSums(consensus_test) > 0
   consensus <- consensus[,keep_cells]
