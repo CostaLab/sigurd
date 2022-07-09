@@ -112,6 +112,14 @@ LoadingVarTrix_typewise_big <- function(samples_file, samples_path = NULL, barco
   gc()
 
 
+  # We check if number of rows of the matrices are the same as the length of the new names.
+  if(all(nrow(coverage_matrix_total) != length(new_names))){
+    input_rows <- nrow(coverage_matrix_total)
+    new_names_length <- length(new_names)
+    stop(paste0("Error: you have ", input_rows, " variants in you matrix and ", new_names_length, " actual variant names."))
+  }
+
+
   rownames(coverage_matrix_total)  <- new_names
   rownames(ref_matrix_total)       <- new_names
   rownames(consensus_matrix_total) <- new_names
