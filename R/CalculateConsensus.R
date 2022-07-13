@@ -43,7 +43,7 @@ CalculateConsensus <- function(SE, chromosome_prefix = "chrM"){
   
   # Now, we check the consensus value for all positions with the same reference base.
   # Then we can rbind these matrices again and return one large consensus matrix in the end.
-  consensus_a <- lapply(c("C", "G", "T"), get_consensus, ref_base = "A", input_matrix = as.matrix(variants_matrix_ls[[1]]))
+  consensus_a <- lapply(c("C", "G", "T"), get_consensus, ref_base = "A", input_matrix = as.big.matrix(as.matrix(variants_matrix_ls[[1]])))
   consensus_a <- do.call("rbind", consensus_a)
   consensus_c <- lapply(c("A", "G", "T"), get_consensus, ref_base = "C", input_matrix = as.matrix(variants_matrix_ls[[2]]))
   consensus_c <- do.call("rbind", consensus_c)
