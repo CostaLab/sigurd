@@ -65,7 +65,7 @@ LoadingMAEGATK_typewise <- function(samples_file, samples_path = NULL, patient, 
 
 
   print("We perform some filtering to reduce the memory needed.")
-  print(paste0("We remove variants, which are not detected in at least ", min_cells, "."))
+  print(paste0("We remove variants, which are not detected in at least ", min_cells, " cells ."))
   keep_variants <- rowSums(consensus >= 2)
   keep_variants <- keep_variants >= min_cells
   consensus <- consensus[keep_variants,]

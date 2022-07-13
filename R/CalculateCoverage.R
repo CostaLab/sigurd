@@ -23,6 +23,5 @@ CalculateCoverage <- function(SE, chromosome_prefix = "chrM"){
   coverage_T <- as.matrix(coverage_T)
 
   coverage <- rbind(coverage_A, coverage_C, coverage_G, coverage_T)
-  #coverage <- as.matrix(coverage)
   return(coverage)
 }

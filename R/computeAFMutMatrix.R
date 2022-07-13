@@ -1,9 +1,10 @@
 #'Calculate the allele frequency per variant.
+#'This function originally written by 
 #'@import SummarizedExperiment
 #'@param SE SummarizedExperiment object.
 #'@export
 computeAFMutMatrix <- function(SE, chromosome_prefix = "chrM"){
-  cov <- assays(SE)[["coverage"]] #+ 0.000001
+  cov <- assays(SE)[["coverage"]] + 0.000001
   ref_allele <- as.character(rowRanges(SE)$refAllele)
 
   getMutMatrix <- function(letter){
@@ -13,5 +14,10 @@ computeAFMutMatrix <- function(SE, chromosome_prefix = "chrM"){
     return(mat[toupper(ref_allele) != letter,])
   }
 
-  rbind(as.matrix(getMutMatrix("A")), as.matrix(getMutMatrix("C")), as.matrix(getMutMatrix("G")), as.matrix(getMutMatrix("T")))
+  A_matrix <- as.matrix(getMutMatrix("A"))
+  C_matrix <- as.matrix(getMutMatrix("C"))
+  G_matrix <- as.matrix(getMutMatrix("G"))
+  T_matrix <- as.matrix(getMutMatrix("T"))
+  result <- rbind(A_matrix, C_matrix, G_matrix, T_matrix)
+  return(result)
 }

@@ -9,7 +9,8 @@ LoadingMAEGATK_typewise(
   samples_path = NULL,
   patient,
   type_use = "scRNAseq_MT",
-  chromosome_prefix = "chrM"
+  chromosome_prefix = "chrM",
+  min_cells = 2
 )
 }
 \arguments{

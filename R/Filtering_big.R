@@ -19,6 +19,7 @@
 #'@param blacklisted_barcodes_path Barcodes you want to remove. Path to a file with one column without header.
 #'@param fraction_threshold Variants with an VAF below this threshold are set to 0. Numeric.
 #'@param min_cells_per_variant In how many cells should a variant be present to be included? Numeric. Default = 2.
+#'@param min_variants_per_cell How many variants should be covered in a cell have to be included? Default = 1.
 #'@param path_seurat Path to a Seurat object. Cells not present in the object will be removed.
 #'@examples
 #' \dontrun{
@@ -75,9 +76,9 @@ Filtering_big <- function(se, blacklisted_barcodes_path = NULL, fraction_thresho
   se <- se[keep_variants,]
 
 
-  print("We remove all cells that are not >= 1 (Ref) for at least 1 variant.")
-  consensus_test <- assays(se)$consensus > 0
-  keep_cells <- colSums(consensus_test) > 0
+  print(paste0("We remove all cells that are not >= 1 (Ref) for at least ", min_variants_per_cell, " variant."))
+  consensus_test <- assays(se)$consensus >= 1
+  keep_cells <- colSums(consensus_test) > min_variants_per_cell
   se <- se[,keep_cells]
 
   print("We change the matrices back to big matrices.")
