@@ -8,9 +8,10 @@
 #'@param vcf_path Path to the VCF file with the variants.
 #'@param patient The patient you want to load.
 #'@param type_use The type of input. Has to be one of: scRNAseq_Somatic, Amplicon_Somatic, scRNAseq_MT, Amplicon_MT.
-#'@param min_reads The minimum number of reads we want. Otherwise we treat this as a NoCall.
+#'@param min_reads The minimum number of reads we want. Otherwise we treat this as a NoCall. Not yet implemented.
+#'@param min_cells The minimum number of cells for a variant. Otherwise, we will remove a variant. 
 #'@export
-LoadingVarTrix_typewise <- function(samples_file, samples_path = NULL, barcodes_path = NULL, snp_path = NULL, vcf_path, patient, sample = NULL, type_use = "scRNAseq_Somatic", min_reads = 3){
+LoadingVarTrix_typewise <- function(samples_file, samples_path = NULL, barcodes_path = NULL, snp_path = NULL, vcf_path, patient, sample = NULL, type_use = "scRNAseq_Somatic", min_reads = 3, min_cells = 2){
   if(all(!is.null(samples_path), !is.null(barcodes_path), !is.null(sample), !is.null(snp_path))){
     #samples <- list.files(samples_path)
     #samples <- grep(patient, samples, value = TRUE)
@@ -122,15 +123,15 @@ LoadingVarTrix_typewise <- function(samples_file, samples_path = NULL, barcodes_
   rownames(consensus_matrix_total) <- new_names
 
 
-  # We remove variants, that are not detected in at least 2 cells.
+  print(paste0("We remove variants, that are not detected in at least ", min_cells, " cells."))
   keep_variants <- rowSums(consensus_matrix_total >= 2)
-  keep_variants <- keep_variants >= 2
+  keep_variants <- keep_variants >= min_cells
   consensus_matrix_total <- consensus_matrix_total[keep_variants,]
   coverage_matrix_total <- coverage_matrix_total[keep_variants,]
   ref_matrix_total <- ref_matrix_total[keep_variants,]
 
 
-  # We remove cells that are always NoCall.
+  print("We remove cells that are always NoCall.")
   consensus_test <- consensus_matrix_total > 0
   keep_cells <- colSums(consensus_test) > 0
   consensus_matrix_total <- consensus_matrix_total[, keep_cells]

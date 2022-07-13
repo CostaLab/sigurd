@@ -10,8 +10,11 @@ scRNAseq information.}
 LoadingVarTrix_typewise(
   samples_file,
   samples_path = NULL,
+  barcodes_path = NULL,
+  snp_path = NULL,
   vcf_path,
   patient,
+  sample = NULL,
   type_use = "scRNAseq_Somatic",
   min_reads = 3
 )
