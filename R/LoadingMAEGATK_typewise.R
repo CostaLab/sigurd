@@ -55,13 +55,17 @@ LoadingMAEGATK_typewise <- function(samples_file, samples_path = NULL, patient, 
 
   print("We get the coverage information.")
   coverage <- CalculateCoverage(SE = se_merged, chromosome_prefix = chromosome_prefix)
-  coverage <- coverage[match(rownames(fraction), rownames(coverage)),]
-  
+  if(!all(rownames(fraction) == rownames(coverage))){
+    coverage <- coverage[match(rownames(fraction), rownames(coverage)),]
+  }
+
 
   print("We calculate the consensus information.")
   consensus <- CalculateConsensus(SE = se_merged, chromosome_prefix = chromosome_prefix)
   # We order the consensus matrix like the coverage matrix.
-  consensus <- consensus[match(rownames(fraction), rownames(consensus)),]
+  if(!all(rownames(fraction) == rownames(consensus))){
+    consensus <- consensus[match(rownames(fraction), rownames(consensus)),]
+  }
 
 
   print("We perform some filtering to reduce the memory needed.")

@@ -31,5 +31,6 @@ computeAFMutMatrix <- function(SE, chromosome_prefix = "chrM"){
   T_matrix <- getMutMatrix("T")
   gc()
   result <- rbind(A_matrix, C_matrix, G_matrix, T_matrix)
+  result <- as.matrix(result)
   return(result)
 }
