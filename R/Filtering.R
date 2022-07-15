@@ -62,8 +62,29 @@ Filtering <- function(se, blacklisted_barcodes_path = NULL, fraction_threshold =
     print("We set consensus values to 1 (Ref) and fraction values to 0.")
     print(paste0("We do not set fractions between ", fraction_threshold, " and 1 to 1."))
     print("This way, we retain the heterozygous information.")
-    assays(se)$consensus[assays(se)$fraction > 0 & assays(se)$fraction < fraction_threshold] <- 1
-    assays(se)$fraction[assays(se)$fraction > 0 & assays(se)$fraction < fraction_threshold] <- 0
+    #consensus_matrix <- as(assays(se)$consensus, "dgCMatrix")
+    #fraction_matrix  <- as(assays(se)$fraction,  "dgCMatrix")
+    # i	= rows,	j = cols, x = values
+    #position_matrix_fraction <- rbind(i = fraction_matrix@i, j = summary(fraction_matrix)$j, x = fraction_matrix@x)
+    #position_matrix_fraction <- position_matrix_fraction[,position_matrix_fraction[3,] > 0 & position_matrix_fraction[3,] < fraction_threshold]
+    #position_matrix_fraction[1,] <- position_matrix_fraction[1,] + 1
+    #position_matrix_fraction[2,] <- position_matrix_fraction[2,] + 1
+
+    #consensus_matrix[position_matrix_fraction[1,], position_matrix_fraction[2,]] <- 1
+    #fraction_matrix[position_matrix_fraction[1,], position_matrix_fraction[2,]] <- 0
+
+
+    consensus_matrix <- as.matrix(assays(se)$consensus)
+    fraction_matrix  <- as.matrix(assays(se)$fraction)
+    consensus_matrix[fraction_matrix > 0 & fraction_matrix < fraction_threshold] <- 1
+    fraction_matrix[fraction_matrix > 0 & fraction_matrix < fraction_threshold] <- 0
+    consensus_matrix <- as(consensus_matrix, "dgCMatrix")
+    fraction_matrix <- as(fraction_matrix, "dgCMatrix")
+    assays(se)$consensus <- consensus_matrix
+    assays(se)$fraction	<- fraction_matrix
+
+    #assays(se)$consensus[assays(se)$fraction > 0 & assays(se)$fraction < fraction_threshold] <- 1
+    #assays(se)$fraction[assays(se)$fraction > 0 & assays(se)$fraction < fraction_threshold] <- 0
   }
 
   print("We remove all the variants that are always NoCall.")

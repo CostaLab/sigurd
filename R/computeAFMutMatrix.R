@@ -20,8 +20,10 @@ computeAFMutMatrix <- function(SE, chromosome_prefix = "chrM"){
     mat[is.na(mat)] <- 0
     rownames(mat) <- names_rows
     mat <- as(mat, "dgCMatrix")
+    #mat <- as.big.matrix(as.matrix(mat))
     return(mat)
   }
+
   A_matrix <- getMutMatrix("A")
   #A_matrix <- as.matrix(A_matrix)
   gc()
