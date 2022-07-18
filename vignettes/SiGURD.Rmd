@@ -2,10 +2,11 @@
 title: "SiGURD vignette"
 author: 
 - name: Martin Grasshoff
-  affilitation: Institute for Computational Genomics,
-               Faculty of Medicine,
-               RWTH Aachen University,
-               Aachen, 52074 Germany
+  affilitation:
+     - Institute for Computational Genomics,
+       Faculty of Medicine,
+       RWTH Aachen University,
+       Aachen, 52074 Germany
 - name: Ivan G. Costa
   affiliation:
      - Institute for Computational Genomics,
@@ -33,7 +34,7 @@ suppressPackageStartupMessages(require(VariantAnnotation))
 # Your input file.
 
 ```{r InputFile, warning = FALSE, message = FALSE, output = FALSE}
-sample_path <- system.file("extdata", "Input_Example.csv", package = "sigurd")
+sample_path <- system.file("extdata", "Input_Example_local.csv", package = "sigurd")
 sample_file <- read.csv(sample_path)
 print(sample_file)
 
@@ -72,14 +73,14 @@ Since the MT results are denser, they take longer to load.
 
 ```{r LoadData, warning = FALSE, message = FALSE, output = FALSE}
 
-ET_83497_scRNAseq_Somatic <- LoadingVarTrix_typewise(samples_file = sample_path, vcf_path = vcf_path, patient = "ET_83497", type_use = "scRNAseq_Somatic")
+Sample1_scRNAseq_Somatic <- LoadingVarTrix_typewise(samples_file = sample_path, vcf_path = vcf_path, patient = "Sample1", type_use = "scRNAseq_Somatic")
 
-ET_83497_scRNAseq_MT <- LoadingVarTrix_typewise(samples_file = sample_path, vcf_path = vcf_path_mt, patient = "ET_83497", type_use = "scRNAseq_MT")
+Sample1_scRNAseq_MT <- LoadingVarTrix_typewise(samples_file = sample_path, vcf_path = vcf_path_mt, patient = "Sample1", type_use = "scRNAseq_MT")
 
-ET_83497_combined <- CombineSEobjects(se_somatic = ET_83497_scRNAseq_Somatic, se_MT = ET_83497_scRNAseq_MT, suffixes = c("_somatic", "_MT"))
-rm(ET_83497_scRNAseq_Somatic, ET_83497_scRNAseq_MT)
-ET_83497_combined <- Filtering(ET_83497_combined, min_cells_per_variant = 2, fraction_threshold = 0.05)
-ET_83497_combined <- VariantBurden(ET_83497_combined)
+Sample1_combined <- CombineSEobjects(se_somatic = Sample1_scRNAseq_Somatic, se_MT = Sample1_scRNAseq_MT, suffixes = c("_somatic", "_MT"))
+rm(Sample1_scRNAseq_Somatic, Sample1_scRNAseq_MT)
+Sample1_combined <- Filtering(Sample1_combined, min_cells_per_variant = 2, fraction_threshold = 0.05)
+Sample1_combined <- VariantBurden(Sample1_combined)
 
 ```
 
@@ -92,8 +93,8 @@ https://www.nature.com/articles/s41587-022-01210-8
 The heatmap needs some time to plot, since the cells are clustered. 
 
 ```{r VariantsOfInterest, warning = FALSE, message = FALSE, output = FALSE}
-voi_ch <- VariantQuantileThresholding(SE = ET_83497_combined, min_coverage = 2, quantiles = c(0.1, 0.9), thresholds = c(0.1, 0.9))
-hm <- HeatmapVoi(SE = ET_83497_combined, voi = voi_ch)
+voi_ch <- VariantQuantileThresholding(SE = Sample1_combined, min_coverage = 2, quantiles = c(0.1, 0.9), thresholds = c(0.1, 0.9))
+hm <- HeatmapVoi(SE = Sample1_combined, voi = voi_ch)
 print(hm)
 ```
 
@@ -105,12 +106,11 @@ Since the possible number of tests/correlations is quite large, you can use mult
 
 
 ```{r VariantAssociation, warning = FALSE, message = FALSE, output = FALSE}
-ET_83497_split_rows <- RowWiseSplit(ET_83497_combined, remove_nocalls = FALSE)
+Sample1_split_rows <- RowWiseSplit(Sample1_combined, remove_nocalls = FALSE)
 
-results_fishertest  <- VariantWiseFisherTest(ET_83497_split_rows, n_cores = 1)
-results_correlation <- VariantWiseCorrelation(ET_83497_split_rows, n_cores = 1)
-rm(ET_83497_split_rows)
+results_fishertest  <- VariantWiseFisherTest(Sample1_split_rows, n_cores = 8)
+rm(Sample1_split_rows)
 
-variant_association_heatmap <- VariantFisherTestHeatmap(results_fishertest, patient = "ET_83497", min_alt_cells = 3)
+variant_association_heatmap <- VariantFisherTestHeatmap(results_fishertest, patient = "Sample1", min_alt_cells = 3)
 print(variant_association_heatmap)
 ```
