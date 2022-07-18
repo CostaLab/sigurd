@@ -74,6 +74,7 @@ Filtering <- function(se, blacklisted_barcodes_path = NULL, fraction_threshold =
     #fraction_matrix[position_matrix_fraction[1,], position_matrix_fraction[2,]] <- 0
 
 
+    # Filtering using a matrix step.
     consensus_matrix <- as.matrix(assays(se)$consensus)
     fraction_matrix  <- as.matrix(assays(se)$fraction)
     consensus_matrix[fraction_matrix > 0 & fraction_matrix < fraction_threshold] <- 1
@@ -82,6 +83,19 @@ Filtering <- function(se, blacklisted_barcodes_path = NULL, fraction_threshold =
     fraction_matrix <- as(fraction_matrix, "dgCMatrix")
     assays(se)$consensus <- consensus_matrix
     assays(se)$fraction	<- fraction_matrix
+
+
+    # Filtering using sparse matrices.
+    consensus_matrix <- assays(se)$consensus
+    fraction_matrix <- assays(se)$fraction
+    position_matrix <- summary(fraction_matrix)
+    position_matrix <- subset(position_matrix, x > 0 & x < 0.05)
+    ij <- as.matrix(position_matrix[, 1:2])
+    consensus_matrix[ij] <- 1
+    fraction_matrix[ij] <- 0
+    assays(se)$consensus <- consensus_matrix
+    assays(se)$fraction <- fraction_matrix
+
 
     #assays(se)$consensus[assays(se)$fraction > 0 & assays(se)$fraction < fraction_threshold] <- 1
     #assays(se)$fraction[assays(se)$fraction > 0 & assays(se)$fraction < fraction_threshold] <- 0
