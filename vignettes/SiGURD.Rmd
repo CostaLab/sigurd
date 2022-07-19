@@ -28,7 +28,7 @@ suppressPackageStartupMessages(require(VariantAnnotation))
 
 **R version**: `r R.version.string`
 
-**Package version**: `r packageVersion("CrossTalkeR")`
+**Package version**: `r packageVersion("sigurd")`
 
 
 # Your input file.
