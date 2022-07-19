@@ -13,7 +13,8 @@ LoadingVarTrix_typewise_big(
   patient,
   sample = NULL,
   type_use = "scRNAseq_Somatic",
-  min_reads = 3
+  min_reads = 3,
+  min_cells = 2
 )
 }
 \arguments{
@@ -29,7 +30,9 @@ LoadingVarTrix_typewise_big(
 
 \item{type_use}{The type of input. Has to be one of: scRNAseq_Somatic, Amplicon_Somatic, scRNAseq_MT, Amplicon_MT.}
 
-\item{min_reads}{The minimum number of reads we want. Otherwise we treat this as a NoCall.}
+\item{min_reads}{The minimum number of reads we want. Otherwise we treat this as a NoCall. Not yet implemented.}
+
+\item{min_cells}{The minimum number of cells for a variant. Otherwise, we will remove a variant.}
 }
 \description{
 When we load all the different types of results (scRNAseq/amplicon and MT/amplicon),

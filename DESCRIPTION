@@ -1,7 +1,7 @@
 Package: sigurd
 Type: Package
 Title: Single cell Genotyping Using RNA Data
-Version: 0.5.0
+Version: 0.1.0
 Author: Martin Grasshoff
 Maintainer: Martin Grasshoff <mgrasshoff@ukaachen.de>
 Description: Using single cell genotype data, the cells are annotated and analysed.

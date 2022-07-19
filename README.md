@@ -33,7 +33,7 @@ The sample is currently located on the cluster.
 
 ```
 
-# Current Features v0.5.0
+# Current Features v0.1.0
 
 - Loading data from VarTrix and MAEGATK.
 - Transforming the data to be compatible for joint analysis.

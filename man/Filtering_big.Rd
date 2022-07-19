@@ -22,6 +22,8 @@ Filtering_big(
 \item{path_seurat}{Path to a Seurat object. Cells not present in the object will be removed.}
 
 \item{min_cells_per_variant}{In how many cells should a variant be present to be included? Numeric. Default = 2.}
+
+\item{min_variants_per_cell}{How many variants should be covered in a cell have to be included? Default = 1.}
 }
 \description{
 We filter a SummarizedExperiment object to exclude variants and cells.

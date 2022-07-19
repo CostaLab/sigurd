@@ -9,7 +9,7 @@ CalculateConsensus <- function(SE, chromosome_prefix = "chrM"){
   # 2 Alternative = only alternative reads of one variant.
   # 3 Both        = reads for reference and one or more variants.
   
-  # We get the read information per position.
+  print("We get the read information per position.")
   letter <- c("A", "C", "G", "T")
   ref_allele <- as.character(rowRanges(SE)$refAllele)
   reads <- lapply(letter, getReadMatrix, SE = SE, chromosome_prefix = chromosome_prefix)
@@ -21,14 +21,14 @@ CalculateConsensus <- function(SE, chromosome_prefix = "chrM"){
   reads[[2]][reads[[2]] > 0] <- 4
   reads[[3]][reads[[3]] > 0] <- 2
   reads[[4]][reads[[4]] > 0] <- 1
-  # We add the values together.
+  print("We add the values together.")
   # The row names are the names from the first matrix and not accurate any more.
   # The only relevant parts are the position and the reference base.
   variants_matrix <- reads[[1]] + reads[[2]] + reads[[3]] + reads[[4]]
   rm(reads)
   gc()
   
-  # We get the position according to their reference base.
+  print("We get the position according to their reference base.")
   # Now, we have a list for each set of position with the same base reference.
   variants_matrix_ls <- list(A = variants_matrix[grep("_A_", rownames(variants_matrix), value = TRUE),],
                              C = variants_matrix[grep("_C_", rownames(variants_matrix), value = TRUE),],
@@ -41,18 +41,24 @@ CalculateConsensus <- function(SE, chromosome_prefix = "chrM"){
   rm(variants_matrix)
   gc()
   
-  # Now, we check the consensus value for all positions with the same reference base.
+  print("Now, we check the consensus value for all positions with the same reference base.")
   # Then we can rbind these matrices again and return one large consensus matrix in the end.
-  consensus_a <- lapply(c("C", "G", "T"), get_consensus, ref_base = "A", input_matrix = as.big.matrix(as.matrix(variants_matrix_ls[[1]])))
+  print("A")
+  consensus_a <- lapply(c("C", "G", "T"), get_consensus, ref_base = "A", input_matrix = as.matrix(variants_matrix_ls[[1]]))
   consensus_a <- do.call("rbind", consensus_a)
+  print("C")
   consensus_c <- lapply(c("A", "G", "T"), get_consensus, ref_base = "C", input_matrix = as.matrix(variants_matrix_ls[[2]]))
   consensus_c <- do.call("rbind", consensus_c)
+  print("G")
   consensus_g <- lapply(c("A", "C", "T"), get_consensus, ref_base = "G", input_matrix = as.matrix(variants_matrix_ls[[3]]))
   consensus_g <- do.call("rbind", consensus_g)
+  print("T")
   consensus_t <- lapply(c("A", "C", "G"), get_consensus, ref_base = "T", input_matrix = as.matrix(variants_matrix_ls[[4]]))
   consensus_t <- do.call("rbind", consensus_t)
+  print("N")
   consensus_n <- lapply(c("A", "C", "G", "T"), get_consensus, ref_base = "N", input_matrix = variants_matrix_ls[[5]])
   consensus_n <- do.call("rbind", consensus_n)
+  print("Binding the matrices.")
   consensus <- rbind(consensus_a, consensus_c, consensus_g, consensus_t, consensus_n)
   return(consensus)
 }

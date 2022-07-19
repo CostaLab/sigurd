@@ -180,7 +180,7 @@ LoadingVarTrix_typewise <- function(samples_file, samples_path = NULL, barcodes_
   # As meta data we add a data frame showing the cell id, the associated patient and the sample.
   coverage_depth_per_cell <- colMeans(reads_total)
   meta_data <- data.frame(Cell = colnames(consensus_matrix_total), Type = type_use, AverageCoverage = coverage_depth_per_cell)
-  se_merged <- SummarizedExperiment(assays = list(consensus = consensus_matrix_total, fraction = fraction_total, coverage = reads_total),
+  se_merged <- SummarizedExperiment(assays = list(consensus = as(consensus_matrix_total, "dgCMatrix"), fraction = as(fraction_total, "dgCMatrix"), coverage = as(reads_total, "dgCMatrix")),
                                     colData = meta_data)
   return(se_merged)
 }

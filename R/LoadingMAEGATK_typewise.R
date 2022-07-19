@@ -26,6 +26,11 @@ LoadingMAEGATK_typewise <- function(samples_file, samples_path = NULL, patient, 
   }
 
 
+  print("We read in the cell barcodes output by CellRanger as a list.")
+  barcodes <- lapply(samples_file$cells, read.table)
+  names(barcodes) <- samples
+
+
   print("We load the MAEGATK output files.")
   se_ls <- list()
   for(i in 1:nrow(samples_file)){
@@ -38,6 +43,9 @@ LoadingMAEGATK_typewise <- function(samples_file, samples_path = NULL, patient, 
     final_output_file <- grep(paste0("maegtk.rds|maegatk.rds|mgatk.rds|", sample_use, ".rds"), final_output_file, value = TRUE)
     se_ls[[sample_use]] <- load_object(final_output_file)
     colnames(se_ls[[sample_use]]) <- paste0(sample_use, "_", colnames(se_ls[[sample_use]]))
+    barcodes_use <- paste0(sample_use, "_", barcodes[[sample_use]][,1])
+    barcodes_use <- barcodes_use[barcodes_use %in% colnames(se_ls[[sample_use]])]
+    se_ls[[sample_use]] <- se_ls[[sample_use]][,barcodes_use]
   }
 
 
@@ -49,19 +57,21 @@ LoadingMAEGATK_typewise <- function(samples_file, samples_path = NULL, patient, 
 
   print("We get the allele frequency.")
   fraction <- computeAFMutMatrix(se_merged, chromosome_prefix = chromosome_prefix)
-  #fraction <- data.matrix(fraction)
-  #fraction <- fraction[!rownames(fraction) %in% paste0(chromosome_prefix, "_", c("3107_N_A", "3107_N_C", "3107_N_G", "3107_N_T")),]
 
 
   print("We get the coverage information.")
   coverage <- CalculateCoverage(SE = se_merged, chromosome_prefix = chromosome_prefix)
-  coverage <- coverage[match(rownames(fraction), rownames(coverage)),]
-  
+  if(!all(rownames(fraction) == rownames(coverage))){
+    coverage <- coverage[match(rownames(fraction), rownames(coverage)),]
+  }
+
 
   print("We calculate the consensus information.")
   consensus <- CalculateConsensus(SE = se_merged, chromosome_prefix = chromosome_prefix)
   # We order the consensus matrix like the coverage matrix.
-  consensus <- consensus[match(rownames(fraction), rownames(consensus)),]
+  if(!all(rownames(fraction) == rownames(consensus))){
+    consensus <- consensus[match(rownames(fraction), rownames(consensus)),]
+  }
 
 
   print("We perform some filtering to reduce the memory needed.")
@@ -71,6 +81,7 @@ LoadingMAEGATK_typewise <- function(samples_file, samples_path = NULL, patient, 
   consensus <- consensus[keep_variants,]
   coverage <- coverage[keep_variants,]
   fraction <- fraction[keep_variants,]
+
 
   print("We remove cells that are always NoCall.")
   consensus_test <- consensus > 0
