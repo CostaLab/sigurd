@@ -29,7 +29,6 @@
 #' }
 #'@export
 Filtering <- function(se, blacklisted_barcodes_path = NULL, fraction_threshold = NULL, path_seurat = NULL, min_cells_per_variant = 2, min_variants_per_cell = 1){
-  print("We remove all blacklisted bar codes.")
   if(!is.null(blacklisted_barcodes_path)){
     print("We remove the unwanted cell barcodes.")
     blacklisted_barcodes <- read.table(blacklisted_barcodes_path, header = FALSE)
@@ -89,12 +88,15 @@ Filtering <- function(se, blacklisted_barcodes_path = NULL, fraction_threshold =
     consensus_matrix <- assays(se)$consensus
     fraction_matrix <- assays(se)$fraction
     position_matrix <- summary(fraction_matrix)
-    position_matrix <- subset(position_matrix, x > 0 & x < 0.05)
-    ij <- as.matrix(position_matrix[, 1:2])
-    consensus_matrix[ij] <- 1
-    fraction_matrix[ij] <- 0
-    assays(se)$consensus <- consensus_matrix
-    assays(se)$fraction <- fraction_matrix
+    position_matrix <- subset(position_matrix, x > 0 & x < fraction_threshold)
+    # If no elements fall between 0 and the fraction_threshold, we do not have to change the matrices.
+    if(nrow(position_matrix) > 0){
+      ij <- as.matrix(position_matrix[, 1:2])
+      consensus_matrix[ij] <- 1
+      fraction_matrix[ij] <- 0
+      assays(se)$consensus <- consensus_matrix
+      assays(se)$fraction <- fraction_matrix
+    }
 
 
     #assays(se)$consensus[assays(se)$fraction > 0 & assays(se)$fraction < fraction_threshold] <- 1
