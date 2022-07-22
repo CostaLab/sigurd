@@ -2,7 +2,7 @@
 % Please edit documentation in R/getRefMatrix.R
 \name{getRefMatrix}
 \alias{getRefMatrix}
-\title{We get the reference values from the MAEGATK result.}
+\title{getRefMatrix}
 \usage{
 getRefMatrix(SE_object, letter, chromosome_prefix = "chrM")
 }
@@ -17,4 +17,5 @@ getRefMatrix(SE_object, letter, chromosome_prefix = "chrM")
 }
 \description{
 We get the reference values from the MAEGATK result.
+Source: https://github.com/petervangalen/MAESTER-2021
 }

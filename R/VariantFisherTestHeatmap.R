@@ -1,3 +1,5 @@
+#'VariantFisherTestHeatmap
+#'@description
 #'We generate a heatmap showing the Fisher test of somatic variants with the MT variants.
 #'@import circlize ComplexHeatmap ggplot2 Matrix parallel rcompanion tidyr grid
 #'@param fisher_results Data.frame with the correlation results.

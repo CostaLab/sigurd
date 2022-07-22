@@ -1,4 +1,7 @@
-#'We define a loading function to save the RDS files quicker.
+#'save_object
+#'@description
+#'Saving function to save the RDS files quicker.
+#'Source:https://github.com/CostaLab/CimpleG
 #'@import archive
 #'@param object The R object to be save.
 #'@param file_name The path were the file shall be save.

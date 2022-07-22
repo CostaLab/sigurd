@@ -1,3 +1,5 @@
+#'LoadingMAEGATK_typewise
+#'@description
 #'We load the MAEGATK output and transform it to be compatible with the VarTrix output.
 #'@import Matrix SummarizedExperiment
 #'@param samples_path Path to the input folder.

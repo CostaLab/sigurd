@@ -2,7 +2,7 @@
 % Please edit documentation in R/load_object.R
 \name{load_object}
 \alias{load_object}
-\title{We define a loading function to load the RDS files quicker.}
+\title{load_object}
 \usage{
 load_object(file_name)
 }
@@ -10,5 +10,6 @@ load_object(file_name)
 \item{file_name}{The path to the file.}
 }
 \description{
-We define a loading function to load the RDS files quicker.
+A loading function to load the RDS files quicker.
+Source: https://github.com/CostaLab/CimpleG
 }

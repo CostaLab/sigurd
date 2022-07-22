@@ -2,7 +2,7 @@
 % Please edit documentation in R/VariantFisherTestHeatmap.R
 \name{VariantFisherTestHeatmap}
 \alias{VariantFisherTestHeatmap}
-\title{We generate a heatmap showing the Fisher test of somatic variants with the MT variants.}
+\title{VariantFisherTestHeatmap}
 \usage{
 VariantFisherTestHeatmap(
   fisher_results,

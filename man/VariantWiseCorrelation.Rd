@@ -2,11 +2,7 @@
 % Please edit documentation in R/VariantWiseCorrelation.R
 \name{VariantWiseCorrelation}
 \alias{VariantWiseCorrelation}
-\title{We get some descriptive statistics for each sample. We use the genotyping results for this.
-fraction_interesting_subset.Rds
-consensus_matrix_interesting_subset.Rds
-Instead of running a loop, we run the script in a job array. We subset the matrices to only include the specific sample and
-we calculate the correlations.}
+\title{VariantWiseCorrelation}
 \usage{
 VariantWiseCorrelation(variants_list, n_cores = 1, p_value_adjustment = "fdr")
 }
@@ -18,9 +14,6 @@ VariantWiseCorrelation(variants_list, n_cores = 1, p_value_adjustment = "fdr")
 \item{p_value_adjustment}{Method for P value adjustment. See p.adjust for details.}
 }
 \description{
-We get some descriptive statistics for each sample. We use the genotyping results for this.
-fraction_interesting_subset.Rds
-consensus_matrix_interesting_subset.Rds
-Instead of running a loop, we run the script in a job array. We subset the matrices to only include the specific sample and
-we calculate the correlations.
+We correlate the variants with each other using the Pearson correlation.
+This function calls CalculateCorrelationPValue to perform the actual correlation.
 }

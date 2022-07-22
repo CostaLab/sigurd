@@ -2,8 +2,7 @@
 % Please edit documentation in R/computeAFMutMatrix.R
 \name{computeAFMutMatrix}
 \alias{computeAFMutMatrix}
-\title{Calculate the allele frequency per variant.
-This function originally written by}
+\title{computeAFMutMatrix}
 \usage{
 computeAFMutMatrix(SE, chromosome_prefix = "chrM")
 }
@@ -12,5 +11,5 @@ computeAFMutMatrix(SE, chromosome_prefix = "chrM")
 }
 \description{
 Calculate the allele frequency per variant.
-This function originally written by
+Source: https://github.com/petervangalen/MAESTER-2021
 }

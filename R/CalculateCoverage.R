@@ -1,3 +1,5 @@
+#'CalculateCoverage
+#'@description
 #'We calculate the coverage information per variant from the MAEGATK results.
 #'@import MatrixGenerics SummarizedExperiment
 #'@param SE SummarizedExperiment object.

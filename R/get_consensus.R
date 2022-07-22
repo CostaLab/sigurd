@@ -1,3 +1,5 @@
+#'get_consensus
+#'@description
 #'We get the consensus information for a specific matrix.
 #'@import dplyr MatrixGenerics SummarizedExperiment
 #'@param letter The alternative base.

@@ -1,4 +1,7 @@
+#'VariantQuantileThresholding
+#'@description
 #'We get variants of interest using the quantile thresholding.
+#'Source: https://github.com/petervangalen/MAESTER-2021
 #'@import dplyr SummarizedExperiment
 #'@param SE SummarizedExperiment object.
 #'@param min_coverage Minimum coverage needed.

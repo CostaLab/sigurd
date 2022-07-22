@@ -1,5 +1,7 @@
+#'computeAFMutMatrix
+#'@description
 #'Calculate the allele frequency per variant.
-#'This function originally written by 
+#'Source: https://github.com/petervangalen/MAESTER-2021
 #'@import SummarizedExperiment
 #'@param SE SummarizedExperiment object.
 #'@export

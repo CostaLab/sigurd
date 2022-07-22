@@ -1,4 +1,7 @@
+#'VariantCloneSizeThresholding
+#'@description
 #'We get variants of interest using a clone size thresholding.
+#'Source: https://github.com/petervangalen/MAESTER-2021
 #'@import dplyr Matrix SummarizedExperiment tidyverse
 #'@param se SummarizedExperiment object.
 #'@param min_coverage Minimum coverage a variant needs to have.

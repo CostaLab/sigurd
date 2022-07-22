@@ -1,5 +1,8 @@
-#'We get the filtered results, we have from the 01_FilteringSampleWise. We now split the results into the
-#'individual columns and save them in a list object.
+#'RowWiseSplit
+#'@description
+#'Performing the correlation or Fisher test association for a SummarizedExperiment object requires extreme amounts of memory.
+#'To reduce the amount of memory necessary, we instead get the individual rows from the consensus assay.
+#'We can then remove the NoCalls (no reads) from the individual vectors, further reducing the amount of memory needed.
 #'@import Matrix SummarizedExperiment parallel
 #'@param se SummarizedExperiment object.
 #'@param n_cores Number of cores to use.

@@ -1,3 +1,5 @@
+#'HeatmapVoi
+#'@description
 #'We plot a heatmap of a set of Variants Of Interest using the Variant Allele Frequency values of a SummarizedExperiment object.
 #'@import ComplexHeatmap SummarizedExperiment circlize ggsci Seurat scales
 #'@param SE SummarizedExperiment object.

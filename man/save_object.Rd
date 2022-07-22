@@ -2,7 +2,7 @@
 % Please edit documentation in R/save_object.R
 \name{save_object}
 \alias{save_object}
-\title{We define a loading function to save the RDS files quicker.}
+\title{save_object}
 \usage{
 save_object(object, file_name, file_format = NULL)
 }
@@ -14,5 +14,6 @@ save_object(object, file_name, file_format = NULL)
 \item{file_format}{The format of the save file. Has to be one of: zstd, lz4, gzip, bzip2, xz, nocomp.}
 }
 \description{
-We define a loading function to save the RDS files quicker.
+Saving function to save the RDS files quicker.
+Source:https://github.com/CostaLab/CimpleG
 }

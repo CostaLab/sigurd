@@ -1,3 +1,5 @@
+#'VariantCorrelationHeatmap
+#'@description
 #'We generate a heatmap showing the correlation of somatic variants with the MT variants.
 #'@import circlize ComplexHeatmap ggplot2 Matrix parallel rcompanion tidyr grid
 #'@param correlation_results Data.frame with the correlation results.

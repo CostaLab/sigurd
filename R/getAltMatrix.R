@@ -1,4 +1,7 @@
+#'getAltMatrix
+#'@description
 #'We get the alt values from the MAEGATK results.
+#'Source: https://github.com/petervangalen/MAESTER-2021
 #'@import SummarizedExperiment
 #'@param SE_object SummarizedExperiment object.
 #'@param letter The base you want to use. Character.

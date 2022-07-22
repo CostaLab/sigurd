@@ -2,7 +2,7 @@
 % Please edit documentation in R/CalculateCorrelationPValue.R
 \name{CalculateCorrelationPValue}
 \alias{CalculateCorrelationPValue}
-\title{We perform the correlation of SNVs and calculate the P values.}
+\title{Correlating the SNVs}
 \usage{
 CalculateCorrelationPValue(
   variant_values,

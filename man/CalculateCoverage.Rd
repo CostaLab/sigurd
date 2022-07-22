@@ -2,7 +2,7 @@
 % Please edit documentation in R/CalculateCoverage.R
 \name{CalculateCoverage}
 \alias{CalculateCoverage}
-\title{We calculate the coverage information per variant from the MAEGATK results.}
+\title{CalculateCoverage}
 \usage{
 CalculateCoverage(SE, chromosome_prefix = "chrM")
 }
