@@ -40,7 +40,7 @@ HeatmapVoi <- function(SE, voi, annotation_trait = NULL, column_title = NULL){
   heatmap_voi <- Heatmap(fraction,
                          column_title_gp = gpar(fontsize = 20, fontface = "bold"),
                          row_title_gp = gpar(fontsize = 20, fontface = "bold"),
-                         row_names_gp = grid::gpar(fontsize = 10, fontface = "bold"),
+                         row_names_gp = grid::gpar(fontsize = 20, fontface = "bold"),
                          col = colorRamp2(seq(0, round(max(fraction, na.rm = TRUE)), length.out = 9),
                                           c("#FCFCFC","#FFEDB0","#FFDF5F","#FEC510","#FA8E24","#F14C2B","#DA2828","#BE2222","#A31D1D")),
                          show_row_names = T, show_column_names = F, cluster_columns = T, cluster_rows = F, name = "VAF",
