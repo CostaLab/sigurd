@@ -6,7 +6,7 @@
 #'@param voi Variants Of Interest.
 #'@param annotation_trait Cell Annotation at the bottom of the heat map. 
 #'@export
-HeatmapVoi <- function(SE, voi, annotation_trait = NULL){
+HeatmapVoi <- function(SE, voi, annotation_trait = NULL, column_title = NULL){
   #colours_list <- c("#a6cee3", "#1f78b4", "#b2df8a", "#33a02c", "#fb9a99",
   #                  "#e31a1c", "#fdbf6f", "#ff7f00", "#cab2d6", "#6a3d9a",
   #                  "#ffff99", "deeppink", "green", "blue", "gold", "indianred3",
@@ -31,6 +31,12 @@ HeatmapVoi <- function(SE, voi, annotation_trait = NULL){
     ha <- NULL
   }
   fraction <- as.matrix(fraction)
+
+  # We get a different column title.
+  if(is.null(column_title)){
+    column_title <- "Cells"
+  }
+
   heatmap_voi <- Heatmap(fraction,
                          column_title_gp = gpar(fontsize = 20, fontface = "bold"),
                          row_title_gp = gpar(fontsize = 20, fontface = "bold"),
@@ -40,7 +46,7 @@ HeatmapVoi <- function(SE, voi, annotation_trait = NULL){
                          show_row_names = T, show_column_names = F, cluster_columns = T, cluster_rows = F, name = "VAF",
                          heatmap_legend_param = list(border = "#000000", grid_height = unit(10, "mm")),
                          bottom_annotation = ha, border = T, use_raster = T,
-                         column_title = "Cells",
+                         column_title = column_title,
                          row_title = "Variants")
   return(heatmap_voi)
 }
