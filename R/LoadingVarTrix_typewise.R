@@ -115,7 +115,7 @@ LoadingVarTrix_typewise <- function(samples_file, samples_path = NULL, barcodes_
 
 
   if(!is.null(min_reads)){
-    print(paste0("We set read values below the threshold of ", threshold, " to 0."))
+    print(paste0("We set read values below the threshold of ", min_reads, " to 0."))
     print("We then generate the consensus matrix again.")
     ref_matrix_total@x[ref_matrix_total@x < min_reads] <- 0
     coverage_matrix_total@x[coverage_matrix_total@x < min_reads] <- 0
