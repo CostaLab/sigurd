@@ -2,7 +2,7 @@
 % Please edit documentation in R/VariantQuantileThresholding.R
 \name{VariantQuantileThresholding}
 \alias{VariantQuantileThresholding}
-\title{We get variants of interest using the quantile thresholding.}
+\title{VariantQuantileThresholding}
 \usage{
 VariantQuantileThresholding(
   SE,
@@ -22,4 +22,5 @@ VariantQuantileThresholding(
 }
 \description{
 We get variants of interest using the quantile thresholding.
+Source: https://github.com/petervangalen/MAESTER-2021
 }

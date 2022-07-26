@@ -2,7 +2,7 @@
 % Please edit documentation in R/VariantCloneSizeThresholding.R
 \name{VariantCloneSizeThresholding}
 \alias{VariantCloneSizeThresholding}
-\title{We get variants of interest using a clone size thresholding.}
+\title{VariantCloneSizeThresholding}
 \usage{
 VariantCloneSizeThresholding(
   se,
@@ -25,4 +25,5 @@ VariantCloneSizeThresholding(
 }
 \description{
 We get variants of interest using a clone size thresholding.
+Source: https://github.com/petervangalen/MAESTER-2021
 }

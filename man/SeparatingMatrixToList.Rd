@@ -2,8 +2,7 @@
 % Please edit documentation in R/SeparatingMatrixToList.R
 \name{SeparatingMatrixToList}
 \alias{SeparatingMatrixToList}
-\title{We separate a matrix of variant information to a list.
-Each variant is an entry in the list.}
+\title{SeparatingMatrixToList}
 \usage{
 SeparatingMatrixToList(row_use, total_matrix, remove_nocalls = TRUE)
 }
@@ -17,4 +16,6 @@ SeparatingMatrixToList(row_use, total_matrix, remove_nocalls = TRUE)
 \description{
 We separate a matrix of variant information to a list.
 Each variant is an entry in the list.
+NoCalls (cells with no reads covering a variant) can be removed.
+This function gets called by RowWiseSplit in return.
 }

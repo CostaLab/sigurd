@@ -1,17 +1,20 @@
+#'LoadingVarTrix_typewise
+#'@description
 #'When we load all the different types of results (scRNAseq/amplicon and MT/amplicon),
 #'we might need extreme amounts of memory. To solve this issue, I will load each type separately.
 #'In a following function (AmpliconSupplementing), we can add the amplicon information to the
 #'scRNAseq information.
+#'
 #'@import Matrix SummarizedExperiment VariantAnnotation
 #'@param samples_path Path to the input folder. Must include a barcodes file.
 #'@param samples_file Path to the csv file with the samples to be loaded.
 #'@param vcf_path Path to the VCF file with the variants.
 #'@param patient The patient you want to load.
 #'@param type_use The type of input. Has to be one of: scRNAseq_Somatic, Amplicon_Somatic, scRNAseq_MT, Amplicon_MT.
-#'@param min_reads The minimum number of reads we want. Otherwise we treat this as a NoCall. Not yet implemented.
-#'@param min_cells The minimum number of cells for a variant. Otherwise, we will remove a variant. 
+#'@param min_reads The minimum number of reads we want. Otherwise we treat this as a NoCall. Default = NULL.
+#'@param min_cells The minimum number of cells for a variant. Otherwise, we will remove a variant. Default = 2.
 #'@export
-LoadingVarTrix_typewise <- function(samples_file, samples_path = NULL, barcodes_path = NULL, snp_path = NULL, vcf_path, patient, sample = NULL, type_use = "scRNAseq_Somatic", min_reads = 3, min_cells = 2){
+LoadingVarTrix_typewise <- function(samples_file, samples_path = NULL, barcodes_path = NULL, snp_path = NULL, vcf_path, patient, sample = NULL, type_use = "scRNAseq_Somatic", min_reads = NULL, min_cells = 2){
   if(all(!is.null(samples_path), !is.null(barcodes_path), !is.null(sample), !is.null(snp_path))){
     #samples <- list.files(samples_path)
     #samples <- grep(patient, samples, value = TRUE)
@@ -109,6 +112,23 @@ LoadingVarTrix_typewise <- function(samples_file, samples_path = NULL, barcodes_
   print("We remove the matrix lists.")
   rm(coverage_matrices, ref_matrices, consensus_matrices)
   gc()
+
+
+  if(!is.null(min_reads)){
+    print(paste0("We set read values below the threshold of ", min_reads, " to 0."))
+    print("We then generate the consensus matrix again.")
+    ref_matrix_total@x[ref_matrix_total@x < min_reads] <- 0
+    coverage_matrix_total@x[coverage_matrix_total@x < min_reads] <- 0
+
+    reference_construction <- ref_matrix_total
+    reference_construction@x[reference_construction@x > 0] <- 0
+
+    coverage_construction <- coverage_matrix_total
+    coverage_construction@x[coverage_construction@x > 0] <- 2
+
+    consensus_matrix_total <- reference_construction + coverage_construction
+    rm(reference_construction, coverage_construction)
+  }
 
 
   # We check if number of rows of the matrices are the same as the length of the new names.

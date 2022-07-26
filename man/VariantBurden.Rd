@@ -2,7 +2,7 @@
 % Please edit documentation in R/VariantBurden.R
 \name{VariantBurden}
 \alias{VariantBurden}
-\title{Calculate the variant burden per cell.}
+\title{VariantBurden}
 \usage{
 VariantBurden(se)
 }
@@ -11,4 +11,5 @@ VariantBurden(se)
 }
 \description{
 Calculate the variant burden per cell.
+We simply sum up the MAF values per cell.
 }

@@ -2,8 +2,7 @@
 % Please edit documentation in R/RowWiseSplit.R
 \name{RowWiseSplit}
 \alias{RowWiseSplit}
-\title{We get the filtered results, we have from the 01_FilteringSampleWise. We now split the results into the
-individual columns and save them in a list object.}
+\title{RowWiseSplit}
 \usage{
 RowWiseSplit(se, n_cores = 1, remove_nocalls = TRUE)
 }
@@ -15,6 +14,7 @@ RowWiseSplit(se, n_cores = 1, remove_nocalls = TRUE)
 \item{remove_nocalls}{Do you want to remove NoCall cells?}
 }
 \description{
-We get the filtered results, we have from the 01_FilteringSampleWise. We now split the results into the
-individual columns and save them in a list object.
+Performing the correlation or Fisher test association for a SummarizedExperiment object requires extreme amounts of memory.
+To reduce the amount of memory necessary, we instead get the individual rows from the consensus assay.
+We can then remove the NoCalls (no reads) from the individual vectors, further reducing the amount of memory needed.
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/CalculateAlleleFrequency.R
 \name{CalculateAlleleFrequency}
 \alias{CalculateAlleleFrequency}
-\title{We calculate the consensus information from the MAEGATK results.}
+\title{Calculating the Minor Allele Frequency.}
 \usage{
 CalculateAlleleFrequency(reference_reads, alternative_reads)
 }
@@ -12,5 +12,5 @@ CalculateAlleleFrequency(reference_reads, alternative_reads)
 \item{alternative_reads}{List of matrices for the alternative reads.}
 }
 \description{
-We calculate the consensus information from the MAEGATK results.
+We calculate the MAF for the MAEGATK results.
 }

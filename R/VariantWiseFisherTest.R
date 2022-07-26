@@ -1,4 +1,7 @@
+#'VariantWiseFisherTest
+#'@description
 #'We perform the Fisher test to determine which variants are associated.
+#'This function calls CalculateFisherTestPValue to perform the actual testing.
 #'@import Matrix parallel SummarizedExperiment
 #'@param variants_list List of fraction values.
 #'@param n_cores Number of cores you want to use. Numeric.

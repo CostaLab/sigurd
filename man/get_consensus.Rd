@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_consensus.R
 \name{get_consensus}
 \alias{get_consensus}
-\title{We get the consensus information for a specific matrix.}
+\title{get_consensus}
 \usage{
 get_consensus(alt_base, ref_base, input_matrix, chromosome_prefix = "chrM")
 }

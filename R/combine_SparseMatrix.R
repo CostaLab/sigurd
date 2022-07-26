@@ -1,3 +1,5 @@
+#'combine_sparseMatrix
+#'@description
 #'We combine two sparse matrices
 #'@import SummarizedExperiment BiocGenerics
 #'@param matrix_1 Your first sparse matrix.

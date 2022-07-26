@@ -1,3 +1,6 @@
+#'Correlating the SNVs
+#'
+#'@description
 #'We perform the correlation of SNVs and calculate the P values.
 #'@import stats
 #'@param variant_values The fraction values you are analysing. A vector.

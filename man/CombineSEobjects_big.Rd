@@ -2,7 +2,7 @@
 % Please edit documentation in R/CombineSEobjects_big.R
 \name{CombineSEobjects_big}
 \alias{CombineSEobjects_big}
-\title{We combine two SummarizedExperiment objects with big matrices.}
+\title{CombineSEobjects_big}
 \usage{
 CombineSEobjects_big(se_somatic, se_MT, suffixes = c("_somatic", "_MT"))
 }

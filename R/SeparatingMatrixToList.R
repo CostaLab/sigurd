@@ -1,5 +1,9 @@
+#'SeparatingMatrixToList
+#'@description
 #'We separate a matrix of variant information to a list.
 #'Each variant is an entry in the list.
+#'NoCalls (cells with no reads covering a variant) can be removed.
+#'This function gets called by RowWiseSplit in return.
 #'@param row_use The row the separate.
 #'@param total_matrix The matrix to be split.
 #'@param remove_nocalls Do you want to remove NoCall cells?

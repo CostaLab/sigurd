@@ -1,3 +1,5 @@
+#'CombineSEobjects_big
+#'@description
 #'We combine two SummarizedExperiment objects with big matrices.
 #'@import SummarizedExperiment BiocGenerics bigmemory
 #'@param se_somatic SummarizedExperiment object for the somatic variants.

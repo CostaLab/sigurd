@@ -10,5 +10,5 @@ Merging_SE_list(se)
 \item{se}{SummarizedExperiment object}
 }
 \description{
-Merging list of SummarizedExperiment objects.
+This function is a wrapper for do.all("cbind", se).
 }

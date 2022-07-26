@@ -2,7 +2,7 @@
 % Please edit documentation in R/combine_SparseMatrix.R
 \name{combine_SparseMatrix}
 \alias{combine_SparseMatrix}
-\title{We combine two sparse matrices}
+\title{combine_sparseMatrix}
 \usage{
 combine_SparseMatrix(matrix_1, matrix_2)
 }

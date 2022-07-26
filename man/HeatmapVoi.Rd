@@ -2,9 +2,9 @@
 % Please edit documentation in R/HeatmapVOI.R
 \name{HeatmapVoi}
 \alias{HeatmapVoi}
-\title{We plot a heatmap of a set of Variants Of Interest using the Variant Allele Frequency values of a SummarizedExperiment object.}
+\title{HeatmapVoi}
 \usage{
-HeatmapVoi(SE, voi, annotation_trait = NULL)
+HeatmapVoi(SE, voi, annotation_trait = NULL, column_title = NULL)
 }
 \arguments{
 \item{SE}{SummarizedExperiment object.}

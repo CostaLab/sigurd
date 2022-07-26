@@ -2,7 +2,7 @@
 % Please edit documentation in R/ggsci_pal.R
 \name{ggsci_pal}
 \alias{ggsci_pal}
-\title{Function to return colours from a ggsci palette.}
+\title{ggsci_pal}
 \usage{
 ggsci_pal(option, ...)
 }

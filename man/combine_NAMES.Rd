@@ -2,7 +2,7 @@
 % Please edit documentation in R/combine_NAMES.R
 \name{combine_NAMES}
 \alias{combine_NAMES}
-\title{We combine two vectors of names.}
+\title{combine_NAMES}
 \usage{
 combine_NAMES(x, y)
 }

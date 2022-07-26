@@ -2,7 +2,7 @@
 % Please edit documentation in R/LoadingMAEGATK_typewise.R
 \name{LoadingMAEGATK_typewise}
 \alias{LoadingMAEGATK_typewise}
-\title{We load the MAEGATK output and transform it to be compatible with the VarTrix output.}
+\title{LoadingMAEGATK_typewise}
 \usage{
 LoadingMAEGATK_typewise(
   samples_file,

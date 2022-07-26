@@ -2,10 +2,7 @@
 % Please edit documentation in R/LoadingVarTrix_typewise.R
 \name{LoadingVarTrix_typewise}
 \alias{LoadingVarTrix_typewise}
-\title{When we load all the different types of results (scRNAseq/amplicon and MT/amplicon),
-we might need extreme amounts of memory. To solve this issue, I will load each type separately.
-In a following function (AmpliconSupplementing), we can add the amplicon information to the
-scRNAseq information.}
+\title{LoadingVarTrix_typewise}
 \usage{
 LoadingVarTrix_typewise(
   samples_file,
@@ -16,7 +13,7 @@ LoadingVarTrix_typewise(
   patient,
   sample = NULL,
   type_use = "scRNAseq_Somatic",
-  min_reads = 3,
+  min_reads = NULL,
   min_cells = 2
 )
 }
@@ -31,9 +28,9 @@ LoadingVarTrix_typewise(
 
 \item{type_use}{The type of input. Has to be one of: scRNAseq_Somatic, Amplicon_Somatic, scRNAseq_MT, Amplicon_MT.}
 
-\item{min_reads}{The minimum number of reads we want. Otherwise we treat this as a NoCall. Not yet implemented.}
+\item{min_reads}{The minimum number of reads we want. Otherwise we treat this as a NoCall. Default = NULL.}
 
-\item{min_cells}{The minimum number of cells for a variant. Otherwise, we will remove a variant.}
+\item{min_cells}{The minimum number of cells for a variant. Otherwise, we will remove a variant. Default = 2.}
 }
 \description{
 When we load all the different types of results (scRNAseq/amplicon and MT/amplicon),

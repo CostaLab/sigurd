@@ -2,7 +2,7 @@
 % Please edit documentation in R/getAltMatrix.R
 \name{getAltMatrix}
 \alias{getAltMatrix}
-\title{We get the alt values from the MAEGATK results.}
+\title{getAltMatrix}
 \usage{
 getAltMatrix(SE_object, letter, chromosome_prefix = "chrM")
 }
@@ -17,4 +17,5 @@ getAltMatrix(SE_object, letter, chromosome_prefix = "chrM")
 }
 \description{
 We get the alt values from the MAEGATK results.
+Source: https://github.com/petervangalen/MAESTER-2021
 }

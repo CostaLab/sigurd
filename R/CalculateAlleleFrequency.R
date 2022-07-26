@@ -1,4 +1,6 @@
-#'We calculate the consensus information from the MAEGATK results.
+#'Calculating the Minor Allele Frequency.
+#'@description
+#'We calculate the MAF for the MAEGATK results.
 #'@import MatrixGenerics SummarizedExperiment
 #'@param reference_reads Reference reads matrix.
 #'@param alternative_reads List of matrices for the alternative reads.

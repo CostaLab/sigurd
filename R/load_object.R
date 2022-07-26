@@ -1,4 +1,7 @@
-#'We define a loading function to load the RDS files quicker.
+#'load_object
+#'@description
+#'A loading function to load the RDS files quicker.
+#'Source: https://github.com/CostaLab/CimpleG
 #'@import archive
 #'@param file_name The path to the file.
 #'@export

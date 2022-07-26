@@ -1,3 +1,5 @@
+#'CombineSEobjects
+#'@description
 #'We combine two SummarizedExperiment objects.
 #'@import SummarizedExperiment BiocGenerics
 #'@param se_somatic SummarizedExperiment object for the somatic variants.

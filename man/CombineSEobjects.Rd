@@ -2,7 +2,7 @@
 % Please edit documentation in R/CombineSEobjects.R
 \name{CombineSEobjects}
 \alias{CombineSEobjects}
-\title{We combine two SummarizedExperiment objects.}
+\title{CombineSEobjects}
 \usage{
 CombineSEobjects(se_somatic, se_MT, suffixes = c("_somatic", "_MT"))
 }

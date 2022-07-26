@@ -29,7 +29,6 @@
 #' }
 #'@export
 Filtering <- function(se, blacklisted_barcodes_path = NULL, fraction_threshold = NULL, path_seurat = NULL, min_cells_per_variant = 2, min_variants_per_cell = 1){
-  print("We remove all blacklisted bar codes.")
   if(!is.null(blacklisted_barcodes_path)){
     print("We remove the unwanted cell barcodes.")
     blacklisted_barcodes <- read.table(blacklisted_barcodes_path, header = FALSE)
@@ -62,43 +61,19 @@ Filtering <- function(se, blacklisted_barcodes_path = NULL, fraction_threshold =
     print("We set consensus values to 1 (Ref) and fraction values to 0.")
     print(paste0("We do not set fractions between ", fraction_threshold, " and 1 to 1."))
     print("This way, we retain the heterozygous information.")
-    #consensus_matrix <- as(assays(se)$consensus, "dgCMatrix")
-    #fraction_matrix  <- as(assays(se)$fraction,  "dgCMatrix")
-    # i	= rows,	j = cols, x = values
-    #position_matrix_fraction <- rbind(i = fraction_matrix@i, j = summary(fraction_matrix)$j, x = fraction_matrix@x)
-    #position_matrix_fraction <- position_matrix_fraction[,position_matrix_fraction[3,] > 0 & position_matrix_fraction[3,] < fraction_threshold]
-    #position_matrix_fraction[1,] <- position_matrix_fraction[1,] + 1
-    #position_matrix_fraction[2,] <- position_matrix_fraction[2,] + 1
-
-    #consensus_matrix[position_matrix_fraction[1,], position_matrix_fraction[2,]] <- 1
-    #fraction_matrix[position_matrix_fraction[1,], position_matrix_fraction[2,]] <- 0
-
-
-    # Filtering using a matrix step.
-    #consensus_matrix <- as.matrix(assays(se)$consensus)
-    #fraction_matrix  <- as.matrix(assays(se)$fraction)
-    #consensus_matrix[fraction_matrix > 0 & fraction_matrix < fraction_threshold] <- 1
-    #fraction_matrix[fraction_matrix > 0 & fraction_matrix < fraction_threshold] <- 0
-    #consensus_matrix <- as(consensus_matrix, "dgCMatrix")
-    #fraction_matrix <- as(fraction_matrix, "dgCMatrix")
-    #assays(se)$consensus <- consensus_matrix
-    #assays(se)$fraction	<- fraction_matrix
-
-
     # Filtering using sparse matrices.
     consensus_matrix <- assays(se)$consensus
     fraction_matrix <- assays(se)$fraction
     position_matrix <- summary(fraction_matrix)
-    position_matrix <- subset(position_matrix, x > 0 & x < 0.05)
-    ij <- as.matrix(position_matrix[, 1:2])
-    consensus_matrix[ij] <- 1
-    fraction_matrix[ij] <- 0
-    assays(se)$consensus <- consensus_matrix
-    assays(se)$fraction <- fraction_matrix
-
-
-    #assays(se)$consensus[assays(se)$fraction > 0 & assays(se)$fraction < fraction_threshold] <- 1
-    #assays(se)$fraction[assays(se)$fraction > 0 & assays(se)$fraction < fraction_threshold] <- 0
+    position_matrix <- subset(position_matrix, x > 0 & x < fraction_threshold)
+    # If no elements fall between 0 and the fraction_threshold, we do not have to change the matrices.
+    if(nrow(position_matrix) > 0){
+      ij <- as.matrix(position_matrix[, 1:2])
+      consensus_matrix[ij] <- 1
+      fraction_matrix[ij] <- 0
+      assays(se)$consensus <- consensus_matrix
+      assays(se)$fraction <- fraction_matrix
+    }
   }
 
   print("We remove all the variants that are always NoCall.")

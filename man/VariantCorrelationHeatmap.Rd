@@ -2,7 +2,7 @@
 % Please edit documentation in R/VariantCorrelationHeatmap.R
 \name{VariantCorrelationHeatmap}
 \alias{VariantCorrelationHeatmap}
-\title{We generate a heatmap showing the correlation of somatic variants with the MT variants.}
+\title{VariantCorrelationHeatmap}
 \usage{
 VariantCorrelationHeatmap(
   correlation_results,

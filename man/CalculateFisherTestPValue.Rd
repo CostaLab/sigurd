@@ -2,7 +2,7 @@
 % Please edit documentation in R/CalculateFisherTestPValue.R
 \name{CalculateFisherTestPValue}
 \alias{CalculateFisherTestPValue}
-\title{We perform the Fisher Testest of SNVs and calculate the P values.}
+\title{CalculateFisherTestPValue}
 \usage{
 CalculateFisherTestPValue(
   variant_values,
@@ -21,5 +21,5 @@ CalculateFisherTestPValue(
 \item{min_intersecting_cells}{Minimum number of intersecting cells. Correlations with less than this will not be performed.}
 }
 \description{
-We perform the Fisher Testest of SNVs and calculate the P values.
+We perform the Fisher Test of SNVs and calculate the P values.
 }

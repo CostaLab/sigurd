@@ -25,8 +25,6 @@ require(sigurd)
 
 We have provided a small example data set for SiGURD. It consists of chromosome 9 and MT for one MPN sample.
 
-The sample is currently located on the cluster.
-
 ```{r}
 # This will be included for published data.
 # vignette('sigurd')
@@ -40,6 +38,14 @@ The sample is currently located on the cluster.
 - Calculating the variant burden per cell.
 - Thresholding variants using the approach described by Miller et al. [2]
 - Finding associated variants using correlation or the Fisher Test.
+
+# Sources
+
+This package implements approaches from the following packages and respositories:
+- https://github.com/petervangalen/MAESTER-2021 
+-- Variant Thresholding and functions for the loading of MAEGATK data.
+- https://github.com/CostaLab/CimpleG
+-- The loading and saving function.
 
 # Future 
 - Memory optimization
