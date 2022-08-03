@@ -20,6 +20,12 @@ HeatmapVoi <- function(SE, voi, annotation_trait = NULL, column_title = NULL){
 
   fraction <- assays(SE)[["fraction"]][voi,]
   fraction[is.na(fraction)] <- 0
+  if(length(voi) == 1){
+    fraction <- t(as.matrix(fraction))
+    rownames(fraction) <- voi
+  } else if(length(voi) > 1){
+    fraction <- as.matrix(fraction)
+  }
   if(!is.null(annotation_trait)){
     colours_use <- hue_pal(length(unique(colData(SE)[,annotation_trait])))
     #colours_use <- colours_list[1:length(unique(colData(SE)[,annotation_trait]))]
@@ -30,7 +36,6 @@ HeatmapVoi <- function(SE, voi, annotation_trait = NULL, column_title = NULL){
   } else if(is.null(annotation_trait)){
     ha <- NULL
   }
-  fraction <- as.matrix(fraction)
 
   # We get a different column title.
   if(is.null(column_title)){
