@@ -121,7 +121,7 @@ LoadingVarTrix_typewise <- function(samples_file, samples_path = NULL, barcodes_
     coverage_matrix_total@x[coverage_matrix_total@x < min_reads] <- 0
 
     reference_construction <- ref_matrix_total
-    reference_construction@x[reference_construction@x > 0] <- 0
+    reference_construction@x[reference_construction@x > 0] <- 1
 
     coverage_construction <- coverage_matrix_total
     coverage_construction@x[coverage_construction@x > 0] <- 2

@@ -24,6 +24,7 @@ require(sigurd)
 # SiGURD 
 
 We have provided a small example data set for SiGURD. It consists of chromosome 9 and MT for one MPN sample.
+The mutation data was obtained from the Sanger Institute Catalogue Of Somatic Mutations In Cancer web site, http://cancer.sanger.ac.uk/cosmic Bamford et al (2004) The COSMIC (Catalogue of Somatic Mutations in Cancer) database and website. Br J Cancer, 91,355-358.
 
 ```{r}
 # This will be included for published data.
@@ -31,7 +32,7 @@ We have provided a small example data set for SiGURD. It consists of chromosome 
 
 ```
 
-# Current Features v0.1.0
+# Current Features v0.2.0
 
 - Loading data from VarTrix and MAEGATK.
 - Transforming the data to be compatible for joint analysis.
