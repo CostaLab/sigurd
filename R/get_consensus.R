@@ -27,6 +27,7 @@ get_consensus <- function(alt_base, ref_base, input_matrix, chromosome_prefix = 
   output_matrix[input_matrix %in% other_homo_values] <- 0
   
   rownames(output_matrix) <- paste0(chromosome_prefix, "_", gsub("[^[:digit:]., ]", "", rownames(output_matrix)), "_", ref_base, "_", alt_base)
-  output_matrix <- as(output_matrix, "dgCMatrix")
+  #output_matrix <- as(output_matrix, "dgCMatrix")
+  output_matrix <- as(output_matrix, "CsparseMatrix")
   return(output_matrix)
 }
