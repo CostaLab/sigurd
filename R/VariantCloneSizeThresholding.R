@@ -16,18 +16,27 @@ VariantCloneSizeThresholding <- function(se, min_coverage = 2, fraction_negative
   mean_cov <- rowMeans(assays(se)[["coverage"]], na.rm = TRUE)
 
   print("Collect all information in a tibble")
-  vars_tib <- as_tibble(do.call(cbind, c(list(mean_af), list(mean_cov))), rownames = "var")
-  colnames(vars_tib)[2] <- "mean_af"
-  colnames(vars_tib)[3] <- "mean_cov"
-
+  #vars_tib <- as_tibble(do.call(cbind, c(list(mean_af), list(mean_cov))), rownames = "var")
+  vars <- do.call(cbind, c(list(mean_af), list(mean_cov)))
+  #colnames(vars_tib)[2] <- "mean_af"
+  #colnames(vars_tib)[3] <- "mean_cov"
+  colnames(vars) <- c("mean_af", "mean_cov")
+  
   print("We add the number of cells that exceed the VAF thresholds.")
-  vars_tib <- vars_tib %>% 
-    mutate(n0  = apply(assays(se)[["fraction"]], 1, function(x) sum(x > vaf_threshold, na.rm = TRUE))) %>%
-    mutate(VAF_threshold  = apply(assays(se)[["fraction"]], 1, function(x) sum(x > vaf_threshold, na.rm = TRUE)))
-
+  #vars_tib <- vars_tib %>% 
+  #  mutate(n0 = apply(assays(se)[["fraction"]], 1, function(x) sum(x > vaf_threshold, na.rm = TRUE))) %>%
+  #  mutate(VAF_threshold = apply(assays(se)[["fraction"]], 1, function(x) sum(x > vaf_threshold, na.rm = TRUE)))
+  n0 <- apply(assays(se)[["fraction"]], 1, function(x) sum(x > vaf_threshold, na.rm = TRUE))
+  VAF_threshold <- apply(assays(se)[["fraction"]], 1, function(x) sum(x > vaf_threshold, na.rm = TRUE))
+  vars <- cbind(vars, n0, VAF_threshold)
+  
   print("Thresholding using the clone size approach.")
-  voi_ch <- subset(vars_tib, mean_cov > min_coverage & 
-                             n0 > ceiling(fraction_negative_cells * ncol(se)) &
-                             VAF_threshold > min_clone_size)$var
+  #voi_ch <- subset(vars_tib, mean_cov > min_coverage & 
+  #                           n0 > ceiling(fraction_negative_cells * ncol(se)) &
+  #                           VAF_threshold > min_clone_size)$var
+  voi_ch <- subset(vars, mean_cov > min_coverage & 
+                         n0 > ceiling(fraction_negative_cells * ncol(se)) &
+                         VAF_threshold > min_clone_size)
+  voi_ch <- rownames(voi_ch)
   return(voi_ch)
 }

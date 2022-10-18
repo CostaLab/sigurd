@@ -23,13 +23,13 @@ VariantQuantileThresholding <- function(SE, min_coverage = 2, quantiles = c(0.1,
 
 
   print("Collect all information in a tibble")
-  vars_tib <- as_tibble(do.call(cbind, c(list(mean_af), list(mean_cov), quantiles)), rownames = "var")
-  #colnames(vars_tib)[2] <- "mean_af"
-  #colnames(vars_tib)[3] <- "mean_cov"
+  #vars_tib <- as_tibble(do.call(cbind, c(list(mean_af), list(mean_cov), quantiles)), rownames = "var")
+  vars <- do.call(cbind, c(list(mean_af), list(mean_cov), quantiles))
 
 
   print("Thresholding using the quantile approach.")
-  #voi_ch <- subset(vars_tib, mean_cov > min_coverage & V3 < thresholds[1] & V4 > thresholds[2])$var
-  voi_ch <- subset(vars_tib, V2 > min_coverage & V3 < thresholds[1] & V4 > thresholds[2])$var
+  #voi_ch <- subset(vars_tib, V2 > min_coverage & V3 < thresholds[1] & V4 > thresholds[2])$var
+  voi_ch <- subset(vars, vars[,2] > min_coverage & vars[,3] < thresholds[1] & vars[,4] > thresholds[2])
+  voi_ch <- rownames(voi_ch)
   return(voi_ch)
 }

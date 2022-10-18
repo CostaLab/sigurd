@@ -44,7 +44,7 @@ print(sample_file)
 These files are needed for VarTrix and not MGATK/MAEGATK. Since MAEGATK only analyses the mitochondrial genome, you only need to decide on a chromosomal prefix for your data. See the loading of data below.
 
 ```{r InputVCF, warning = FALSE, message = FALSE, output = FALSE}
-vcf_path <- system.file("extdata", "ALFA_subset_MAF2_prefix.vcf", package = "sigurd")
+vcf_path <- system.file("extdata", "CosmicSubset_filtered.vcf", package = "sigurd")
 vcf <- readVcf(vcf_path)
 vcf_info <- info(vcf)
 print(vcf)

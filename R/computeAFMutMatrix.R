@@ -27,7 +27,8 @@ computeAFMutMatrix <- function(SE, chromosome_prefix = "chrM"){
     # This issue can be solved on the MAEGATK/GATK side.
     mat[mat > 1] <- 1
     rownames(mat) <- names_rows
-    mat <- as(mat, "dgCMatrix")
+    #mat <- as(mat, "dgCMatrix")
+    mat <- as(mat, "CsparseMatrix")
     return(mat)
   }
 
