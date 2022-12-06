@@ -21,6 +21,7 @@ AmpliconSupplementing <- function(scRNAseq, amplicon){
   consensus <- matrix(0, ncol = length(all_cells), nrow = length(all_variants))
   rownames(consensus) <- all_variants
   colnames(consensus) <- all_cells
+  #consensus <- sparseMatrix(i = 1, j = 1, dims = c(length(all_variants), length(all_cells)), repr = "C")
   fraction <- consensus
   reads <- consensus
 
@@ -39,7 +40,7 @@ AmpliconSupplementing <- function(scRNAseq, amplicon){
   #assays(scRNAseq)[["fraction"]][rownames(amplicon), colnames(amplicon)] <- as.matrix(assays(amplicon)$fraction)
   #assays(scRNAseq)[["coverage"]][rownames(amplicon), colnames(amplicon)] <- as.matrix(assays(amplicon)$coverage)
 
-  se <- SummarizedExperiment(assays = list(consensus = consensus, fraction = fraction, coverage = reads),
+  se <- SummarizedExperiment(assays = list(consensus = as(consensus, "dgCMatrix"), fraction = as(fraction, "dgCMatrix"), coverage = as(reads, "dgCMatrix")),
                              colData = new_meta_data)
   return(se)
 }
