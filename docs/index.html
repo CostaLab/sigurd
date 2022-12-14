@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="index.html">sigurd</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.3</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -60,41 +60,67 @@
 <div class="page-header"><h1 id="single-cell-genotyping-using-rna-data-sigurd">SIngle cell Genotyping Using Rna Data (SIGURD)<a class="anchor" aria-label="anchor" href="#single-cell-genotyping-using-rna-data-sigurd"></a>
 </h1></div>
 <p>Martin Graßhoff<sup>1</sup> Ivan G. Costa<sup>1</sup></p>
-<p><sup>1</sup>Institute for Computational Genomics, Faculty of Medicine, RWTH Aachen University, Aachen, 52074 Germany</p>
-<p><strong>Motivation:</strong> With the advent of single RNA seq assays, it became possible to determine the mutational status for each individual cell. Single cell RNA seq data is by its very nature sparse and the probability of hitting a specific variants of interest is therefore very low. While this issue can be overcome using modified amplicon assays, it is also possible to impute the mutational status using the correlation between detected mitochondrial and somatic variants.</p>
-<p><strong>Results:</strong> Sigurd is an R package for the analysis of single cell data. We determine the overall variant burden per cell and also the number of interesting mitochondrial variants using previously published approaches.<br>
-We employ a imputation approach that utilizes the correlation between mitochondrial variants and somatic variants. Mitochondrial mutations that are significantly associated to somatic mutations are used as stand-ins.</p>
+<p><sup>1</sup>Institute for Computational Genomics, Faculty of
+Medicine, RWTH Aachen University, Aachen, 52074 Germany</p>
+<p><strong>Motivation:</strong> With the advent of single RNA seq
+assays, it became possible to determine the mutational status for each
+individual cell. Single cell RNA seq data is by its very nature sparse
+and the probability of hitting a specific variants of interest is
+therefore very low. While this issue can be overcome using modified
+amplicon assays, it is also possible to impute the mutational status
+using the correlation between detected mitochondrial and somatic
+variants.</p>
+<p><strong>Results:</strong> Sigurd is an R package for the analysis of
+single cell data. We determine the overall variant burden per cell and
+also the number of interesting mitochondrial variants using previously
+published approaches.<br>
+We employ a imputation approach that utilizes the correlation between
+mitochondrial variants and somatic variants. Mitochondrial mutations
+that are significantly associated to somatic mutations are used as
+stand-ins.</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p>You can install sigurd using the following code. The vignette requires data that is currently not published, but is provided as a reference.</p>
-<pre class="{r}"><code><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"devtools"</span><span class="op">)</span></span>
-<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"https://github.com/CostaLab/sigurd.git"</span>, build_vignettes <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va"><a href="https://costalab.github.io/sigurd/" class="external-link">sigurd</a></span><span class="op">)</span></span></code></pre>
+<p>You can install sigurd using the following code. The vignette
+requires data that is currently not published, but is provided as a
+reference.</p>
+<pre class="{r}"><code><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"devtools"</span><span class="op">)</span>
+<span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/remote-reexports.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"https://github.com/CostaLab/sigurd.git"</span>, build_vignettes <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
+<span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va"><a href="https://costalab.github.io/sigurd/" class="external-link">sigurd</a></span><span class="op">)</span></code></pre>
 </div>
 </div>
 <div class="section level1">
 <h1 id="sigurd">SiGURD<a class="anchor" aria-label="anchor" href="#sigurd"></a>
 </h1>
-<p>We have provided a small example data set for SiGURD. It consists of chromosome 9 and MT for one MPN sample. The mutation data was obtained from the Sanger Institute Catalogue Of Somatic Mutations In Cancer web site, <a href="http://cancer.sanger.ac.uk/cosmic" class="external-link uri">http://cancer.sanger.ac.uk/cosmic</a> Bamford et al (2004) The COSMIC (Catalogue of Somatic Mutations in Cancer) database and website. Br J Cancer, 91,355-358.</p>
-<pre class="{r}"><code><span><span class="co"># This will be included for published data.</span></span>
-<span><span class="co"># vignette('sigurd')</span></span></code></pre>
+<p>We have provided a small example data set for SiGURD. It consists of
+chromosome 9 and MT for one MPN sample. The mutation data was obtained
+from the Sanger Institute Catalogue Of Somatic Mutations In Cancer web
+site, <a href="http://cancer.sanger.ac.uk/cosmic" class="external-link uri">http://cancer.sanger.ac.uk/cosmic</a> Bamford et al (2004)
+The COSMIC (Catalogue of Somatic Mutations in Cancer) database and
+website. Br J Cancer, 91,355-358.</p>
+<pre class="{r}"><code><span class="co"># This will be included for published data.</span>
+<span class="co"># vignette('sigurd')</span></code></pre>
 </div>
 <div class="section level1">
-<h1 id="current-features-v020">Current Features v0.2.0<a class="anchor" aria-label="anchor" href="#current-features-v020"></a>
+<h1 id="current-features-v023">Current Features v0.2.3<a class="anchor" aria-label="anchor" href="#current-features-v023"></a>
 </h1>
 <ul>
 <li>Loading data from VarTrix and MAEGATK.</li>
 <li>Transforming the data to be compatible for joint analysis.</li>
 <li>Calculating the variant burden per cell.</li>
-<li>Thresholding variants using the approach described by Miller et al. [2]</li>
-<li>Finding associated variants using correlation or the Fisher Test.</li>
+<li>Thresholding variants using the approach described by Miller et
+al. [2]</li>
+<li>Finding associated variants using correlation or the Fisher
+Test.</li>
 </ul>
 </div>
 <div class="section level1">
 <h1 id="sources">Sources<a class="anchor" aria-label="anchor" href="#sources"></a>
 </h1>
-<p>This package implements approaches from the following packages and respositories: - <a href="https://github.com/petervangalen/MAESTER-2021" class="external-link uri">https://github.com/petervangalen/MAESTER-2021</a> – Variant Thresholding and functions for the loading of MAEGATK data. - <a href="https://github.com/CostaLab/CimpleG" class="external-link uri">https://github.com/CostaLab/CimpleG</a> – The loading and saving function.</p>
+<p>This package implements approaches from the following packages and
+respositories: - <a href="https://github.com/petervangalen/MAESTER-2021" class="external-link uri">https://github.com/petervangalen/MAESTER-2021</a> – Variant
+Thresholding and functions for the loading of MAEGATK data. - <a href="https://github.com/CostaLab/CimpleG" class="external-link uri">https://github.com/CostaLab/CimpleG</a> – The loading and
+saving function.</p>
 </div>
 <div class="section level1">
 <h1 id="future">Future<a class="anchor" aria-label="anchor" href="#future"></a>
@@ -109,7 +135,10 @@ We employ a imputation approach that utilizes the correlation between mitochondr
 <h1 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h1>
 <p>[1] VarTrix. <a href="https://github.com/10XGenomics/vartrix" class="external-link">github</a></p>
-<p>[2] Miller, T.E., et al. Mitochondrial variant enrichment from high-throughput single-cell RNA sequencing resolves clonal populations. Nat Biotechnol (2022). <a href="https://doi.org/10.1038/s41587-022-01210-8" class="external-link">link</a>. See also: <a href="https://github.com/petervangalen/MAESTER-2021" class="external-link">MAEGATK Analysis</a>, <a href="https://vangalenlab.bwh.harvard.edu/resources/maester-2021/" class="external-link">Data</a></p>
+<p>[2] Miller, T.E., et al. Mitochondrial variant enrichment from
+high-throughput single-cell RNA sequencing resolves clonal populations.
+Nat Biotechnol (2022). <a href="https://doi.org/10.1038/s41587-022-01210-8" class="external-link">link</a>. See also: <a href="https://github.com/petervangalen/MAESTER-2021" class="external-link">MAEGATK
+Analysis</a>, <a href="https://vangalenlab.bwh.harvard.edu/resources/maester-2021/" class="external-link">Data</a></p>
 </div>
 
   </main><aside class="col-md-3"><div class="license">
@@ -148,7 +177,8 @@ We employ a imputation approach that utilizes the correlation between mitochondr
 
 <div class="pkgdown-footer-right">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
+2.0.2.</p>
 </div>
 
     </footer>

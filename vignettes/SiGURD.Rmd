@@ -106,11 +106,11 @@ Since the possible number of tests/correlations is quite large, you can use mult
 
 
 ```{r VariantAssociation, warning = FALSE, message = FALSE, output = FALSE}
-Sample1_split_rows <- RowWiseSplit(Sample1_combined, remove_nocalls = FALSE)
+#Sample1_split_rows <- RowWiseSplit(Sample1_combined, remove_nocalls = FALSE)
 
-results_fishertest  <- VariantWiseFisherTest(Sample1_split_rows, n_cores = 8)
-rm(Sample1_split_rows)
+#results_fishertest  <- VariantWiseFisherTest(Sample1_split_rows, n_cores = 8)
+#rm(Sample1_split_rows)
 
-variant_association_heatmap <- VariantFisherTestHeatmap(results_fishertest, patient = "Sample1", min_alt_cells = 3)
-print(variant_association_heatmap)
+#variant_association_heatmap <- VariantFisherTestHeatmap(results_fishertest, patient = "Sample1", min_alt_cells = 3)
+#print(variant_association_heatmap)
 ```

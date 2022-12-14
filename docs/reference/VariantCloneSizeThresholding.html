@@ -12,7 +12,7 @@ Source: https://github.com/petervangalen/MAESTER-2021"><!-- mathjax --><script s
     
     <a class="navbar-brand me-2" href="../index.html">sigurd</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.3</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -51,36 +51,27 @@ Source: https://github.com/petervangalen/MAESTER-2021</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">VariantCloneSizeThresholding</span><span class="op">(</span></span>
-<span>  <span class="va">se</span>,</span>
-<span>  min_coverage <span class="op">=</span> <span class="fl">2</span>,</span>
-<span>  fraction_negative_cells <span class="op">=</span> <span class="fl">0.9</span>,</span>
-<span>  min_clone_size <span class="op">=</span> <span class="fl">10</span>,</span>
-<span>  vaf_threshold <span class="op">=</span> <span class="fl">0.5</span></span>
-<span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">VariantCloneSizeThresholding</span><span class="op">(</span>
+  <span class="va">se</span>,
+  min_coverage <span class="op">=</span> <span class="fl">2</span>,
+  fraction_negative_cells <span class="op">=</span> <span class="fl">0.9</span>,
+  min_clone_size <span class="op">=</span> <span class="fl">10</span>,
+  vaf_threshold <span class="op">=</span> <span class="fl">0.5</span>
+<span class="op">)</span></code></pre></div>
     </div>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>se</dt>
 <dd><p>SummarizedExperiment object.</p></dd>
-
-
 <dt>min_coverage</dt>
 <dd><p>Minimum coverage a variant needs to have.</p></dd>
-
-
 <dt>fraction_negative_cells</dt>
 <dd><p>The fraction of negative cells needed.</p></dd>
-
-
 <dt>min_clone_size</dt>
 <dd><p>minimum number of cells.</p></dd>
-
-
 <dt>vaf_threshold</dt>
 <dd><p>Variant Allele Threshold. Cells above this threshold are considered mutated.</p></dd>
-
 </dl></div>
 
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
@@ -92,7 +83,8 @@ Source: https://github.com/petervangalen/MAESTER-2021</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
+2.0.2.</p>
 </div>
 
     </footer></div>

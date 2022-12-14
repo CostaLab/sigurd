@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">sigurd</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.3</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -60,7 +60,7 @@
 
 
 <div class="row">
-  <main id="main" class="col-md-9"><div class="page-header">
+  <main id="main"><div class="page-header">
       <img src="" class="logo" alt=""><h1>SiGURD vignette</h1>
                         <h4 data-toc-skip class="author">Martin
 Grasshoff</h4>
@@ -75,62 +75,62 @@ Aachen University, Aachen, 52074 Germany<br><div class="d-none name"><code>SiGUR
     
     
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressPackageStartupMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va"><a href="https://costalab.github.io/sigurd/" class="external-link">sigurd</a></span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressPackageStartupMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va"><a href="https://bioconductor.org/packages/SummarizedExperiment" class="external-link">SummarizedExperiment</a></span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressPackageStartupMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va">VariantAnnotation</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><strong>R version</strong>: R version 4.2.1 (2022-06-23)</p>
-<p><strong>Package version</strong>: 0.2.0</p>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressPackageStartupMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va"><a href="https://costalab.github.io/sigurd/" class="external-link">sigurd</a></span><span class="op">)</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressPackageStartupMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va"><a href="https://bioconductor.org/packages/SummarizedExperiment" class="external-link">SummarizedExperiment</a></span><span class="op">)</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressPackageStartupMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va">VariantAnnotation</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<p><strong>R version</strong>: R version 4.1.2 (2021-11-01)</p>
+<p><strong>Package version</strong>: 0.2.3</p>
 <div class="section level2">
 <h2 id="your-input-file-">Your input file.<a class="anchor" aria-label="anchor" href="#your-input-file-"></a>
 </h2>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">sample_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"Input_Example_local.csv"</span>, package <span class="op">=</span> <span class="st">"sigurd"</span><span class="op">)</span></span>
-<span><span class="va">sample_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="va">sample_path</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">sample_file</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">##                      patient                    sample  source             type</span></span>
-<span><span class="co">## 1                    Sample1             Minus_Sample1 VarTrix scRNAseq_Somatic</span></span>
-<span><span class="co">## 2                    Sample1             Minus_Sample1 VarTrix      scRNAseq_MT</span></span>
-<span><span class="co">## 3                    Sample1             Minus_Sample1 MAEGATK      scRNAseq_MT</span></span>
-<span><span class="co">## 4                    Sample1              Plus_Sample1 VarTrix scRNAseq_Somatic</span></span>
-<span><span class="co">## 5                    Sample1              Plus_Sample1 VarTrix      scRNAseq_MT</span></span>
-<span><span class="co">## 6                    Sample1              Plus_Sample1 MAEGATK      scRNAseq_MT</span></span>
-<span><span class="co">## 7     SW_CellLineMix_All_mr3    SW_CellLineMix_All_mr3 MAEGATK      Amplicon_MT</span></span>
-<span><span class="co">## 8  SW_CellLineMix_RNAseq_mr3 SW_CellLineMix_RNAseq_mr3 MAEGATK      scRNAseq_MT</span></span>
-<span><span class="co">## 9      TenX_BPDCN712_All_mr3     TenX_BPDCN712_All_mr3 MAEGATK      Amplicon_MT</span></span>
-<span><span class="co">## 10  TenX_BPDCN712_RNAseq_mr3  TenX_BPDCN712_RNAseq_mr3 MAEGATK      scRNAseq_MT</span></span>
-<span><span class="co">##                                                   bam</span></span>
-<span><span class="co">## 1  ~/test_data/Minus_Sample1/possorted_genome_bam.bam</span></span>
-<span><span class="co">## 2  ~/test_data/Minus_Sample1/possorted_genome_bam.bam</span></span>
-<span><span class="co">## 3  ~/test_data/Minus_Sample1/possorted_genome_bam.bam</span></span>
-<span><span class="co">## 4   ~/test_data/Plus_Sample1/possorted_genome_bam.bam</span></span>
-<span><span class="co">## 5   ~/test_data/Plus_Sample1/possorted_genome_bam.bam</span></span>
-<span><span class="co">## 6   ~/test_data/Plus_Sample1/possorted_genome_bam.bam</span></span>
-<span><span class="co">## 7                                                NADA</span></span>
-<span><span class="co">## 8                                                NADA</span></span>
-<span><span class="co">## 9                                                NADA</span></span>
-<span><span class="co">## 10                                               NADA</span></span>
-<span><span class="co">##                                                    input_folder</span></span>
-<span><span class="co">## 1                                  ~/test_data/VarTrix/Somatic/</span></span>
-<span><span class="co">## 2                                       ~/test_data/VarTrix/MT/</span></span>
-<span><span class="co">## 3                                          ~/test_data/MAEGATK/</span></span>
-<span><span class="co">## 4                                  ~/test_data/VarTrix/Somatic/</span></span>
-<span><span class="co">## 5                                       ~/test_data/VarTrix/MT/</span></span>
-<span><span class="co">## 6                                          ~/test_data/MAEGATK/</span></span>
-<span><span class="co">## 7  ~/labcluster_data/mg000001/sigurd_test_scripts/MAESTER_data/</span></span>
-<span><span class="co">## 8  ~/labcluster_data/mg000001/sigurd_test_scripts/MAESTER_data/</span></span>
-<span><span class="co">## 9  ~/labcluster_data/mg000001/sigurd_test_scripts/MAESTER_data/</span></span>
-<span><span class="co">## 10 ~/labcluster_data/mg000001/sigurd_test_scripts/MAESTER_data/</span></span>
-<span><span class="co">##                                                   cells</span></span>
-<span><span class="co">## 1  ~/test_data/Minus_Sample1/Minus_Sample1_barcodes.tsv</span></span>
-<span><span class="co">## 2  ~/test_data/Minus_Sample1/Minus_Sample1_barcodes.tsv</span></span>
-<span><span class="co">## 3  ~/test_data/Minus_Sample1/Minus_Sample1_barcodes.tsv</span></span>
-<span><span class="co">## 4    ~/test_data/Plus_Sample1/Plus_Sample1_barcodes.tsv</span></span>
-<span><span class="co">## 5    ~/test_data/Plus_Sample1/Plus_Sample1_barcodes.tsv</span></span>
-<span><span class="co">## 6    ~/test_data/Plus_Sample1/Plus_Sample1_barcodes.tsv</span></span>
-<span><span class="co">## 7                                                  NADA</span></span>
-<span><span class="co">## 8                                                  NADA</span></span>
-<span><span class="co">## 9                                                  NADA</span></span>
-<span><span class="co">## 10                                                 NADA</span></span></code></pre>
+<code class="sourceCode R"><span class="va">sample_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"Input_Example_local.csv"</span>, package <span class="op">=</span> <span class="st">"sigurd"</span><span class="op">)</span>
+<span class="va">sample_file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.csv</a></span><span class="op">(</span><span class="va">sample_path</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">sample_file</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">##                      patient                    sample  source             type</span>
+<span class="co">## 1                    Sample1             Minus_Sample1 VarTrix scRNAseq_Somatic</span>
+<span class="co">## 2                    Sample1             Minus_Sample1 VarTrix      scRNAseq_MT</span>
+<span class="co">## 3                    Sample1             Minus_Sample1 MAEGATK      scRNAseq_MT</span>
+<span class="co">## 4                    Sample1              Plus_Sample1 VarTrix scRNAseq_Somatic</span>
+<span class="co">## 5                    Sample1              Plus_Sample1 VarTrix      scRNAseq_MT</span>
+<span class="co">## 6                    Sample1              Plus_Sample1 MAEGATK      scRNAseq_MT</span>
+<span class="co">## 7     SW_CellLineMix_All_mr3    SW_CellLineMix_All_mr3 MAEGATK      Amplicon_MT</span>
+<span class="co">## 8  SW_CellLineMix_RNAseq_mr3 SW_CellLineMix_RNAseq_mr3 MAEGATK      scRNAseq_MT</span>
+<span class="co">## 9      TenX_BPDCN712_All_mr3     TenX_BPDCN712_All_mr3 MAEGATK      Amplicon_MT</span>
+<span class="co">## 10  TenX_BPDCN712_RNAseq_mr3  TenX_BPDCN712_RNAseq_mr3 MAEGATK      scRNAseq_MT</span>
+<span class="co">##                                                   bam</span>
+<span class="co">## 1  ~/test_data/Minus_Sample1/possorted_genome_bam.bam</span>
+<span class="co">## 2  ~/test_data/Minus_Sample1/possorted_genome_bam.bam</span>
+<span class="co">## 3  ~/test_data/Minus_Sample1/possorted_genome_bam.bam</span>
+<span class="co">## 4   ~/test_data/Plus_Sample1/possorted_genome_bam.bam</span>
+<span class="co">## 5   ~/test_data/Plus_Sample1/possorted_genome_bam.bam</span>
+<span class="co">## 6   ~/test_data/Plus_Sample1/possorted_genome_bam.bam</span>
+<span class="co">## 7                                                NADA</span>
+<span class="co">## 8                                                NADA</span>
+<span class="co">## 9                                                NADA</span>
+<span class="co">## 10                                               NADA</span>
+<span class="co">##                                                    input_folder</span>
+<span class="co">## 1                                  ~/test_data/VarTrix/Somatic/</span>
+<span class="co">## 2                                       ~/test_data/VarTrix/MT/</span>
+<span class="co">## 3                                          ~/test_data/MAEGATK/</span>
+<span class="co">## 4                                  ~/test_data/VarTrix/Somatic/</span>
+<span class="co">## 5                                       ~/test_data/VarTrix/MT/</span>
+<span class="co">## 6                                          ~/test_data/MAEGATK/</span>
+<span class="co">## 7  ~/labcluster_data/mg000001/sigurd_test_scripts/MAESTER_data/</span>
+<span class="co">## 8  ~/labcluster_data/mg000001/sigurd_test_scripts/MAESTER_data/</span>
+<span class="co">## 9  ~/labcluster_data/mg000001/sigurd_test_scripts/MAESTER_data/</span>
+<span class="co">## 10 ~/labcluster_data/mg000001/sigurd_test_scripts/MAESTER_data/</span>
+<span class="co">##                                                   cells</span>
+<span class="co">## 1  ~/test_data/Minus_Sample1/Minus_Sample1_barcodes.tsv</span>
+<span class="co">## 2  ~/test_data/Minus_Sample1/Minus_Sample1_barcodes.tsv</span>
+<span class="co">## 3  ~/test_data/Minus_Sample1/Minus_Sample1_barcodes.tsv</span>
+<span class="co">## 4    ~/test_data/Plus_Sample1/Plus_Sample1_barcodes.tsv</span>
+<span class="co">## 5    ~/test_data/Plus_Sample1/Plus_Sample1_barcodes.tsv</span>
+<span class="co">## 6    ~/test_data/Plus_Sample1/Plus_Sample1_barcodes.tsv</span>
+<span class="co">## 7                                                  NADA</span>
+<span class="co">## 8                                                  NADA</span>
+<span class="co">## 9                                                  NADA</span>
+<span class="co">## 10                                                 NADA</span></code></pre>
 </div>
 <div class="section level2">
 <h2 id="your-vcf-files-">Your vcf files.<a class="anchor" aria-label="anchor" href="#your-vcf-files-"></a>
@@ -140,104 +140,104 @@ MAEGATK only analyses the mitochondrial genome, you only need to decide
 on a chromosomal prefix for your data. See the loading of data
 below.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">vcf_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"CosmicSubset_filtered.vcf"</span>, package <span class="op">=</span> <span class="st">"sigurd"</span><span class="op">)</span></span>
-<span><span class="va">vcf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/VariantAnnotation/man/readVcf-methods.html" class="external-link">readVcf</a></span><span class="op">(</span><span class="va">vcf_path</span><span class="op">)</span></span>
-<span><span class="va">vcf_info</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/VariantAnnotation/man/VCF-class.html" class="external-link">info</a></span><span class="op">(</span><span class="va">vcf</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">vcf</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## class: CollapsedVCF </span></span>
-<span><span class="co">## dim: 1684 0 </span></span>
-<span><span class="co">## rowRanges(vcf):</span></span>
-<span><span class="co">##   GRanges with 5 metadata columns: paramRangeID, REF, ALT, QUAL, FILTER</span></span>
-<span><span class="co">## info(vcf):</span></span>
-<span><span class="co">##   DataFrame with 10 columns: GENE, STRAND, GENOMIC_ID, LEGACY_ID, CDS, AA, H...</span></span>
-<span><span class="co">## info(header(vcf)):</span></span>
-<span><span class="co">##               Number Type    Description                        </span></span>
-<span><span class="co">##    GENE       1      String  Gene name                          </span></span>
-<span><span class="co">##    STRAND     1      String  Gene strand                        </span></span>
-<span><span class="co">##    GENOMIC_ID 1      String  Genomic Mutation ID                </span></span>
-<span><span class="co">##    LEGACY_ID  1      String  Legacy Mutation ID                 </span></span>
-<span><span class="co">##    CDS        1      String  CDS annotation                     </span></span>
-<span><span class="co">##    AA         1      String  Peptide annotation                 </span></span>
-<span><span class="co">##    HGVSC      1      String  HGVS cds syntax                    </span></span>
-<span><span class="co">##    HGVSP      1      String  HGVS peptide syntax                </span></span>
-<span><span class="co">##    HGVSG      1      String  HGVS genomic syntax                </span></span>
-<span><span class="co">##    CNT        1      Integer How many samples have this mutation</span></span>
-<span><span class="co">## geno(vcf):</span></span>
-<span><span class="co">##   List of length 0:</span></span></code></pre>
+<code class="sourceCode R"><span class="va">vcf_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"CosmicSubset_filtered.vcf"</span>, package <span class="op">=</span> <span class="st">"sigurd"</span><span class="op">)</span>
+<span class="va">vcf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/VariantAnnotation/man/readVcf-methods.html" class="external-link">readVcf</a></span><span class="op">(</span><span class="va">vcf_path</span><span class="op">)</span>
+<span class="va">vcf_info</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/VariantAnnotation/man/VCF-class.html" class="external-link">info</a></span><span class="op">(</span><span class="va">vcf</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">vcf</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## class: CollapsedVCF </span>
+<span class="co">## dim: 1684 0 </span>
+<span class="co">## rowRanges(vcf):</span>
+<span class="co">##   GRanges with 5 metadata columns: paramRangeID, REF, ALT, QUAL, FILTER</span>
+<span class="co">## info(vcf):</span>
+<span class="co">##   DataFrame with 10 columns: GENE, STRAND, GENOMIC_ID, LEGACY_ID, CDS, AA, H...</span>
+<span class="co">## info(header(vcf)):</span>
+<span class="co">##               Number Type    Description                        </span>
+<span class="co">##    GENE       1      String  Gene name                          </span>
+<span class="co">##    STRAND     1      String  Gene strand                        </span>
+<span class="co">##    GENOMIC_ID 1      String  Genomic Mutation ID                </span>
+<span class="co">##    LEGACY_ID  1      String  Legacy Mutation ID                 </span>
+<span class="co">##    CDS        1      String  CDS annotation                     </span>
+<span class="co">##    AA         1      String  Peptide annotation                 </span>
+<span class="co">##    HGVSC      1      String  HGVS cds syntax                    </span>
+<span class="co">##    HGVSP      1      String  HGVS peptide syntax                </span>
+<span class="co">##    HGVSG      1      String  HGVS genomic syntax                </span>
+<span class="co">##    CNT        1      Integer How many samples have this mutation</span>
+<span class="co">## geno(vcf):</span>
+<span class="co">##   List of length 0:</span></code></pre>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">vcf_info</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## DataFrame with 1684 rows and 10 columns</span></span>
-<span><span class="co">##             GENE      STRAND  GENOMIC_ID    LEGACY_ID            CDS</span></span>
-<span><span class="co">##      &lt;character&gt; &lt;character&gt; &lt;character&gt;  &lt;character&gt;    &lt;character&gt;</span></span>
-<span><span class="co">## 1           ABL1           +          NA COSN17133235  c.136+2107G&gt;C</span></span>
-<span><span class="co">## 2           ABL1           +          NA COSN14774721  c.136+2599C&gt;T</span></span>
-<span><span class="co">## 3           ABL1           +          NA COSN17133236  c.136+3198G&gt;C</span></span>
-<span><span class="co">## 4           ABL1           +          NA COSN17133237  c.136+4488G&gt;C</span></span>
-<span><span class="co">## 5           ABL1           +          NA COSN17133050  c.136+5055C&gt;T</span></span>
-<span><span class="co">## ...          ...         ...         ...          ...            ...</span></span>
-<span><span class="co">## 1680         WT1           -          NA  COSN6609219    c.872+82G&gt;T</span></span>
-<span><span class="co">## 1681         WT1           -          NA COSN17132919    c.872+16G&gt;A</span></span>
-<span><span class="co">## 1682         WT1           -          NA COSN17134797    c.770-57C&gt;T</span></span>
-<span><span class="co">## 1683         WT1           -          NA  COSM5020955       c.594C&gt;T</span></span>
-<span><span class="co">## 1684       ZRSR2           +          NA  COSM3035276 c.1338_1343dup</span></span>
-<span><span class="co">##                  AA                  HGVSC                  HGVSP</span></span>
-<span><span class="co">##         &lt;character&gt;            &lt;character&gt;            &lt;character&gt;</span></span>
-<span><span class="co">## 1               p.? ENST00000372348.6:c...                     NA</span></span>
-<span><span class="co">## 2               p.? ENST00000372348.6:c...                     NA</span></span>
-<span><span class="co">## 3               p.? ENST00000372348.6:c...                     NA</span></span>
-<span><span class="co">## 4               p.? ENST00000372348.6:c...                     NA</span></span>
-<span><span class="co">## 5               p.? ENST00000372348.6:c...                     NA</span></span>
-<span><span class="co">## ...             ...                    ...                    ...</span></span>
-<span><span class="co">## 1680            p.? ENST00000332351.7:c...                     NA</span></span>
-<span><span class="co">## 1681            p.? ENST00000332351.7:c...                     NA</span></span>
-<span><span class="co">## 1682            p.? ENST00000332351.7:c...                     NA</span></span>
-<span><span class="co">## 1683      p.N198%3D ENST00000332351.7:c... ENSP00000331327.3:p...</span></span>
-<span><span class="co">## 1684 p.S447_R448dup ENST00000307771.7:c... ENSP00000303015.7:p...</span></span>
-<span><span class="co">##                       HGVSG       CNT</span></span>
-<span><span class="co">##                 &lt;character&gt; &lt;integer&gt;</span></span>
-<span><span class="co">## 1          9:g.130716562G&gt;C        10</span></span>
-<span><span class="co">## 2          9:g.130717054C&gt;T        10</span></span>
-<span><span class="co">## 3          9:g.130717653G&gt;C        10</span></span>
-<span><span class="co">## 4          9:g.130718943G&gt;C        10</span></span>
-<span><span class="co">## 5          9:g.130719510C&gt;T        11</span></span>
-<span><span class="co">## ...                     ...       ...</span></span>
-<span><span class="co">## 1680       11:g.32427874C&gt;A        74</span></span>
-<span><span class="co">## 1681       11:g.32427940C&gt;T       132</span></span>
-<span><span class="co">## 1682       11:g.32428115G&gt;A       108</span></span>
-<span><span class="co">## 1683       11:g.32434752G&gt;A        73</span></span>
-<span><span class="co">## 1684 X:g.15823131_1582313..        10</span></span></code></pre>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">vcf_info</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## DataFrame with 1684 rows and 10 columns</span>
+<span class="co">##             GENE      STRAND  GENOMIC_ID    LEGACY_ID            CDS</span>
+<span class="co">##      &lt;character&gt; &lt;character&gt; &lt;character&gt;  &lt;character&gt;    &lt;character&gt;</span>
+<span class="co">## 1           ABL1           +          NA COSN17133235  c.136+2107G&gt;C</span>
+<span class="co">## 2           ABL1           +          NA COSN14774721  c.136+2599C&gt;T</span>
+<span class="co">## 3           ABL1           +          NA COSN17133236  c.136+3198G&gt;C</span>
+<span class="co">## 4           ABL1           +          NA COSN17133237  c.136+4488G&gt;C</span>
+<span class="co">## 5           ABL1           +          NA COSN17133050  c.136+5055C&gt;T</span>
+<span class="co">## ...          ...         ...         ...          ...            ...</span>
+<span class="co">## 1680         WT1           -          NA  COSN6609219    c.872+82G&gt;T</span>
+<span class="co">## 1681         WT1           -          NA COSN17132919    c.872+16G&gt;A</span>
+<span class="co">## 1682         WT1           -          NA COSN17134797    c.770-57C&gt;T</span>
+<span class="co">## 1683         WT1           -          NA  COSM5020955       c.594C&gt;T</span>
+<span class="co">## 1684       ZRSR2           +          NA  COSM3035276 c.1338_1343dup</span>
+<span class="co">##                  AA                  HGVSC                  HGVSP</span>
+<span class="co">##         &lt;character&gt;            &lt;character&gt;            &lt;character&gt;</span>
+<span class="co">## 1               p.? ENST00000372348.6:c...                     NA</span>
+<span class="co">## 2               p.? ENST00000372348.6:c...                     NA</span>
+<span class="co">## 3               p.? ENST00000372348.6:c...                     NA</span>
+<span class="co">## 4               p.? ENST00000372348.6:c...                     NA</span>
+<span class="co">## 5               p.? ENST00000372348.6:c...                     NA</span>
+<span class="co">## ...             ...                    ...                    ...</span>
+<span class="co">## 1680            p.? ENST00000332351.7:c...                     NA</span>
+<span class="co">## 1681            p.? ENST00000332351.7:c...                     NA</span>
+<span class="co">## 1682            p.? ENST00000332351.7:c...                     NA</span>
+<span class="co">## 1683      p.N198%3D ENST00000332351.7:c... ENSP00000331327.3:p...</span>
+<span class="co">## 1684 p.S447_R448dup ENST00000307771.7:c... ENSP00000303015.7:p...</span>
+<span class="co">##                       HGVSG       CNT</span>
+<span class="co">##                 &lt;character&gt; &lt;integer&gt;</span>
+<span class="co">## 1          9:g.130716562G&gt;C        10</span>
+<span class="co">## 2          9:g.130717054C&gt;T        10</span>
+<span class="co">## 3          9:g.130717653G&gt;C        10</span>
+<span class="co">## 4          9:g.130718943G&gt;C        10</span>
+<span class="co">## 5          9:g.130719510C&gt;T        11</span>
+<span class="co">## ...                     ...       ...</span>
+<span class="co">## 1680       11:g.32427874C&gt;A        74</span>
+<span class="co">## 1681       11:g.32427940C&gt;T       132</span>
+<span class="co">## 1682       11:g.32428115G&gt;A       108</span>
+<span class="co">## 1683       11:g.32434752G&gt;A        73</span>
+<span class="co">## 1684 X:g.15823131_1582313..        10</span></code></pre>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">vcf_path_mt</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"chrM_Input_VCF_NoMAF_Filtering.vcf"</span>, package <span class="op">=</span> <span class="st">"sigurd"</span><span class="op">)</span></span>
-<span><span class="va">vcf_mt</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/VariantAnnotation/man/readVcf-methods.html" class="external-link">readVcf</a></span><span class="op">(</span><span class="va">vcf_path_mt</span><span class="op">)</span></span>
-<span><span class="va">vcf_mt_info</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/VariantAnnotation/man/VCF-class.html" class="external-link">info</a></span><span class="op">(</span><span class="va">vcf_mt</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">vcf_mt</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## class: CollapsedVCF </span></span>
-<span><span class="co">## dim: 49708 0 </span></span>
-<span><span class="co">## rowRanges(vcf):</span></span>
-<span><span class="co">##   GRanges with 5 metadata columns: paramRangeID, REF, ALT, QUAL, FILTER</span></span>
-<span><span class="co">## info(vcf):</span></span>
-<span><span class="co">##   DataFrame with 1 column: ID</span></span>
-<span><span class="co">## info(header(vcf)):</span></span>
-<span><span class="co">##       Number Type      Description</span></span>
-<span><span class="co">##    ID A      Character Mutation   </span></span>
-<span><span class="co">## geno(vcf):</span></span>
-<span><span class="co">##   List of length 0:</span></span></code></pre>
+<code class="sourceCode R"><span class="va">vcf_path_mt</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"chrM_Input_VCF_NoMAF_Filtering.vcf"</span>, package <span class="op">=</span> <span class="st">"sigurd"</span><span class="op">)</span>
+<span class="va">vcf_mt</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/VariantAnnotation/man/readVcf-methods.html" class="external-link">readVcf</a></span><span class="op">(</span><span class="va">vcf_path_mt</span><span class="op">)</span>
+<span class="va">vcf_mt_info</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/VariantAnnotation/man/VCF-class.html" class="external-link">info</a></span><span class="op">(</span><span class="va">vcf_mt</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">vcf_mt</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## class: CollapsedVCF </span>
+<span class="co">## dim: 49708 0 </span>
+<span class="co">## rowRanges(vcf):</span>
+<span class="co">##   GRanges with 5 metadata columns: paramRangeID, REF, ALT, QUAL, FILTER</span>
+<span class="co">## info(vcf):</span>
+<span class="co">##   DataFrame with 1 column: ID</span>
+<span class="co">## info(header(vcf)):</span>
+<span class="co">##       Number Type      Description</span>
+<span class="co">##    ID A      Character Mutation   </span>
+<span class="co">## geno(vcf):</span>
+<span class="co">##   List of length 0:</span></code></pre>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">vcf_mt_info</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## DataFrame with 49708 rows and 1 column</span></span>
-<span><span class="co">##                             ID</span></span>
-<span><span class="co">##                &lt;CharacterList&gt;</span></span>
-<span><span class="co">## chrM:1_G/A               1_G&gt;A</span></span>
-<span><span class="co">## chrM:3_T/A               3_T&gt;A</span></span>
-<span><span class="co">## chrM:4_C/A               4_C&gt;A</span></span>
-<span><span class="co">## chrM:6_C/A               6_C&gt;A</span></span>
-<span><span class="co">## chrM:8_G/A               8_G&gt;A</span></span>
-<span><span class="co">## ...                        ...</span></span>
-<span><span class="co">## chrM:16564_A/T       16564_A&gt;T</span></span>
-<span><span class="co">## chrM:16565_C/T       16565_C&gt;T</span></span>
-<span><span class="co">## chrM:16566_G/T       16566_G&gt;T</span></span>
-<span><span class="co">## chrM:16567_A/T       16567_A&gt;T</span></span>
-<span><span class="co">## chrM:16569_G/T       16569_G&gt;T</span></span></code></pre>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">vcf_mt_info</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## DataFrame with 49708 rows and 1 column</span>
+<span class="co">##                             ID</span>
+<span class="co">##                &lt;CharacterList&gt;</span>
+<span class="co">## chrM:1_G/A               1_G&gt;A</span>
+<span class="co">## chrM:3_T/A               3_T&gt;A</span>
+<span class="co">## chrM:4_C/A               4_C&gt;A</span>
+<span class="co">## chrM:6_C/A               6_C&gt;A</span>
+<span class="co">## chrM:8_G/A               8_G&gt;A</span>
+<span class="co">## ...                        ...</span>
+<span class="co">## chrM:16564_A/T       16564_A&gt;T</span>
+<span class="co">## chrM:16565_C/T       16565_C&gt;T</span>
+<span class="co">## chrM:16566_G/T       16566_G&gt;T</span>
+<span class="co">## chrM:16567_A/T       16567_A&gt;T</span>
+<span class="co">## chrM:16569_G/T       16569_G&gt;T</span></code></pre>
 </div>
 <div class="section level2">
 <h2 id="loading-and-filtering-the-input-data-">Loading and filtering the input data.<a class="anchor" aria-label="anchor" href="#loading-and-filtering-the-input-data-"></a>
@@ -253,62 +253,62 @@ variants. - Amplicon_Somatic: amplicon data analysed for somatic
 variants. - Amplicon_MT: amplicon data analysed for MT variants.</p>
 <p>Since the MT results are denser, they take longer to load.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">Sample1_scRNAseq_Somatic</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/LoadingVarTrix_typewise.html">LoadingVarTrix_typewise</a></span><span class="op">(</span>samples_file <span class="op">=</span> <span class="va">sample_path</span>, vcf_path <span class="op">=</span> <span class="va">vcf_path</span>, patient <span class="op">=</span> <span class="st">"Sample1"</span>, type_use <span class="op">=</span> <span class="st">"scRNAseq_Somatic"</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] "We read in the samples file."</span></span>
-<span><span class="co">## [1] "We subset to the patient of interest."</span></span>
-<span><span class="co">## [1] "We get the different samples."</span></span>
-<span><span class="co">## [1] "We load the SNV files."</span></span>
-<span><span class="co">## [1] "We read the variants."</span></span>
-<span><span class="co">## [1] "We read in the cell barcodes output by CellRanger as a list."</span></span>
-<span><span class="co">## [1] "We read in the vcf file."</span></span>
-<span><span class="co">## [1] "We generate more accessible names."</span></span>
-<span><span class="co">## [1] "We read in the different sparse genotype matrices as a list."</span></span>
-<span><span class="co">## [1] "We have a slot per type of input data."</span></span>
-<span><span class="co">## [1] "Loading sample 1 of 2"</span></span>
-<span><span class="co">## [1] "Loading sample 2 of 2"</span></span>
-<span><span class="co">## [1] "We generate a large data.frame of all the snv matrices."</span></span>
-<span><span class="co">## [1] "We remove the matrix lists."</span></span>
-<span><span class="co">## [1] "We remove variants, that are not detected in at least 2 cells."</span></span>
-<span><span class="co">## [1] "We remove cells that are always NoCall."</span></span>
-<span><span class="co">## [1] "scRNAseq_Somatic Variants: 31"</span></span>
-<span><span class="co">## [1] "scRNAseq_Somatic Cells: 195"</span></span>
-<span><span class="co">## [1] "We transform the sparse matrices to matrices, so we can calculate the fraction."</span></span>
-<span><span class="co">## [1] "We generate a SummarizedExperiment object containing the fraction and the consensus matrices."</span></span></code></pre>
+<code class="sourceCode R"><span class="va">Sample1_scRNAseq_Somatic</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/LoadingVarTrix_typewise.html">LoadingVarTrix_typewise</a></span><span class="op">(</span>samples_file <span class="op">=</span> <span class="va">sample_path</span>, vcf_path <span class="op">=</span> <span class="va">vcf_path</span>, patient <span class="op">=</span> <span class="st">"Sample1"</span>, type_use <span class="op">=</span> <span class="st">"scRNAseq_Somatic"</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## [1] "We read in the samples file."</span>
+<span class="co">## [1] "We subset to the patient of interest."</span>
+<span class="co">## [1] "We get the different samples."</span>
+<span class="co">## [1] "We load the SNV files."</span>
+<span class="co">## [1] "We read the variants."</span>
+<span class="co">## [1] "We read in the cell barcodes output by CellRanger as a list."</span>
+<span class="co">## [1] "We read in the vcf file."</span>
+<span class="co">## [1] "We generate more accessible names."</span>
+<span class="co">## [1] "We read in the different sparse genotype matrices as a list."</span>
+<span class="co">## [1] "We have a slot per type of input data."</span>
+<span class="co">## [1] "Loading sample 1 of 2"</span>
+<span class="co">## [1] "Loading sample 2 of 2"</span>
+<span class="co">## [1] "We generate a large data.frame of all the snv matrices."</span>
+<span class="co">## [1] "We remove the matrix lists."</span>
+<span class="co">## [1] "We remove variants, that are not detected in at least 2 cells."</span>
+<span class="co">## [1] "We remove cells that are always NoCall."</span>
+<span class="co">## [1] "scRNAseq_Somatic Variants: 31"</span>
+<span class="co">## [1] "scRNAseq_Somatic Cells: 195"</span>
+<span class="co">## [1] "We transform the sparse matrices to matrices, so we can calculate the fraction."</span>
+<span class="co">## [1] "We generate a SummarizedExperiment object containing the fraction and the consensus matrices."</span></code></pre>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">Sample1_scRNAseq_MT</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/LoadingVarTrix_typewise.html">LoadingVarTrix_typewise</a></span><span class="op">(</span>samples_file <span class="op">=</span> <span class="va">sample_path</span>, vcf_path <span class="op">=</span> <span class="va">vcf_path_mt</span>, patient <span class="op">=</span> <span class="st">"Sample1"</span>, type_use <span class="op">=</span> <span class="st">"scRNAseq_MT"</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] "We read in the samples file."</span></span>
-<span><span class="co">## [1] "We subset to the patient of interest."</span></span>
-<span><span class="co">## [1] "We get the different samples."</span></span>
-<span><span class="co">## [1] "We load the SNV files."</span></span>
-<span><span class="co">## [1] "We read the variants."</span></span>
-<span><span class="co">## [1] "We read in the cell barcodes output by CellRanger as a list."</span></span>
-<span><span class="co">## [1] "We read in the vcf file."</span></span>
-<span><span class="co">## [1] "We generate more accessible names."</span></span>
-<span><span class="co">## [1] "We read in the different sparse genotype matrices as a list."</span></span>
-<span><span class="co">## [1] "We have a slot per type of input data."</span></span>
-<span><span class="co">## [1] "Loading sample 1 of 2"</span></span>
-<span><span class="co">## [1] "Loading sample 2 of 2"</span></span>
-<span><span class="co">## [1] "We generate a large data.frame of all the snv matrices."</span></span>
-<span><span class="co">## [1] "We remove the matrix lists."</span></span>
-<span><span class="co">## [1] "We remove variants, that are not detected in at least 2 cells."</span></span>
-<span><span class="co">## [1] "We remove cells that are always NoCall."</span></span>
-<span><span class="co">## [1] "scRNAseq_MT Variants: 30324"</span></span>
-<span><span class="co">## [1] "scRNAseq_MT Cells: 10277"</span></span>
-<span><span class="co">## [1] "We transform the sparse matrices to matrices, so we can calculate the fraction."</span></span>
-<span><span class="co">## [1] "We generate a SummarizedExperiment object containing the fraction and the consensus matrices."</span></span></code></pre>
+<code class="sourceCode R"><span class="va">Sample1_scRNAseq_MT</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/LoadingVarTrix_typewise.html">LoadingVarTrix_typewise</a></span><span class="op">(</span>samples_file <span class="op">=</span> <span class="va">sample_path</span>, vcf_path <span class="op">=</span> <span class="va">vcf_path_mt</span>, patient <span class="op">=</span> <span class="st">"Sample1"</span>, type_use <span class="op">=</span> <span class="st">"scRNAseq_MT"</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## [1] "We read in the samples file."</span>
+<span class="co">## [1] "We subset to the patient of interest."</span>
+<span class="co">## [1] "We get the different samples."</span>
+<span class="co">## [1] "We load the SNV files."</span>
+<span class="co">## [1] "We read the variants."</span>
+<span class="co">## [1] "We read in the cell barcodes output by CellRanger as a list."</span>
+<span class="co">## [1] "We read in the vcf file."</span>
+<span class="co">## [1] "We generate more accessible names."</span>
+<span class="co">## [1] "We read in the different sparse genotype matrices as a list."</span>
+<span class="co">## [1] "We have a slot per type of input data."</span>
+<span class="co">## [1] "Loading sample 1 of 2"</span>
+<span class="co">## [1] "Loading sample 2 of 2"</span>
+<span class="co">## [1] "We generate a large data.frame of all the snv matrices."</span>
+<span class="co">## [1] "We remove the matrix lists."</span>
+<span class="co">## [1] "We remove variants, that are not detected in at least 2 cells."</span>
+<span class="co">## [1] "We remove cells that are always NoCall."</span>
+<span class="co">## [1] "scRNAseq_MT Variants: 30324"</span>
+<span class="co">## [1] "scRNAseq_MT Cells: 10277"</span>
+<span class="co">## [1] "We transform the sparse matrices to matrices, so we can calculate the fraction."</span>
+<span class="co">## [1] "We generate a SummarizedExperiment object containing the fraction and the consensus matrices."</span></code></pre>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">Sample1_combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/CombineSEobjects.html">CombineSEobjects</a></span><span class="op">(</span>se_somatic <span class="op">=</span> <span class="va">Sample1_scRNAseq_Somatic</span>, se_MT <span class="op">=</span> <span class="va">Sample1_scRNAseq_MT</span>, suffixes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"_somatic"</span>, <span class="st">"_MT"</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/rm.html" class="external-link">rm</a></span><span class="op">(</span><span class="va">Sample1_scRNAseq_Somatic</span>, <span class="va">Sample1_scRNAseq_MT</span><span class="op">)</span></span>
-<span><span class="va">Sample1_combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Filtering.html">Filtering</a></span><span class="op">(</span><span class="va">Sample1_combined</span>, min_cells_per_variant <span class="op">=</span> <span class="fl">2</span>, fraction_threshold <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] "We assume that cells with a fraction smaller than our threshold are actually reference."</span></span>
-<span><span class="co">## [1] "We set consensus values to 1 (Ref) and fraction values to 0."</span></span>
-<span><span class="co">## [1] "We do not set fractions between 0.05 and 1 to 1."</span></span>
-<span><span class="co">## [1] "This way, we retain the heterozygous information."</span></span>
-<span><span class="co">## [1] "We remove all the variants that are always NoCall."</span></span>
-<span><span class="co">## [1] "We remove variants, that are not at least detected in 2 cells."</span></span>
-<span><span class="co">## [1] "We remove all cells that are not &gt;= 1 (Ref) for at least 1 variant."</span></span></code></pre>
+<code class="sourceCode R"><span class="va">Sample1_combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/CombineSEobjects.html">CombineSEobjects</a></span><span class="op">(</span>se_somatic <span class="op">=</span> <span class="va">Sample1_scRNAseq_Somatic</span>, se_MT <span class="op">=</span> <span class="va">Sample1_scRNAseq_MT</span>, suffixes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"_somatic"</span>, <span class="st">"_MT"</span><span class="op">)</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/rm.html" class="external-link">rm</a></span><span class="op">(</span><span class="va">Sample1_scRNAseq_Somatic</span>, <span class="va">Sample1_scRNAseq_MT</span><span class="op">)</span>
+<span class="va">Sample1_combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Filtering.html">Filtering</a></span><span class="op">(</span><span class="va">Sample1_combined</span>, min_cells_per_variant <span class="op">=</span> <span class="fl">2</span>, fraction_threshold <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## [1] "We assume that cells with a fraction smaller than our threshold are actually reference."</span>
+<span class="co">## [1] "We set consensus values to 1 (Ref) and fraction values to 0."</span>
+<span class="co">## [1] "We do not set fractions between 0.05 and 1 to 1."</span>
+<span class="co">## [1] "This way, we retain the heterozygous information."</span>
+<span class="co">## [1] "We remove all the variants that are always NoCall."</span>
+<span class="co">## [1] "We remove variants, that are not at least detected in 2 cells."</span>
+<span class="co">## [1] "We remove all cells that are not &gt;= 1 (Ref) for at least 1 variant."</span></code></pre>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">Sample1_combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/VariantBurden.html">VariantBurden</a></span><span class="op">(</span><span class="va">Sample1_combined</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span class="va">Sample1_combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/VariantBurden.html">VariantBurden</a></span><span class="op">(</span><span class="va">Sample1_combined</span><span class="op">)</span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="determing-mt-variants-of-interest-">Determing MT variants of interest.<a class="anchor" aria-label="anchor" href="#determing-mt-variants-of-interest-"></a>
@@ -317,14 +317,14 @@ variants. - Amplicon_MT: amplicon data analysed for MT variants.</p>
 <p>The heatmap needs some time to plot, since the cells are
 clustered.</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">voi_ch</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/VariantQuantileThresholding.html">VariantQuantileThresholding</a></span><span class="op">(</span>SE <span class="op">=</span> <span class="va">Sample1_combined</span>, min_coverage <span class="op">=</span> <span class="fl">2</span>, quantiles <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.1</span>, <span class="fl">0.9</span><span class="op">)</span>, thresholds <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.1</span>, <span class="fl">0.9</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] "Get the mean allele frequency and coverage."</span></span>
-<span><span class="co">## [1] "Get the quantiles of the VAFs of each variant."</span></span>
-<span><span class="co">## [1] "Collect all information in a tibble"</span></span>
-<span><span class="co">## [1] "Thresholding using the quantile approach."</span></span></code></pre>
+<code class="sourceCode R"><span class="va">voi_ch</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/VariantQuantileThresholding.html">VariantQuantileThresholding</a></span><span class="op">(</span>SE <span class="op">=</span> <span class="va">Sample1_combined</span>, min_coverage <span class="op">=</span> <span class="fl">2</span>, quantiles <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.1</span>, <span class="fl">0.9</span><span class="op">)</span>, thresholds <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.1</span>, <span class="fl">0.9</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## [1] "Get the mean allele frequency and coverage."</span>
+<span class="co">## [1] "Get the quantiles of the VAFs of each variant."</span>
+<span class="co">## [1] "Collect all information in a tibble"</span>
+<span class="co">## [1] "Thresholding using the quantile approach."</span></code></pre>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">hm</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/HeatmapVoi.html">HeatmapVoi</a></span><span class="op">(</span>SE <span class="op">=</span> <span class="va">Sample1_combined</span>, voi <span class="op">=</span> <span class="va">voi_ch</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">hm</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span class="va">hm</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/HeatmapVoi.html">HeatmapVoi</a></span><span class="op">(</span>SE <span class="op">=</span> <span class="va">Sample1_combined</span>, voi <span class="op">=</span> <span class="va">voi_ch</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">hm</span><span class="op">)</span></code></pre></div>
 <p><img src="SiGURD_files/figure-html/VariantsOfInterest-1.png" width="700"></p>
 </div>
 <div class="section level2">
@@ -335,56 +335,56 @@ use the correlation between variants. For this, we combine the somatic
 and the MT results. Since the possible number of tests/correlations is
 quite large, you can use multiple cores to perform the calculations.</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">Sample1_split_rows</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/RowWiseSplit.html">RowWiseSplit</a></span><span class="op">(</span><span class="va">Sample1_combined</span>, remove_nocalls <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">results_fishertest</span>  <span class="op">&lt;-</span> <span class="fu"><a href="../reference/VariantWiseFisherTest.html">VariantWiseFisherTest</a></span><span class="op">(</span><span class="va">Sample1_split_rows</span>, n_cores <span class="op">=</span> <span class="fl">8</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] "Testing Variant: ABL1_p.?_c.136+2107G&gt;C, 1 out of 31"</span></span>
-<span><span class="co">## [1] "Testing Variant: ABL1_p.?_c.136+2599C&gt;T, 2 out of 31"</span></span>
-<span><span class="co">## [1] "Testing Variant: ABL1_p.?_c.136+4488G&gt;C, 3 out of 31"</span></span>
-<span><span class="co">## [1] "Testing Variant: ABL1_p.?_c.136+5055C&gt;T, 4 out of 31"</span></span>
-<span><span class="co">## [1] "Testing Variant: ABL1_p.?_c.136+5194T&gt;A, 5 out of 31"</span></span>
-<span><span class="co">## [1] "Testing Variant: ABL1_p.?_c.136+5272G&gt;C, 6 out of 31"</span></span>
-<span><span class="co">## [1] "Testing Variant: ABL1_p.?_c.136+8056A&gt;G, 7 out of 31"</span></span>
-<span><span class="co">## [1] "Testing Variant: ABL1_p.?_c.136+8902A&gt;G, 8 out of 31"</span></span>
-<span><span class="co">## [1] "Testing Variant: ABL1_p.?_c.136+10515A&gt;T, 9 out of 31"</span></span>
-<span><span class="co">## [1] "Testing Variant: ABL1_p.?_c.136+21897G&gt;A, 10 out of 31"</span></span>
-<span><span class="co">## [1] "Testing Variant: ABL1_p.?_c.136+23723C&gt;T, 11 out of 31"</span></span>
-<span><span class="co">## [1] "Testing Variant: ABL1_p.?_c.136+25002dup, 12 out of 31"</span></span>
-<span><span class="co">## [1] "Testing Variant: ABL1_p.?_c.136+25133G&gt;A, 13 out of 31"</span></span>
-<span><span class="co">## [1] "Testing Variant: ABL1_p.?_c.136+28402T&gt;C, 14 out of 31"</span></span>
-<span><span class="co">## [1] "Testing Variant: ABL1_p.?_c.136+28879A&gt;G, 15 out of 31"</span></span>
-<span><span class="co">## [1] "Testing Variant: ABL1_p.?_c.136+31156T&gt;A, 16 out of 31"</span></span>
-<span><span class="co">## [1] "Testing Variant: ABL1_p.?_c.136+32491G&gt;A, 17 out of 31"</span></span>
-<span><span class="co">## [1] "Testing Variant: ABL1_p.?_c.136+41277C&gt;T, 18 out of 31"</span></span>
-<span><span class="co">## [1] "Testing Variant: ABL1_p.?_c.136+43385C&gt;A, 19 out of 31"</span></span>
-<span><span class="co">## [1] "Testing Variant: ABL1_p.?_c.136+43386A&gt;G, 20 out of 31"</span></span>
-<span><span class="co">## [1] "Testing Variant: ABL1_p.?_c.136+45704T&gt;C, 21 out of 31"</span></span>
-<span><span class="co">## [1] "Testing Variant: ABL1_p.?_c.136+47620G&gt;A, 22 out of 31"</span></span>
-<span><span class="co">## [1] "Testing Variant: ABL1_p.?_c.136+55841C&gt;T, 23 out of 31"</span></span>
-<span><span class="co">## [1] "Testing Variant: ABL1_p.?_c.136+56750T&gt;C, 24 out of 31"</span></span>
-<span><span class="co">## [1] "Testing Variant: ABL1_p.?_c.136+61806C&gt;A, 25 out of 31"</span></span>
-<span><span class="co">## [1] "Testing Variant: ABL1_p.?_c.137-58577G&gt;A, 26 out of 31"</span></span>
-<span><span class="co">## [1] "Testing Variant: ABL1_p.?_c.137-18647T&gt;C, 27 out of 31"</span></span>
-<span><span class="co">## [1] "Testing Variant: ABL1_p.?_c.137-18632_137-18631insC, 28 out of 31"</span></span>
-<span><span class="co">## [1] "Testing Variant: JAK2_p.H163%3D_c.489C&gt;T, 29 out of 31"</span></span>
-<span><span class="co">## [1] "Testing Variant: JAK2_p.V617F_c.1849G&gt;T, 30 out of 31"</span></span>
-<span><span class="co">## [1] "Testing Variant: JAK2_p.?_c.1865-502dup, 31 out of 31"</span></span>
-<span><span class="co">## [1] "We remove the NA P values."</span></span>
-<span><span class="co">## [1] "We remove the SNPs with a odds ratio lower than 1."</span></span>
-<span><span class="co">## [1] "Adjusting P values using fdr."</span></span></code></pre>
+<code class="sourceCode R"><span class="va">Sample1_split_rows</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/RowWiseSplit.html">RowWiseSplit</a></span><span class="op">(</span><span class="va">Sample1_combined</span>, remove_nocalls <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
+
+<span class="va">results_fishertest</span>  <span class="op">&lt;-</span> <span class="fu"><a href="../reference/VariantWiseFisherTest.html">VariantWiseFisherTest</a></span><span class="op">(</span><span class="va">Sample1_split_rows</span>, n_cores <span class="op">=</span> <span class="fl">8</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## [1] "Testing Variant: ABL1_p.?_c.136+2107G&gt;C, 1 out of 31"</span>
+<span class="co">## [1] "Testing Variant: ABL1_p.?_c.136+2599C&gt;T, 2 out of 31"</span>
+<span class="co">## [1] "Testing Variant: ABL1_p.?_c.136+4488G&gt;C, 3 out of 31"</span>
+<span class="co">## [1] "Testing Variant: ABL1_p.?_c.136+5055C&gt;T, 4 out of 31"</span>
+<span class="co">## [1] "Testing Variant: ABL1_p.?_c.136+5194T&gt;A, 5 out of 31"</span>
+<span class="co">## [1] "Testing Variant: ABL1_p.?_c.136+5272G&gt;C, 6 out of 31"</span>
+<span class="co">## [1] "Testing Variant: ABL1_p.?_c.136+8056A&gt;G, 7 out of 31"</span>
+<span class="co">## [1] "Testing Variant: ABL1_p.?_c.136+8902A&gt;G, 8 out of 31"</span>
+<span class="co">## [1] "Testing Variant: ABL1_p.?_c.136+10515A&gt;T, 9 out of 31"</span>
+<span class="co">## [1] "Testing Variant: ABL1_p.?_c.136+21897G&gt;A, 10 out of 31"</span>
+<span class="co">## [1] "Testing Variant: ABL1_p.?_c.136+23723C&gt;T, 11 out of 31"</span>
+<span class="co">## [1] "Testing Variant: ABL1_p.?_c.136+25002dup, 12 out of 31"</span>
+<span class="co">## [1] "Testing Variant: ABL1_p.?_c.136+25133G&gt;A, 13 out of 31"</span>
+<span class="co">## [1] "Testing Variant: ABL1_p.?_c.136+28402T&gt;C, 14 out of 31"</span>
+<span class="co">## [1] "Testing Variant: ABL1_p.?_c.136+28879A&gt;G, 15 out of 31"</span>
+<span class="co">## [1] "Testing Variant: ABL1_p.?_c.136+31156T&gt;A, 16 out of 31"</span>
+<span class="co">## [1] "Testing Variant: ABL1_p.?_c.136+32491G&gt;A, 17 out of 31"</span>
+<span class="co">## [1] "Testing Variant: ABL1_p.?_c.136+41277C&gt;T, 18 out of 31"</span>
+<span class="co">## [1] "Testing Variant: ABL1_p.?_c.136+43385C&gt;A, 19 out of 31"</span>
+<span class="co">## [1] "Testing Variant: ABL1_p.?_c.136+43386A&gt;G, 20 out of 31"</span>
+<span class="co">## [1] "Testing Variant: ABL1_p.?_c.136+45704T&gt;C, 21 out of 31"</span>
+<span class="co">## [1] "Testing Variant: ABL1_p.?_c.136+47620G&gt;A, 22 out of 31"</span>
+<span class="co">## [1] "Testing Variant: ABL1_p.?_c.136+55841C&gt;T, 23 out of 31"</span>
+<span class="co">## [1] "Testing Variant: ABL1_p.?_c.136+56750T&gt;C, 24 out of 31"</span>
+<span class="co">## [1] "Testing Variant: ABL1_p.?_c.136+61806C&gt;A, 25 out of 31"</span>
+<span class="co">## [1] "Testing Variant: ABL1_p.?_c.137-58577G&gt;A, 26 out of 31"</span>
+<span class="co">## [1] "Testing Variant: ABL1_p.?_c.137-18647T&gt;C, 27 out of 31"</span>
+<span class="co">## [1] "Testing Variant: ABL1_p.?_c.137-18632_137-18631insC, 28 out of 31"</span>
+<span class="co">## [1] "Testing Variant: JAK2_p.H163%3D_c.489C&gt;T, 29 out of 31"</span>
+<span class="co">## [1] "Testing Variant: JAK2_p.V617F_c.1849G&gt;T, 30 out of 31"</span>
+<span class="co">## [1] "Testing Variant: JAK2_p.?_c.1865-502dup, 31 out of 31"</span>
+<span class="co">## [1] "We remove the NA P values."</span>
+<span class="co">## [1] "We remove the SNPs with a odds ratio lower than 1."</span>
+<span class="co">## [1] "Adjusting P values using fdr."</span></code></pre>
 <div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/rm.html" class="external-link">rm</a></span><span class="op">(</span><span class="va">Sample1_split_rows</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">variant_association_heatmap</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/VariantFisherTestHeatmap.html">VariantFisherTestHeatmap</a></span><span class="op">(</span><span class="va">results_fishertest</span>, patient <span class="op">=</span> <span class="st">"Sample1"</span>, min_alt_cells <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></code></pre></div>
-<pre><code><span><span class="co">## [1] "We get the unique variants."</span></span>
-<span><span class="co">## [1] "Getting the maximum P value."</span></span>
-<span><span class="co">## [1] "We set insignificant P values to NA."</span></span>
-<span><span class="co">## [1] "We generate a matrix with the adjusted P values."</span></span>
-<span><span class="co">## [1] "Setting the column and row annotations for the heat map."</span></span>
-<span><span class="co">## [1] "Since we can have no results left after the subsetting, we check if the P value matrix has values."</span></span>
-<span><span class="co">## [1] "Generating the actual heat map."</span></span></code></pre>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/rm.html" class="external-link">rm</a></span><span class="op">(</span><span class="va">Sample1_split_rows</span><span class="op">)</span>
+
+<span class="va">variant_association_heatmap</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/VariantFisherTestHeatmap.html">VariantFisherTestHeatmap</a></span><span class="op">(</span><span class="va">results_fishertest</span>, patient <span class="op">=</span> <span class="st">"Sample1"</span>, min_alt_cells <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></code></pre></div>
+<pre><code><span class="co">## [1] "We get the unique variants."</span>
+<span class="co">## [1] "Getting the maximum P value."</span>
+<span class="co">## [1] "We set insignificant P values to NA."</span>
+<span class="co">## [1] "We generate a matrix with the adjusted P values."</span>
+<span class="co">## [1] "Setting the column and row annotations for the heat map."</span>
+<span class="co">## [1] "Since we can have no results left after the subsetting, we check if the P value matrix has values."</span>
+<span class="co">## [1] "Generating the actual heat map."</span></code></pre>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">variant_association_heatmap</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">variant_association_heatmap</span><span class="op">)</span></code></pre></div>
 <p><img src="SiGURD_files/figure-html/VariantAssociation-1.png" width="700"></p>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
@@ -400,7 +400,8 @@ quite large, you can use multiple cores to perform the calculations.</p>
 
 <div class="pkgdown-footer-right">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a>
+2.0.2.</p>
 </div>
 
     </footer>
