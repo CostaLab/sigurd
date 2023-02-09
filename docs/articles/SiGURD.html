@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">sigurd</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.4</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -79,7 +79,7 @@ Aachen University, Aachen, 52074 Germany<br><div class="d-none name"><code>SiGUR
 <span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressPackageStartupMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va"><a href="https://bioconductor.org/packages/SummarizedExperiment" class="external-link">SummarizedExperiment</a></span><span class="op">)</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressPackageStartupMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va">VariantAnnotation</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <p><strong>R version</strong>: R version 4.1.2 (2021-11-01)</p>
-<p><strong>Package version</strong>: 0.2.3</p>
+<p><strong>Package version</strong>: 0.2.4</p>
 <div class="section level2">
 <h2 id="your-input-file-">Your input file.<a class="anchor" aria-label="anchor" href="#your-input-file-"></a>
 </h2>
@@ -335,57 +335,13 @@ use the correlation between variants. For this, we combine the somatic
 and the MT results. Since the possible number of tests/correlations is
 quite large, you can use multiple cores to perform the calculations.</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">Sample1_split_rows</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/RowWiseSplit.html">RowWiseSplit</a></span><span class="op">(</span><span class="va">Sample1_combined</span>, remove_nocalls <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
+<code class="sourceCode R"><span class="co">#Sample1_split_rows &lt;- RowWiseSplit(Sample1_combined, remove_nocalls = FALSE)</span>
 
-<span class="va">results_fishertest</span>  <span class="op">&lt;-</span> <span class="fu"><a href="../reference/VariantWiseFisherTest.html">VariantWiseFisherTest</a></span><span class="op">(</span><span class="va">Sample1_split_rows</span>, n_cores <span class="op">=</span> <span class="fl">8</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## [1] "Testing Variant: ABL1_p.?_c.136+2107G&gt;C, 1 out of 31"</span>
-<span class="co">## [1] "Testing Variant: ABL1_p.?_c.136+2599C&gt;T, 2 out of 31"</span>
-<span class="co">## [1] "Testing Variant: ABL1_p.?_c.136+4488G&gt;C, 3 out of 31"</span>
-<span class="co">## [1] "Testing Variant: ABL1_p.?_c.136+5055C&gt;T, 4 out of 31"</span>
-<span class="co">## [1] "Testing Variant: ABL1_p.?_c.136+5194T&gt;A, 5 out of 31"</span>
-<span class="co">## [1] "Testing Variant: ABL1_p.?_c.136+5272G&gt;C, 6 out of 31"</span>
-<span class="co">## [1] "Testing Variant: ABL1_p.?_c.136+8056A&gt;G, 7 out of 31"</span>
-<span class="co">## [1] "Testing Variant: ABL1_p.?_c.136+8902A&gt;G, 8 out of 31"</span>
-<span class="co">## [1] "Testing Variant: ABL1_p.?_c.136+10515A&gt;T, 9 out of 31"</span>
-<span class="co">## [1] "Testing Variant: ABL1_p.?_c.136+21897G&gt;A, 10 out of 31"</span>
-<span class="co">## [1] "Testing Variant: ABL1_p.?_c.136+23723C&gt;T, 11 out of 31"</span>
-<span class="co">## [1] "Testing Variant: ABL1_p.?_c.136+25002dup, 12 out of 31"</span>
-<span class="co">## [1] "Testing Variant: ABL1_p.?_c.136+25133G&gt;A, 13 out of 31"</span>
-<span class="co">## [1] "Testing Variant: ABL1_p.?_c.136+28402T&gt;C, 14 out of 31"</span>
-<span class="co">## [1] "Testing Variant: ABL1_p.?_c.136+28879A&gt;G, 15 out of 31"</span>
-<span class="co">## [1] "Testing Variant: ABL1_p.?_c.136+31156T&gt;A, 16 out of 31"</span>
-<span class="co">## [1] "Testing Variant: ABL1_p.?_c.136+32491G&gt;A, 17 out of 31"</span>
-<span class="co">## [1] "Testing Variant: ABL1_p.?_c.136+41277C&gt;T, 18 out of 31"</span>
-<span class="co">## [1] "Testing Variant: ABL1_p.?_c.136+43385C&gt;A, 19 out of 31"</span>
-<span class="co">## [1] "Testing Variant: ABL1_p.?_c.136+43386A&gt;G, 20 out of 31"</span>
-<span class="co">## [1] "Testing Variant: ABL1_p.?_c.136+45704T&gt;C, 21 out of 31"</span>
-<span class="co">## [1] "Testing Variant: ABL1_p.?_c.136+47620G&gt;A, 22 out of 31"</span>
-<span class="co">## [1] "Testing Variant: ABL1_p.?_c.136+55841C&gt;T, 23 out of 31"</span>
-<span class="co">## [1] "Testing Variant: ABL1_p.?_c.136+56750T&gt;C, 24 out of 31"</span>
-<span class="co">## [1] "Testing Variant: ABL1_p.?_c.136+61806C&gt;A, 25 out of 31"</span>
-<span class="co">## [1] "Testing Variant: ABL1_p.?_c.137-58577G&gt;A, 26 out of 31"</span>
-<span class="co">## [1] "Testing Variant: ABL1_p.?_c.137-18647T&gt;C, 27 out of 31"</span>
-<span class="co">## [1] "Testing Variant: ABL1_p.?_c.137-18632_137-18631insC, 28 out of 31"</span>
-<span class="co">## [1] "Testing Variant: JAK2_p.H163%3D_c.489C&gt;T, 29 out of 31"</span>
-<span class="co">## [1] "Testing Variant: JAK2_p.V617F_c.1849G&gt;T, 30 out of 31"</span>
-<span class="co">## [1] "Testing Variant: JAK2_p.?_c.1865-502dup, 31 out of 31"</span>
-<span class="co">## [1] "We remove the NA P values."</span>
-<span class="co">## [1] "We remove the SNPs with a odds ratio lower than 1."</span>
-<span class="co">## [1] "Adjusting P values using fdr."</span></code></pre>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/rm.html" class="external-link">rm</a></span><span class="op">(</span><span class="va">Sample1_split_rows</span><span class="op">)</span>
+<span class="co">#results_fishertest  &lt;- VariantWiseFisherTest(Sample1_split_rows, n_cores = 8)</span>
+<span class="co">#rm(Sample1_split_rows)</span>
 
-<span class="va">variant_association_heatmap</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/VariantFisherTestHeatmap.html">VariantFisherTestHeatmap</a></span><span class="op">(</span><span class="va">results_fishertest</span>, patient <span class="op">=</span> <span class="st">"Sample1"</span>, min_alt_cells <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></code></pre></div>
-<pre><code><span class="co">## [1] "We get the unique variants."</span>
-<span class="co">## [1] "Getting the maximum P value."</span>
-<span class="co">## [1] "We set insignificant P values to NA."</span>
-<span class="co">## [1] "We generate a matrix with the adjusted P values."</span>
-<span class="co">## [1] "Setting the column and row annotations for the heat map."</span>
-<span class="co">## [1] "Since we can have no results left after the subsetting, we check if the P value matrix has values."</span>
-<span class="co">## [1] "Generating the actual heat map."</span></code></pre>
-<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">variant_association_heatmap</span><span class="op">)</span></code></pre></div>
-<p><img src="SiGURD_files/figure-html/VariantAssociation-1.png" width="700"></p>
+<span class="co">#variant_association_heatmap &lt;- VariantFisherTestHeatmap(results_fishertest, patient = "Sample1", min_alt_cells = 3)</span>
+<span class="co">#print(variant_association_heatmap)</span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>

@@ -191,7 +191,7 @@ LoadingVarTrix_typewise <- function(samples_file, samples_path = NULL, barcodes_
   fraction_total[is.na(fraction_total)] <- 0
   #fraction_total <- sdiv(X = coverage_matrix_total, Y = reads_total,
   #                       names = dimnames(coverage_matrix_total))
-  rm(coverage_matrix_total, ref_matrix_total)
+  #rm(coverage_matrix_total, ref_matrix_total)
   gc()
 
 
@@ -202,7 +202,8 @@ LoadingVarTrix_typewise <- function(samples_file, samples_path = NULL, barcodes_
   meta_data <- data.frame(Cell = colnames(consensus_matrix_total), Type = type_use, AverageCoverage = coverage_depth_per_cell)
   #se_merged <- SummarizedExperiment(assays = list(consensus = as(consensus_matrix_total, "dgCMatrix"), fraction = as(fraction_total, "dgCMatrix"), coverage = as(reads_total, "dgCMatrix")),
   #                                  colData = meta_data)
-  se_merged <- SummarizedExperiment(assays = list(consensus = as(consensus_matrix_total, "CsparseMatrix"), fraction = as(fraction_total, "CsparseMatrix"), coverage = as(reads_total, "CsparseMatrix")),
+  se_merged <- SummarizedExperiment(assays = list(consensus = as(consensus_matrix_total, "CsparseMatrix"), fraction = as(fraction_total, "CsparseMatrix"), coverage = as(reads_total, "CsparseMatrix"),
+                                                  alts = as(coverage_matrix_total, "CsparseMatrix"), refs = as(ref_matrix_total, "CsparseMatrix")),
                                     colData = meta_data)
   return(se_merged)
 }
