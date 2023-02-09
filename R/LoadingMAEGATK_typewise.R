@@ -68,6 +68,14 @@ LoadingMAEGATK_typewise <- function(samples_file, samples_path = NULL, patient, 
   }
 
 
+  print("We get the number of alternative reads per variant.")
+  reads_alt <- CalculateAltReads(SE = se_merged, chromosome_prefix = chromosome_prefix)
+
+
+  print("Calculating the strand concordance.")
+  concordance <- CalculateStrandCorrelation(SE = se_merged, chromosome_prefix = chromosome_prefix)
+
+
   print("We calculate the consensus information.")
   consensus <- CalculateConsensus(SE = se_merged, chromosome_prefix = chromosome_prefix)
   # We order the consensus matrix like the coverage matrix.
@@ -83,6 +91,8 @@ LoadingMAEGATK_typewise <- function(samples_file, samples_path = NULL, patient, 
   consensus <- consensus[keep_variants,]
   coverage <- coverage[keep_variants,]
   fraction <- fraction[keep_variants,]
+  concordance <- concordance[keep_variants]
+  reads_alt <- reads_alt[keep_variants,]
 
 
   print("We remove cells that are always NoCall.")
@@ -91,6 +101,7 @@ LoadingMAEGATK_typewise <- function(samples_file, samples_path = NULL, patient, 
   consensus <- consensus[,keep_cells]
   coverage <- coverage[,keep_cells]
   fraction <- fraction[,keep_cells]
+  reads_alt <- reads_alt[,keep_cells]
 
 
   print("We add the information to the merged matrices.")
@@ -99,8 +110,9 @@ LoadingMAEGATK_typewise <- function(samples_file, samples_path = NULL, patient, 
   coverage_depth_per_cell <- !duplicated(coverage_depth_per_cell)
   coverage_depth_per_cell <- coverage[coverage_depth_per_cell,]
   coverage_depth_per_cell <- colMeans(coverage_depth_per_cell)
-  meta_data <- data.frame(Cell = colnames(consensus), AverageCoverage = coverage_depth_per_cell)
+  meta_data_col <- data.frame(Cell = colnames(consensus), AverageCoverage = coverage_depth_per_cell)
+  meta_data_row <- data.frame(VariantName = rownames(consensus), Concordance = concordance)
   se_output <- SummarizedExperiment(assays = list(consensus = consensus, fraction = fraction, coverage = coverage),
-                                    colData = meta_data)
+                                    colData = meta_data_col, rowData = meta_data_row)
   return(se_output)
 }

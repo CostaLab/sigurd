@@ -4,7 +4,7 @@
 #'Source: https://github.com/petervangalen/MAESTER-2021
 #'@import SummarizedExperiment
 #'@param SE_object SummarizedExperiment object.
-#'@param letter The base you are analysing. You get a matrix that shows which cells have how many referecen reads for this letter.
+#'@param letter The base you are analysing. You get a matrix that shows which cells have how many reference reads for this letter.
 #'@param ref_allele The reference alleles.
 #'@param chromosome_prefix The chromosome prefix used.
 #'@export

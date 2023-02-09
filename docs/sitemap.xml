@@ -28,6 +28,9 @@
     <loc>/reference/CalculateAlleleFrequency.html</loc>
   </url>
   <url>
+    <loc>/reference/CalculateAltReads.html</loc>
+  </url>
+  <url>
     <loc>/reference/CalculateConsensus.html</loc>
   </url>
   <url>
@@ -41,6 +44,9 @@
   </url>
   <url>
     <loc>/reference/CalculateFisherTestPValue2.html</loc>
+  </url>
+  <url>
+    <loc>/reference/CalculateStrandCorrelation.html</loc>
   </url>
   <url>
     <loc>/reference/CombineSEobjects.html</loc>
