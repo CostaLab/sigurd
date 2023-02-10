@@ -71,6 +71,8 @@ LoadingMAEGATK_typewise <- function(samples_file, samples_path = NULL, patient, 
   print("We get the number of alternative reads per variant.")
   reads_alt <- CalculateAltReads(SE = se_merged, chromosome_prefix = chromosome_prefix)
 
+  print("We get the number of reference reads.")
+  reads_ref <- coverage - reads_alt
 
   print("Calculating the strand concordance.")
   concordance <- CalculateStrandCorrelation(SE = se_merged, chromosome_prefix = chromosome_prefix)
@@ -93,6 +95,7 @@ LoadingMAEGATK_typewise <- function(samples_file, samples_path = NULL, patient, 
   fraction <- fraction[keep_variants,]
   concordance <- concordance[keep_variants]
   reads_alt <- reads_alt[keep_variants,]
+  reads_ref <- reads_ref[keep_variants,]
 
 
   print("We remove cells that are always NoCall.")
@@ -102,6 +105,7 @@ LoadingMAEGATK_typewise <- function(samples_file, samples_path = NULL, patient, 
   coverage <- coverage[,keep_cells]
   fraction <- fraction[,keep_cells]
   reads_alt <- reads_alt[,keep_cells]
+  reads_ref <- reads_ref[,keep_cells]
 
 
   print("We add the information to the merged matrices.")
@@ -112,7 +116,7 @@ LoadingMAEGATK_typewise <- function(samples_file, samples_path = NULL, patient, 
   coverage_depth_per_cell <- colMeans(coverage_depth_per_cell)
   meta_data_col <- data.frame(Cell = colnames(consensus), AverageCoverage = coverage_depth_per_cell)
   meta_data_row <- data.frame(VariantName = rownames(consensus), Concordance = concordance)
-  se_output <- SummarizedExperiment(assays = list(consensus = consensus, fraction = fraction, coverage = coverage),
+  se_output <- SummarizedExperiment(assays = list(consensus = consensus, fraction = fraction, coverage = coverage, alts = reads_alt, refs = reads_refs),
                                     colData = meta_data_col, rowData = meta_data_row)
   return(se_output)
 }
