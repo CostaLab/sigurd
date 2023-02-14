@@ -1,7 +1,7 @@
 #'CalculateStrandCorrelation
 #'@description
 #'We calculate the correlation between the amount of forward and reverse reads per variant.
-#'@import MatrixGenerics SummarizedExperiment
+#'@import MatrixGenerics SummarizedExperiment data.table
 #'@param SE SummarizedExperiment object.
 #'@param chromosome_prefix List of matrices for the alternative reads.
 #'@export
