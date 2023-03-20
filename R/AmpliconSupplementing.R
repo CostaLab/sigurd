@@ -46,7 +46,7 @@ AmpliconSupplementing <- function(scRNAseq, amplicon){
   #assays(scRNAseq)[["fraction"]][rownames(amplicon), colnames(amplicon)] <- as.matrix(assays(amplicon)$fraction)
   #assays(scRNAseq)[["coverage"]][rownames(amplicon), colnames(amplicon)] <- as.matrix(assays(amplicon)$coverage)
 
-  se <- SummarizedExperiment(assays = list(consensus = as(consensus, "dgCMatrix"), fraction = as(fraction, "dgCMatrix"), coverage = as(reads, "dgCMatrix"), alts = alts, refs = refs),
+  se <- SummarizedExperiment(assays = list(consensus = as(consensus, "dgCMatrix"), fraction = as(fraction, "dgCMatrix"), coverage = as(reads, "dgCMatrix"), alts = as(alts, "dgCMatrix"), refs = as(refs, "dgCMatrix")),
                              colData = new_meta_data)
   return(se)
 }
