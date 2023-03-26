@@ -82,7 +82,7 @@ Filtering <- function(se, blacklisted_barcodes_path = NULL, fraction_threshold =
   se <- se[keep_variants,]
 
   print(paste0("We remove variants, that are not at least detected in ", min_cells_per_variant, " cells."))
-  keep_variants <- rowSums(assays(se)$consensus >= 2)
+  keep_variants <- rowSums(assays(se)$consensus >= 1)
   keep_variants <- keep_variants >= min_cells_per_variant
   se <- se[keep_variants,]
 

@@ -11,7 +11,7 @@
 #'@param SE SummarizedExperiment object.
 #'@export
 computeAFMutMatrix <- function(SE, chromosome_prefix = "chrM"){
-  cov <- assays(SE)[["coverage"]] #+ 0.000001
+  cov <- assays(SE)[["coverage"]] + 0.000001
   ref_allele <- as.character(rowRanges(SE)$refAllele)
 
   getMutMatrix <- function(letter){
@@ -24,7 +24,6 @@ computeAFMutMatrix <- function(SE, chromosome_prefix = "chrM"){
     cov_use <- cov[toupper(ref_allele) != letter,]
     mat <- mat / cov_use
     gc()
-    mat[is.na(mat)] <- 0
     # We can get AF values greater than 1, which is due to uninformative reads.
     # See: https://gatk.broadinstitute.org/hc/en-us/articles/360035532252-Allele-Depth-AD-is-lower-than-expected
     # and https://github.com/caleblareau/mgatk/issues/1
