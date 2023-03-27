@@ -4,6 +4,9 @@
 #'we might need extreme amounts of memory. To solve this issue, I will load each type separately.
 #'In a following function (AmpliconSupplementing), we can add the amplicon information to the
 #'scRNAseq information.
+#'The input file is a specifically formated csv file with all the necessary information to run the analysis.
+#'Note that the source column in the input file needs to be one of the following: vartrix, mgaetk, mgatk.
+#'This is hard coded and case insensitive.
 #'
 #'@import Matrix SummarizedExperiment VariantAnnotation
 #'@param samples_path Path to the input folder. Must include a barcodes file.

@@ -1,6 +1,9 @@
 #'LoadingMAEGATK_typewise
 #'@description
 #'We load the MAEGATK output and transform it to be compatible with the VarTrix output.
+#'The input file is a specifically formated csv file with all the necessary information to run the analysis.
+#'Note that the source column in the input file needs to be one of the following: vartrix, mgaetk, mgatk.
+#'This is hard coded and case insensitive.
 #'@import Matrix SummarizedExperiment
 #'@param samples_path Path to the input folder.
 #'@param samples_file Path to the csv file with the samples to be loaded.
@@ -9,11 +12,11 @@
 #'@param chromosome_prefix The prefix you want use. Default: "chrM"
 #'@export
 LoadingMAEGATK_typewise <- function(samples_file, samples_path = NULL, patient, type_use = "scRNAseq_MT", chromosome_prefix = "chrM",
-                                    min_cells = 2){
-  if(!is.null(samples_path)){
+                                    min_cells = 2, barcodes_path = NULL){
+  if(all(!is.null(samples_path), !is.null(barcodes_path))){
     samples <- list.files(samples_path)
     samples <- grep(patient, samples, value = TRUE)
-    samples_file <- data.frame(patient = patient, sample = samples, input_folder = samples_path)
+    samples_file <- data.frame(patient = patient, sample = samples, input_folder = samples_path, cells = barcodes_path)
   } else{
     print("We read in the samples file.")
     samples_file <- read.csv(samples_file)
