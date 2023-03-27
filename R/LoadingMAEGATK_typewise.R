@@ -92,25 +92,81 @@ LoadingMAEGATK_typewise <- function(samples_file, samples_path = NULL, patient, 
 
 
   print("We perform some filtering to reduce the memory needed.")
-  print(paste0("We remove variants, which are not detected in at least ", min_cells, " cells ."))
-  keep_variants <- rowSums(consensus >= 2)
+  print(paste0("We remove variants, which are not covered in at least ", min_cells, " cells ."))
+  keep_variants <- rowSums(consensus >= 1)
   keep_variants <- keep_variants >= min_cells
+  # If we only have one cell or one variant, we loose the matrix.
+  cell_ids <- colnames(consensus_matrix_total)
+  variant_names <- names(keep_variants[keep_variants])
+  # consensus <- consensus[keep_variants,]
+  # coverage <- coverage[keep_variants,]
+  # fraction <- fraction[keep_variants,]
+  # concordance <- concordance[keep_variants]
+  # reads_alt <- reads_alt[keep_variants,]
+  # reads_ref <- reads_ref[keep_variants,]
   consensus <- consensus[keep_variants,]
+  consensus <- matrix(consensus, nrow = length(variant_names), ncol = length(cell_ids))
+  colnames(consensus) <- cell_ids
+  rownames(consensus) <- variant_names
+  consensus <- as(consensus, "dgCMatrix")
   coverage <- coverage[keep_variants,]
+  coverage <- matrix(coverage, nrow = length(variant_names), ncol = length(cell_ids))
+  colnames(coverage) <- cell_ids
+  rownames(coverage) <- variant_names
+  coverage <- as(coverage, "dgCMatrix")
   fraction <- fraction[keep_variants,]
+  fraction <- matrix(fraction, nrow = length(variant_names), ncol = length(cell_ids))
+  colnames(fraction) <- cell_ids
+  rownames(fraction) <- variant_names
+  fraction <- as(fraction, "dgCMatrix")
   concordance <- concordance[keep_variants]
   reads_alt <- reads_alt[keep_variants,]
+  reads_alt <- matrix(reads_alt, nrow = length(variant_names), ncol = length(cell_ids))
+  colnames(reads_alt) <- cell_ids
+  rownames(reads_alt) <- variant_names
+  reads_alt <- as(reads_alt, "dgCMatrix")
   reads_ref <- reads_ref[keep_variants,]
+  reads_ref <- matrix(reads_ref, nrow = length(variant_names), ncol = length(cell_ids))
+  colnames(reads_ref) <- cell_ids
+  rownames(reads_ref) <- variant_names
+  reads_ref <- as(reads_ref, "dgCMatrix")
 
 
   print("We remove cells that are always NoCall.")
   consensus_test <- consensus > 0
   keep_cells <- colSums(consensus_test) > 0
+  # If we only have one cell or one variant, we loose the matrix.
+  cell_ids <- colnames(consensus_matrix_total)
+  variant_names <- names(keep_variants[keep_variants])
+  # consensus <- consensus[,keep_cells]
+  # coverage <- coverage[,keep_cells]
+  # fraction <- fraction[,keep_cells]
+  # reads_alt <- reads_alt[,keep_cells]
+  # reads_ref <- reads_ref[,keep_cells]
   consensus <- consensus[,keep_cells]
+  consensus <- matrix(consensus, nrow = length(variant_names), ncol = length(cell_ids))
+  colnames(consensus) <- cell_ids
+  rownames(consensus) <- variant_names
   coverage <- coverage[,keep_cells]
+  coverage <- matrix(coverage, nrow = length(variant_names), ncol = length(cell_ids))
+  colnames(coverage) <- cell_ids
+  rownames(coverage) <- variant_names
+  consensus <- as(consensus, "dgCMatrix")
   fraction <- fraction[,keep_cells]
+  fraction <- matrix(fraction, nrow = length(variant_names), ncol = length(cell_ids))
+  colnames(fraction) <- cell_ids
+  rownames(fraction) <- variant_names
+  fraction <- as(fraction, "dgCMatrix")
   reads_alt <- reads_alt[,keep_cells]
+  reads_alt <- matrix(reads_alt, nrow = length(variant_names), ncol = length(cell_ids))
+  colnames(reads_alt) <- cell_ids
+  rownames(reads_alt) <- variant_names
+  reads_alt <- as(reads_alt, "dgCMatrix")
   reads_ref <- reads_ref[,keep_cells]
+  reads_ref <- matrix(reads_ref, nrow = length(variant_names), ncol = length(cell_ids))
+  colnames(reads_ref) <- cell_ids
+  rownames(reads_ref) <- variant_names
+  reads_ref <- as(reads_ref, "dgCMatrix")
 
 
   print("We add the information to the merged matrices.")

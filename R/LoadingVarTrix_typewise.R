@@ -151,61 +151,97 @@ LoadingVarTrix_typewise <- function(samples_file, samples_path = NULL, barcodes_
   print(paste0("We remove variants, that are not detected in at least ", min_cells, " cells."))
   keep_variants <- rowSums(consensus_matrix_total >= 2)
   keep_variants <- keep_variants >= min_cells
-  # If we only have 1 variant left, we would loose the matrix.
-  if(sum(keep_variants) > 1){
-    consensus_matrix_total <- consensus_matrix_total[keep_variants,]
-    coverage_matrix_total <- coverage_matrix_total[keep_variants,]
-    ref_matrix_total <- ref_matrix_total[keep_variants,]
-  } else if(sum(keep_variants) == 1){
-    cell_ids <- colnames(consensus_matrix_total)
-    variant_names <- names(keep_variants[keep_variants])
-    consensus_matrix_total <- consensus_matrix_total[keep_variants,]
-    consensus_matrix_total <- matrix(consensus_matrix_total, nrow = 1, ncol = length(consensus_matrix_total))
-    rownames(consensus_matrix_total) <- variant_names
-    colnames(consensus_matrix_total) <- cell_ids
-    consensus_matrix_total <- as(consensus_matrix_total, "dgCMatrix")
-    coverage_matrix_total <- coverage_matrix_total[keep_variants,]
-    coverage_matrix_total <- matrix(coverage_matrix_total, nrow = 1, ncol = length(coverage_matrix_total))
-    rownames(coverage_matrix_total) <- variant_names
-    colnames(coverage_matrix_total) <- cell_ids
-    coverage_matrix_total <- as(coverage_matrix_total, "dgCMatrix")
-    ref_matrix_total <- ref_matrix_total[keep_variants,]
-    ref_matrix_total <- matrix(ref_matrix_total, nrow = 1, ncol = length(ref_matrix_total))
-    rownames(ref_matrix_total) <- variant_names
-    colnames(ref_matrix_total) <- cell_ids
-    ref_matrix_total <- as(ref_matrix_total, "dgCMatrix")
-    rm(cell_ids, variant_names)
-  }
+  # If we only have one cell or one variant, we loose the matrix.
+  cell_ids <- colnames(consensus_matrix_total)
+  variant_names <- names(keep_variants[keep_variants])
+  consensus_matrix_total <- consensus_matrix_total[keep_variants, ]
+  consensus_matrix_total <- matrix(consensus_matrix_total, nrow = length(variant_names), ncol = length(cell_ids))
+  colnames(consensus_matrix_total) <- cell_ids
+  rownames(consensus_matrix_total) <- variant_names
+  consensus_matrix_total <- as(consensus_matrix_total, "dgCMatrix")
+  coverage_matrix_total <- coverage_matrix_total[keep_variants, ]
+  coverage_matrix_total <- matrix(coverage_matrix_total, nrow = length(variant_names), ncol = length(cell_ids))
+  colnames(coverage_matrix_total) <- cell_ids
+  rownames(coverage_matrix_total) <- variant_names
+  coverage_matrix_total <- as(coverage_matrix_total, "dgCMatrix")
+  ref_matrix_total <- ref_matrix_total[keep_variants, ]
+  ref_matrix_total <- matrix(ref_matrix_total, nrow = length(variant_names), ncol = length(cell_ids))
+  colnames(ref_matrix_total) <- cell_ids
+  rownames(ref_matrix_total) <- variant_names
+  ref_matrix_total <- as(ref_matrix_total, "dgCMatrix")
+
+#  if(sum(keep_variants) > 1){
+#    consensus_matrix_total <- consensus_matrix_total[keep_variants,]
+#    coverage_matrix_total <- coverage_matrix_total[keep_variants,]
+#    ref_matrix_total <- ref_matrix_total[keep_variants,]
+#  } else if(sum(keep_variants) == 1){
+#    cell_ids <- colnames(consensus_matrix_total)
+#    variant_names <- names(keep_variants[keep_variants])
+#    consensus_matrix_total <- consensus_matrix_total[keep_variants,]
+#    consensus_matrix_total <- matrix(consensus_matrix_total, nrow = 1, ncol = length(consensus_matrix_total))
+#    rownames(consensus_matrix_total) <- variant_names
+#    colnames(consensus_matrix_total) <- cell_ids
+#    consensus_matrix_total <- as(consensus_matrix_total, "dgCMatrix")
+#    coverage_matrix_total <- coverage_matrix_total[keep_variants,]
+#    coverage_matrix_total <- matrix(coverage_matrix_total, nrow = 1, ncol = length(coverage_matrix_total))
+#    rownames(coverage_matrix_total) <- variant_names
+#    colnames(coverage_matrix_total) <- cell_ids
+#    coverage_matrix_total <- as(coverage_matrix_total, "dgCMatrix")
+#    ref_matrix_total <- ref_matrix_total[keep_variants,]
+#    ref_matrix_total <- matrix(ref_matrix_total, nrow = 1, ncol = length(ref_matrix_total))
+#    rownames(ref_matrix_total) <- variant_names
+#    colnames(ref_matrix_total) <- cell_ids
+#    ref_matrix_total <- as(ref_matrix_total, "dgCMatrix")
+#    rm(cell_ids, variant_names)
+#  }
 
 
   print("We remove cells that are always NoCall.")
   consensus_test <- consensus_matrix_total > 0
   keep_cells <- colSums(consensus_test) > 0
-  # If we only have one cell, we loose the matrix.
-  if(sum(keep_cells) > 1){
-    consensus_matrix_total <- consensus_matrix_total[, keep_cells]
-    coverage_matrix_total <- coverage_matrix_total[, keep_cells][]
-    ref_matrix_total <- ref_matrix_total[, keep_cells]
-  } else if(sum(keep_cells) == 1){
-    cell_ids <- names(keep_cells[keep_cells])
-    variant_names <- rownames(consensus_matrix_total)
-    consensus_matrix_total <- consensus_matrix_total[,keep_cells]
-    consensus_matrix_total <- matrix(consensus_matrix_total, nrow = length(variant_names), ncol = 1)
-    rownames(consensus_matrix_total) <- variant_names
-    colnames(consensus_matrix_total) <- cell_ids
-    consensus_matrix_total <- as(consensus_matrix_total, "dgCMatrix")
-    coverage_matrix_total <- coverage_matrix_total[,keep_cells]
-    coverage_matrix_total <- matrix(coverage_matrix_total, nrow = length(variant_names), ncol = 1)
-    rownames(coverage_matrix_total) <- variant_names
-    colnames(coverage_matrix_total) <- cell_ids
-    coverage_matrix_total <- as(coverage_matrix_total, "dgCMatrix")
-    ref_matrix_total <- ref_matrix_total[, keep_cells]
-    ref_matrix_total <- matrix(ref_matrix_total, nrow = length(variant_names), ncol = 1)
-    rownames(ref_matrix_total) <- variant_names
-    colnames(ref_matrix_total) <- cell_ids
-    ref_matrix_total <- as(ref_matrix_total, "dgCMatrix")
-    rm(cell_ids, variant_names)
-  }
+  # If we only have one cell or one variant, we loose the matrix.
+  cell_ids <- names(keep_cells[keep_cells])
+  variant_names <- rownames(consensus_matrix_total)
+  consensus_matrix_total <- consensus_matrix_total[, keep_cells]
+  consensus_matrix_total <- matrix(consensus_matrix_total, nrow = length(variant_names), ncol = length(cell_ids))
+  colnames(consensus_matrix_total) <- cell_ids
+  rownames(consensus_matrix_total) <- variant_names
+  consensus_matrix_total <- as(consensus_matrix_total, "dgCMatrix")
+  coverage_matrix_total <- coverage_matrix_total[, keep_cells]
+  coverage_matrix_total <- matrix(coverage_matrix_total, nrow = length(variant_names), ncol = length(cell_ids))
+  colnames(coverage_matrix_total) <- cell_ids
+  rownames(coverage_matrix_total) <- variant_names
+  coverage_matrix_total <- as(coverage_matrix_total, "dgCMatrix")
+  ref_matrix_total <- ref_matrix_total[, keep_cells]
+  ref_matrix_total <- matrix(ref_matrix_total, nrow = length(variant_names), ncol = length(cell_ids))
+  colnames(ref_matrix_total) <- cell_ids
+  rownames(ref_matrix_total) <- variant_names
+  ref_matrix_total <- as(ref_matrix_total, "dgCMatrix")
+  
+#  if(sum(keep_cells) > 1){
+#    consensus_matrix_total <- consensus_matrix_total[, keep_cells]
+#    coverage_matrix_total <- coverage_matrix_total[, keep_cells]
+#    ref_matrix_total <- ref_matrix_total[, keep_cells]
+#  } else if(sum(keep_cells) == 1){
+#    cell_ids <- names(keep_cells[keep_cells])
+#    variant_names <- rownames(consensus_matrix_total)
+#    consensus_matrix_total <- consensus_matrix_total[,keep_cells]
+#    consensus_matrix_total <- matrix(consensus_matrix_total, nrow = length(variant_names), ncol = 1)
+#    rownames(consensus_matrix_total) <- variant_names
+#    colnames(consensus_matrix_total) <- cell_ids
+#    consensus_matrix_total <- as(consensus_matrix_total, "dgCMatrix")
+#    coverage_matrix_total <- coverage_matrix_total[,keep_cells]
+#    coverage_matrix_total <- matrix(coverage_matrix_total, nrow = length(variant_names), ncol = 1)
+#    rownames(coverage_matrix_total) <- variant_names
+#    colnames(coverage_matrix_total) <- cell_ids
+#    coverage_matrix_total <- as(coverage_matrix_total, "dgCMatrix")
+#    ref_matrix_total <- ref_matrix_total[, keep_cells]
+#    ref_matrix_total <- matrix(ref_matrix_total, nrow = length(variant_names), ncol = 1)
+#    rownames(ref_matrix_total) <- variant_names
+#    colnames(ref_matrix_total) <- cell_ids
+#    ref_matrix_total <- as(ref_matrix_total, "dgCMatrix")
+#    rm(cell_ids, variant_names)
+#  }
 
   print(paste0(type_use, " Variants: ", nrow(consensus_matrix_total)))
   print(paste0(type_use, " Cells: ", ncol(consensus_matrix_total)))
