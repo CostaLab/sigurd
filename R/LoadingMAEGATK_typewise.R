@@ -183,7 +183,7 @@ LoadingMAEGATK_typewise <- function(samples_file, samples_path = NULL, patient, 
     cell_ids <- colnames(coverage)
     variant_names <- rownames(coverage)
     coverage_depth_per_cell <- coverage[coverage_depth_per_cell,]
-    coverage_depth_per_cell <- matrix(coverage_depth_per_cell, nrow = length(variant_names, ncol = length(cell_ids))
+    coverage_depth_per_cell <- matrix(coverage_depth_per_cell, nrow = length(variant_names), ncol = length(cell_ids))
     colnames(coverage_depth_per_cell) <- cell_ids
     rownames(coverage_depth_per_cell) <- variant_names
     coverage_depth_per_cell <- colMeans(coverage_depth_per_cell)
