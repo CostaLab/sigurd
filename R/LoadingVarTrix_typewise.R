@@ -19,6 +19,7 @@
 #'@export
 LoadingVarTrix_typewise <- function(samples_file, samples_path = NULL, barcodes_path = NULL, snp_path = NULL, vcf_path, patient, sample = NULL, type_use = "scRNAseq_Somatic", min_reads = NULL, min_cells = 2){
   if(all(!is.null(samples_path), !is.null(barcodes_path), !is.null(sample), !is.null(snp_path))){
+    print(paste0("Loading the data for sample ", sample, "."))
     #samples <- list.files(samples_path)
     #samples <- grep(patient, samples, value = TRUE)
     
@@ -30,6 +31,7 @@ LoadingVarTrix_typewise <- function(samples_file, samples_path = NULL, barcodes_
     samples_file <- data.frame(patient = patient, sample = sample, input_folder = samples_path, cells = barcodes_path)
     samples <- samples_file$sample
   } else{
+    print(paste0("Loading the data for patient ", patient, "."))
     print("We read in the samples file.")
     samples_file <- read.csv(samples_file, stringsAsFactors = FALSE)
     

@@ -14,10 +14,12 @@
 LoadingMAEGATK_typewise <- function(samples_file, samples_path = NULL, patient, type_use = "scRNAseq_MT", chromosome_prefix = "chrM",
                                     min_cells = 2, barcodes_path = NULL){
   if(all(!is.null(samples_path), !is.null(barcodes_path))){
+    print(paste0("Loading the data for patient ", patient, "."))
     samples <- list.files(samples_path)
     samples <- grep(patient, samples, value = TRUE)
     samples_file <- data.frame(patient = patient, sample = samples, input_folder = samples_path, cells = barcodes_path)
   } else{
+    print(paste0("Loading the data for patient ", patient, "."))
     print("We read in the samples file.")
     samples_file <- read.csv(samples_file)
 
