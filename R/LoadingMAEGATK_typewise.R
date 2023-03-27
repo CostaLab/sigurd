@@ -169,15 +169,28 @@ LoadingMAEGATK_typewise <- function(samples_file, samples_path = NULL, patient, 
   reads_ref <- as(reads_ref, "dgCMatrix")
 
 
-  print("We add the information to the merged matrices.")
-  coverage_depth_per_cell <- rownames(coverage)
-  coverage_depth_per_cell <- gsub("_._.$", "", coverage_depth_per_cell)
-  coverage_depth_per_cell <- !duplicated(coverage_depth_per_cell)
-  coverage_depth_per_cell <- coverage[coverage_depth_per_cell,]
-  coverage_depth_per_cell <- colMeans(coverage_depth_per_cell)
-  meta_data_col <- data.frame(Cell = colnames(consensus), AverageCoverage = coverage_depth_per_cell)
-  meta_data_row <- data.frame(VariantName = rownames(consensus), Concordance = concordance)
-  se_output <- SummarizedExperiment(assays = list(consensus = consensus, fraction = fraction, coverage = coverage, alts = reads_alt, refs = reads_ref),
-                                    colData = meta_data_col, rowData = meta_data_row)
-  return(se_output)
+  # We check if the matrices are empty (0 cells, 0 variants). Then we simply return NULL.
+  dim_test <- dim(coverage)
+  if(any(dim_test == 0)){
+    print(paste0("The filtering left ", dim_test[1], " variants and ", dim_test[2], "cells."))
+    print("Returning NULL.")
+    return(NULL)
+  } else{
+    print("We add the information to the merged matrices.")
+    coverage_depth_per_cell <- rownames(coverage)
+    coverage_depth_per_cell <- gsub("_._.$", "", coverage_depth_per_cell)
+    coverage_depth_per_cell <- !duplicated(coverage_depth_per_cell)
+    cell_ids <- colnames(coverage)
+    variant_names <- rownames(coverage)
+    coverage_depth_per_cell <- coverage[coverage_depth_per_cell,]
+    coverage_depth_per_cell <- matrix(coverage_depth_per_cell, nrow = length(variant_names, ncol = length(cell_ids))
+    colnames(coverage_depth_per_cell) <- cell_ids
+    rownames(coverage_depth_per_cell) <- variant_names
+    coverage_depth_per_cell <- colMeans(coverage_depth_per_cell)
+    meta_data_col <- data.frame(Cell = colnames(consensus), AverageCoverage = coverage_depth_per_cell)
+    meta_data_row <- data.frame(VariantName = rownames(consensus), Concordance = concordance)
+    se_output <- SummarizedExperiment(assays = list(consensus = consensus, fraction = fraction, coverage = coverage, alts = reads_alt, refs = reads_ref),
+                                      colData = meta_data_col, rowData = meta_data_row)
+    return(se_output)
+  }
 }

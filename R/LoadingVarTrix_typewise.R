@@ -280,16 +280,24 @@ LoadingVarTrix_typewise <- function(samples_file, samples_path = NULL, barcodes_
   gc()
 
 
-  print("We generate a SummarizedExperiment object containing the fraction and the consensus matrices.")
-  # We want an assay for the Consensus information and for the fraction.
-  # As meta data we add a data frame showing the cell id, the associated patient and the sample.
-  coverage_depth_per_cell <- colMeans(reads_total)
-  meta_data <- data.frame(Cell = colnames(consensus_matrix_total), Type = type_use, AverageCoverage = coverage_depth_per_cell)
-  #se_merged <- SummarizedExperiment(assays = list(consensus = as(consensus_matrix_total, "dgCMatrix"), fraction = as(fraction_total, "dgCMatrix"), coverage = as(reads_total, "dgCMatrix")),
-  #                                  colData = meta_data)
-  se_merged <- SummarizedExperiment(assays = list(consensus = as(consensus_matrix_total, "CsparseMatrix"), fraction = as(fraction_total, "CsparseMatrix"), coverage = as(reads_total, "CsparseMatrix"),
-                                                  alts = as(coverage_matrix_total, "CsparseMatrix"), refs = as(ref_matrix_total, "CsparseMatrix")),
-                                    colData = meta_data)
-  return(se_merged)
+  # We check if the matrices are empty (0 cells, 0 variants). Then we simply return NULL.
+  dim_test <- dim(reads_total)
+  if(any(dim_test == 0)){
+    print(paste0("The filtering left ", dim_test[1], " variants and ", dim_test[2], "cells."))
+    print("Returning NULL.")
+    return(NULL)
+  } else {
+    print("We generate a SummarizedExperiment object containing the fraction and the consensus matrices.")
+    # We want an assay for the Consensus information and for the fraction.
+    # As meta data we add a data frame showing the cell id, the associated patient and the sample.
+    coverage_depth_per_cell <- colMeans(reads_total)
+    meta_data <- data.frame(Cell = colnames(consensus_matrix_total), Type = type_use, AverageCoverage = coverage_depth_per_cell)
+    #se_merged <- SummarizedExperiment(assays = list(consensus = as(consensus_matrix_total, "dgCMatrix"), fraction = as(fraction_total, "dgCMatrix"), coverage = as(reads_total, "dgCMatrix")),
+    #                                  colData = meta_data)
+    se_merged <- SummarizedExperiment(assays = list(consensus = as(consensus_matrix_total, "CsparseMatrix"), fraction = as(fraction_total, "CsparseMatrix"), coverage = as(reads_total, "CsparseMatrix"),
+                                                    alts = as(coverage_matrix_total, "CsparseMatrix"), refs = as(ref_matrix_total, "CsparseMatrix")),
+                                      colData = meta_data)
+    return(se_merged)
+  }
 }
 
