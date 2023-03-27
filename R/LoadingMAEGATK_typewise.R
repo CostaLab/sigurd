@@ -96,7 +96,7 @@ LoadingMAEGATK_typewise <- function(samples_file, samples_path = NULL, patient, 
   keep_variants <- rowSums(consensus >= 1)
   keep_variants <- keep_variants >= min_cells
   # If we only have one cell or one variant, we loose the matrix.
-  cell_ids <- colnames(consensus_matrix_total)
+  cell_ids <- colnames(consensus)
   variant_names <- names(keep_variants[keep_variants])
   # consensus <- consensus[keep_variants,]
   # coverage <- coverage[keep_variants,]
@@ -136,7 +136,7 @@ LoadingMAEGATK_typewise <- function(samples_file, samples_path = NULL, patient, 
   consensus_test <- consensus > 0
   keep_cells <- colSums(consensus_test) > 0
   # If we only have one cell or one variant, we loose the matrix.
-  cell_ids <- colnames(consensus_matrix_total)
+  cell_ids <- colnames(consensus)
   variant_names <- names(keep_variants[keep_variants])
   # consensus <- consensus[,keep_cells]
   # coverage <- coverage[,keep_cells]

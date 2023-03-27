@@ -149,7 +149,7 @@ LoadingVarTrix_typewise <- function(samples_file, samples_path = NULL, barcodes_
 
 
   print(paste0("We remove variants, that are not detected in at least ", min_cells, " cells."))
-  keep_variants <- rowSums(consensus_matrix_total >= 2)
+  keep_variants <- rowSums(consensus_matrix_total >= 1)
   keep_variants <- keep_variants >= min_cells
   # If we only have one cell or one variant, we loose the matrix.
   cell_ids <- colnames(consensus_matrix_total)
