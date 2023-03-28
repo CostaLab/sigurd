@@ -147,11 +147,12 @@ LoadingMAEGATK_typewise <- function(samples_file, samples_path = NULL, patient, 
   consensus <- matrix(consensus, nrow = length(variant_names), ncol = length(cell_ids))
   colnames(consensus) <- cell_ids
   rownames(consensus) <- variant_names
+  consensus <- as(consensus, "dgCMatrix")
   coverage <- coverage[,keep_cells]
   coverage <- matrix(coverage, nrow = length(variant_names), ncol = length(cell_ids))
   colnames(coverage) <- cell_ids
   rownames(coverage) <- variant_names
-  consensus <- as(consensus, "dgCMatrix")
+  coverage <- as(coverage, "dgCMatrix")
   fraction <- fraction[,keep_cells]
   fraction <- matrix(fraction, nrow = length(variant_names), ncol = length(cell_ids))
   colnames(fraction) <- cell_ids
