@@ -8,6 +8,7 @@ Filtering(
   se,
   blacklisted_barcodes_path = NULL,
   fraction_threshold = NULL,
+  alts_threshold = NULL,
   path_seurat = NULL,
   min_cells_per_variant = 2,
   min_variants_per_cell = 1
@@ -18,7 +19,9 @@ Filtering(
 
 \item{blacklisted_barcodes_path}{Barcodes you want to remove. Path to a file with one column without header.}
 
-\item{fraction_threshold}{Variants with an VAF below this threshold are set to 0. Numeric.}
+\item{fraction_threshold}{Variants with an VAF below this threshold are set to 0. Numeric. Default = NULL.}
+
+\item{alts_threshold}{Variants with a number of alt reads less than this threshold are set to 0. Numeric. Default = NULL.}
 
 \item{path_seurat}{Path to a Seurat object. Cells not present in the object will be removed.}
 
