@@ -12,6 +12,7 @@ OUTPUT="/Path/To/Your/Output/Folder/"
 BWA_INDEX="bwa_index/genome_MT/genome_MT.fa"
 # What is the read quality threshold?
 ALIGNMENT_QUALITY=30
+BASE_QUALITY=30
 MIN_BARCODE_READS=3
 
 sample_use="SampleID"
@@ -31,11 +32,13 @@ maegatk bcall \
        --barcodes $cells_use \
        --output $OUTPUT$sample_use \
        --alignment-quality $ALIGNMENT_QUALITY \
+       --base-qual $BASE_QUALITY \
        --mito-genome $BWA_INDEX
 
-# I automatically remove the temporary files. 
-rm -r .snakemake
-rm -r logs
-rm -r qc
+# I automatically remove the temporary files.
+# This is not necessary, but once overthing works reliably it removes clutter.
+# rm -r .snakemake
+# rm -r logs
+# rm -r qc
 echo "Finishing time:"
 date
