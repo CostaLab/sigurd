@@ -4,6 +4,9 @@
 #'we might need extreme amounts of memory. To solve this issue, I will load each type separately.
 #'In a following function (AmpliconSupplementing), we can add the amplicon information to the
 #'scRNAseq information.
+#'The input file is a specifically formated csv file with all the necessary information to run the analysis.
+#'Note that the source column in the input file needs to be one of the following: vartrix, mgaetk, mgatk.
+#'This is hard coded and case insensitive.
 #'
 #'@import Matrix SummarizedExperiment VariantAnnotation
 #'@param samples_path Path to the input folder. Must include a barcodes file.
@@ -16,6 +19,7 @@
 #'@export
 LoadingVarTrix_typewise <- function(samples_file, samples_path = NULL, barcodes_path = NULL, snp_path = NULL, vcf_path, patient, sample = NULL, type_use = "scRNAseq_Somatic", min_reads = NULL, min_cells = 2){
   if(all(!is.null(samples_path), !is.null(barcodes_path), !is.null(sample), !is.null(snp_path))){
+    print(paste0("Loading the data for sample ", sample, "."))
     #samples <- list.files(samples_path)
     #samples <- grep(patient, samples, value = TRUE)
     
@@ -27,6 +31,7 @@ LoadingVarTrix_typewise <- function(samples_file, samples_path = NULL, barcodes_
     samples_file <- data.frame(patient = patient, sample = sample, input_folder = samples_path, cells = barcodes_path)
     samples <- samples_file$sample
   } else{
+    print(paste0("Loading the data for patient ", patient, "."))
     print("We read in the samples file.")
     samples_file <- read.csv(samples_file, stringsAsFactors = FALSE)
     
@@ -144,19 +149,99 @@ LoadingVarTrix_typewise <- function(samples_file, samples_path = NULL, barcodes_
 
 
   print(paste0("We remove variants, that are not detected in at least ", min_cells, " cells."))
-  keep_variants <- rowSums(consensus_matrix_total >= 2)
+  keep_variants <- rowSums(consensus_matrix_total >= 1)
   keep_variants <- keep_variants >= min_cells
-  consensus_matrix_total <- consensus_matrix_total[keep_variants,]
-  coverage_matrix_total <- coverage_matrix_total[keep_variants,]
-  ref_matrix_total <- ref_matrix_total[keep_variants,]
+  # If we only have one cell or one variant, we loose the matrix.
+  cell_ids <- colnames(consensus_matrix_total)
+  variant_names <- names(keep_variants[keep_variants])
+  consensus_matrix_total <- consensus_matrix_total[keep_variants, ]
+  consensus_matrix_total <- matrix(consensus_matrix_total, nrow = length(variant_names), ncol = length(cell_ids))
+  colnames(consensus_matrix_total) <- cell_ids
+  rownames(consensus_matrix_total) <- variant_names
+  consensus_matrix_total <- as(consensus_matrix_total, "dgCMatrix")
+  coverage_matrix_total <- coverage_matrix_total[keep_variants, ]
+  coverage_matrix_total <- matrix(coverage_matrix_total, nrow = length(variant_names), ncol = length(cell_ids))
+  colnames(coverage_matrix_total) <- cell_ids
+  rownames(coverage_matrix_total) <- variant_names
+  coverage_matrix_total <- as(coverage_matrix_total, "dgCMatrix")
+  ref_matrix_total <- ref_matrix_total[keep_variants, ]
+  ref_matrix_total <- matrix(ref_matrix_total, nrow = length(variant_names), ncol = length(cell_ids))
+  colnames(ref_matrix_total) <- cell_ids
+  rownames(ref_matrix_total) <- variant_names
+  ref_matrix_total <- as(ref_matrix_total, "dgCMatrix")
+
+#  if(sum(keep_variants) > 1){
+#    consensus_matrix_total <- consensus_matrix_total[keep_variants,]
+#    coverage_matrix_total <- coverage_matrix_total[keep_variants,]
+#    ref_matrix_total <- ref_matrix_total[keep_variants,]
+#  } else if(sum(keep_variants) == 1){
+#    cell_ids <- colnames(consensus_matrix_total)
+#    variant_names <- names(keep_variants[keep_variants])
+#    consensus_matrix_total <- consensus_matrix_total[keep_variants,]
+#    consensus_matrix_total <- matrix(consensus_matrix_total, nrow = 1, ncol = length(consensus_matrix_total))
+#    rownames(consensus_matrix_total) <- variant_names
+#    colnames(consensus_matrix_total) <- cell_ids
+#    consensus_matrix_total <- as(consensus_matrix_total, "dgCMatrix")
+#    coverage_matrix_total <- coverage_matrix_total[keep_variants,]
+#    coverage_matrix_total <- matrix(coverage_matrix_total, nrow = 1, ncol = length(coverage_matrix_total))
+#    rownames(coverage_matrix_total) <- variant_names
+#    colnames(coverage_matrix_total) <- cell_ids
+#    coverage_matrix_total <- as(coverage_matrix_total, "dgCMatrix")
+#    ref_matrix_total <- ref_matrix_total[keep_variants,]
+#    ref_matrix_total <- matrix(ref_matrix_total, nrow = 1, ncol = length(ref_matrix_total))
+#    rownames(ref_matrix_total) <- variant_names
+#    colnames(ref_matrix_total) <- cell_ids
+#    ref_matrix_total <- as(ref_matrix_total, "dgCMatrix")
+#    rm(cell_ids, variant_names)
+#  }
 
 
   print("We remove cells that are always NoCall.")
   consensus_test <- consensus_matrix_total > 0
   keep_cells <- colSums(consensus_test) > 0
+  # If we only have one cell or one variant, we loose the matrix.
+  cell_ids <- names(keep_cells[keep_cells])
+  variant_names <- rownames(consensus_matrix_total)
   consensus_matrix_total <- consensus_matrix_total[, keep_cells]
+  consensus_matrix_total <- matrix(consensus_matrix_total, nrow = length(variant_names), ncol = length(cell_ids))
+  colnames(consensus_matrix_total) <- cell_ids
+  rownames(consensus_matrix_total) <- variant_names
+  consensus_matrix_total <- as(consensus_matrix_total, "dgCMatrix")
   coverage_matrix_total <- coverage_matrix_total[, keep_cells]
+  coverage_matrix_total <- matrix(coverage_matrix_total, nrow = length(variant_names), ncol = length(cell_ids))
+  colnames(coverage_matrix_total) <- cell_ids
+  rownames(coverage_matrix_total) <- variant_names
+  coverage_matrix_total <- as(coverage_matrix_total, "dgCMatrix")
   ref_matrix_total <- ref_matrix_total[, keep_cells]
+  ref_matrix_total <- matrix(ref_matrix_total, nrow = length(variant_names), ncol = length(cell_ids))
+  colnames(ref_matrix_total) <- cell_ids
+  rownames(ref_matrix_total) <- variant_names
+  ref_matrix_total <- as(ref_matrix_total, "dgCMatrix")
+  
+#  if(sum(keep_cells) > 1){
+#    consensus_matrix_total <- consensus_matrix_total[, keep_cells]
+#    coverage_matrix_total <- coverage_matrix_total[, keep_cells]
+#    ref_matrix_total <- ref_matrix_total[, keep_cells]
+#  } else if(sum(keep_cells) == 1){
+#    cell_ids <- names(keep_cells[keep_cells])
+#    variant_names <- rownames(consensus_matrix_total)
+#    consensus_matrix_total <- consensus_matrix_total[,keep_cells]
+#    consensus_matrix_total <- matrix(consensus_matrix_total, nrow = length(variant_names), ncol = 1)
+#    rownames(consensus_matrix_total) <- variant_names
+#    colnames(consensus_matrix_total) <- cell_ids
+#    consensus_matrix_total <- as(consensus_matrix_total, "dgCMatrix")
+#    coverage_matrix_total <- coverage_matrix_total[,keep_cells]
+#    coverage_matrix_total <- matrix(coverage_matrix_total, nrow = length(variant_names), ncol = 1)
+#    rownames(coverage_matrix_total) <- variant_names
+#    colnames(coverage_matrix_total) <- cell_ids
+#    coverage_matrix_total <- as(coverage_matrix_total, "dgCMatrix")
+#    ref_matrix_total <- ref_matrix_total[, keep_cells]
+#    ref_matrix_total <- matrix(ref_matrix_total, nrow = length(variant_names), ncol = 1)
+#    rownames(ref_matrix_total) <- variant_names
+#    colnames(ref_matrix_total) <- cell_ids
+#    ref_matrix_total <- as(ref_matrix_total, "dgCMatrix")
+#    rm(cell_ids, variant_names)
+#  }
 
   print(paste0(type_use, " Variants: ", nrow(consensus_matrix_total)))
   print(paste0(type_use, " Cells: ", ncol(consensus_matrix_total)))
@@ -195,16 +280,24 @@ LoadingVarTrix_typewise <- function(samples_file, samples_path = NULL, barcodes_
   gc()
 
 
-  print("We generate a SummarizedExperiment object containing the fraction and the consensus matrices.")
-  # We want an assay for the Consensus information and for the fraction.
-  # As meta data we add a data frame showing the cell id, the associated patient and the sample.
-  coverage_depth_per_cell <- colMeans(reads_total)
-  meta_data <- data.frame(Cell = colnames(consensus_matrix_total), Type = type_use, AverageCoverage = coverage_depth_per_cell)
-  #se_merged <- SummarizedExperiment(assays = list(consensus = as(consensus_matrix_total, "dgCMatrix"), fraction = as(fraction_total, "dgCMatrix"), coverage = as(reads_total, "dgCMatrix")),
-  #                                  colData = meta_data)
-  se_merged <- SummarizedExperiment(assays = list(consensus = as(consensus_matrix_total, "CsparseMatrix"), fraction = as(fraction_total, "CsparseMatrix"), coverage = as(reads_total, "CsparseMatrix"),
-                                                  alts = as(coverage_matrix_total, "CsparseMatrix"), refs = as(ref_matrix_total, "CsparseMatrix")),
-                                    colData = meta_data)
-  return(se_merged)
+  # We check if the matrices are empty (0 cells, 0 variants). Then we simply return NULL.
+  dim_test <- dim(reads_total)
+  if(any(dim_test == 0)){
+    print(paste0("The filtering left ", dim_test[1], " variants and ", dim_test[2], "cells."))
+    print("Returning NULL.")
+    return(NULL)
+  } else {
+    print("We generate a SummarizedExperiment object containing the fraction and the consensus matrices.")
+    # We want an assay for the Consensus information and for the fraction.
+    # As meta data we add a data frame showing the cell id, the associated patient and the sample.
+    coverage_depth_per_cell <- colMeans(reads_total)
+    meta_data <- data.frame(Cell = colnames(consensus_matrix_total), Type = type_use, AverageCoverage = coverage_depth_per_cell)
+    #se_merged <- SummarizedExperiment(assays = list(consensus = as(consensus_matrix_total, "dgCMatrix"), fraction = as(fraction_total, "dgCMatrix"), coverage = as(reads_total, "dgCMatrix")),
+    #                                  colData = meta_data)
+    se_merged <- SummarizedExperiment(assays = list(consensus = as(consensus_matrix_total, "CsparseMatrix"), fraction = as(fraction_total, "CsparseMatrix"), coverage = as(reads_total, "CsparseMatrix"),
+                                                    alts = as(coverage_matrix_total, "CsparseMatrix"), refs = as(ref_matrix_total, "CsparseMatrix")),
+                                      colData = meta_data)
+    return(se_merged)
+  }
 }
 

@@ -10,7 +10,8 @@ LoadingMAEGATK_typewise(
   patient,
   type_use = "scRNAseq_MT",
   chromosome_prefix = "chrM",
-  min_cells = 2
+  min_cells = 2,
+  barcodes_path = NULL
 )
 }
 \arguments{
@@ -26,4 +27,7 @@ LoadingMAEGATK_typewise(
 }
 \description{
 We load the MAEGATK output and transform it to be compatible with the VarTrix output.
+The input file is a specifically formated csv file with all the necessary information to run the analysis.
+Note that the source column in the input file needs to be one of the following: vartrix, mgaetk, mgatk.
+This is hard coded and case insensitive.
 }
