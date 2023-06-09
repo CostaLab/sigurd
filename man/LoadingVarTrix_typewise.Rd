@@ -22,6 +22,8 @@ LoadingVarTrix_typewise(
 
 \item{samples_path}{Path to the input folder. Must include a barcodes file.}
 
+\item{snp_path}{Path to the SNP file used for VarTrix (SNV.loci.txt).}
+
 \item{vcf_path}{Path to the VCF file with the variants.}
 
 \item{patient}{The patient you want to load.}
