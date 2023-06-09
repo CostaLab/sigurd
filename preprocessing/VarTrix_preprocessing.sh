@@ -40,13 +40,13 @@ cells_use="/Path/To/Your/CellRanger/barcodes.tsv"
 mkdir -p $OUTPUT/$sample_use
 
 echo "Coverage"
-vartrix_linux --threads $NCORES --mapq $MAPQ --bam $bam_use \
+vartrix_linux --threads $NCORES --mapq $MAPQ --bam $bam_use --umi \
               --vcf $GenesOfInterest --scoring-method "coverage" \
               --ref-matrix $OUTPUT/$sample_use/ref_matrix_coverage.mtx \
               --cell-barcodes $cells_use --fasta $REFERENCE_FASTA \
               --out-matrix $OUTPUT/$sample_use/out_matrix_coverage.mtx
 echo "Consensus"
-vartrix_linux --threads $NCORES --mapq $MAPQ --bam $bam_use \
+vartrix_linux --threads $NCORES --mapq $MAPQ --bam $bam_use --umi \
               --vcf $GenesOfInterest --scoring-method "consensus" \
               --cell-barcodes $cells_use --fasta $REFERENCE_FASTA \
               --out-matrix $OUTPUT/$sample_use/out_matrix_consensus.mt

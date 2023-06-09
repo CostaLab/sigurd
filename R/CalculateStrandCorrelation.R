@@ -22,7 +22,7 @@ CalculateStrandCorrelation <- function(SE, chromosome_prefix = "chrM"){
   dt <- data.table(variant = variants_A[dt[[1]]],
                    cell_id = dt[[2]],
 		   fw = dt[[3]], rev = dt[[4]])
-  cor_result_A <- dt[, .(cor = cor(c(fw), c(rev), method = "pearson", use = "pairwise.complete")), by = list(variant)]
+  cor_result_A <- dt[, .(cor = suppressWarnings(cor(c(fw), c(rev), method = "pearson", use = "pairwise.complete"))), by = list(variant)]
 
   variants_C <- paste0(chromosome_prefix, "_", 1:length(ref_allele), "_", ref_allele, "_C")
   variants_C <-	variants_C[ref_allele != "C"]
@@ -39,7 +39,7 @@ CalculateStrandCorrelation <- function(SE, chromosome_prefix = "chrM"){
   dt <- data.table(variant = variants_C[dt[[1]]],
                    cell_id = dt[[2]],
                    fw = dt[[3]], rev = dt[[4]])
-  cor_result_C <- dt[, .(cor = cor(c(fw), c(rev), method = "pearson", use = "pairwise.complete")), by = list(variant)]
+  cor_result_C <- dt[, .(cor = suppressWarnings(cor(c(fw), c(rev), method = "pearson", use = "pairwise.complete"))), by = list(variant)]
 
   variants_G <- paste0(chromosome_prefix, "_", 1:length(ref_allele), "_", ref_allele, "_G")
   variants_G <- variants_G[ref_allele != "G"]
@@ -56,7 +56,7 @@ CalculateStrandCorrelation <- function(SE, chromosome_prefix = "chrM"){
   dt <- data.table(variant = variants_G[dt[[1]]],
                    cell_id = dt[[2]],
                    fw = dt[[3]], rev = dt[[4]])
-  cor_result_G <- dt[, .(cor = cor(c(fw), c(rev), method = "pearson", use = "pairwise.complete")), by = list(variant)]
+  cor_result_G <- dt[, .(cor = suppressWarnings(cor(c(fw), c(rev), method = "pearson", use = "pairwise.complete"))), by = list(variant)]
 
   variants_T <- paste0(chromosome_prefix, "_", 1:length(ref_allele), "_", ref_allele, "_T")
   variants_T <- variants_T[ref_allele != "T"]
@@ -73,7 +73,7 @@ CalculateStrandCorrelation <- function(SE, chromosome_prefix = "chrM"){
   dt <- data.table(variant = variants_T[dt[[1]]],
                    cell_id = dt[[2]],
                    fw = dt[[3]], rev = dt[[4]])
-  cor_result_T <- dt[, .(cor = cor(c(fw), c(rev), method = "pearson", use = "pairwise.complete")), by = list(variant)]
+  cor_result_T <- dt[, .(cor = suppressWarnings(cor(c(fw), c(rev), method = "pearson", use = "pairwise.complete"))), by = list(variant)]
 
   cor_results <- rbind(cor_result_A, cor_result_C, cor_result_G, cor_result_T)
   

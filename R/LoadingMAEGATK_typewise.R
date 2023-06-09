@@ -76,6 +76,11 @@ LoadingMAEGATK_typewise <- function(samples_file, samples_path = NULL, patient, 
   print("We get the number of alternative reads per variant.")
   reads_alt <- CalculateAltReads(SE = se_merged, chromosome_prefix = chromosome_prefix)
 
+
+  print("We get the quality information.")
+  variant_quality <- CalculateQuality(SE = se_merged, variants = rownames(reads_alt), chromosome_prefix = chromosome_prefix)
+
+
   print("We get the number of reference reads.")
   reads_ref <- coverage - reads_alt
 
@@ -105,28 +110,29 @@ LoadingMAEGATK_typewise <- function(samples_file, samples_path = NULL, patient, 
   # reads_alt <- reads_alt[keep_variants,]
   # reads_ref <- reads_ref[keep_variants,]
   consensus <- consensus[keep_variants,]
-  consensus <- matrix(consensus, nrow = length(variant_names), ncol = length(cell_ids))
+  consensus <- suppressWarnings(matrix(consensus, nrow = length(variant_names), ncol = length(cell_ids)))
   colnames(consensus) <- cell_ids
   rownames(consensus) <- variant_names
   consensus <- as(consensus, "dgCMatrix")
   coverage <- coverage[keep_variants,]
-  coverage <- matrix(coverage, nrow = length(variant_names), ncol = length(cell_ids))
+  coverage <- suppressWarnings(matrix(coverage, nrow = length(variant_names), ncol = length(cell_ids)))
   colnames(coverage) <- cell_ids
   rownames(coverage) <- variant_names
   coverage <- as(coverage, "dgCMatrix")
   fraction <- fraction[keep_variants,]
-  fraction <- matrix(fraction, nrow = length(variant_names), ncol = length(cell_ids))
+  fraction <- suppressWarnings(matrix(fraction, nrow = length(variant_names), ncol = length(cell_ids)))
   colnames(fraction) <- cell_ids
   rownames(fraction) <- variant_names
   fraction <- as(fraction, "dgCMatrix")
   concordance <- concordance[keep_variants]
+  variant_quality <- variant_quality[keep_variants]
   reads_alt <- reads_alt[keep_variants,]
-  reads_alt <- matrix(reads_alt, nrow = length(variant_names), ncol = length(cell_ids))
+  reads_alt <- suppressWarnings(matrix(reads_alt, nrow = length(variant_names), ncol = length(cell_ids)))
   colnames(reads_alt) <- cell_ids
   rownames(reads_alt) <- variant_names
   reads_alt <- as(reads_alt, "dgCMatrix")
   reads_ref <- reads_ref[keep_variants,]
-  reads_ref <- matrix(reads_ref, nrow = length(variant_names), ncol = length(cell_ids))
+  reads_ref <- suppressWarnings(matrix(reads_ref, nrow = length(variant_names), ncol = length(cell_ids)))
   colnames(reads_ref) <- cell_ids
   rownames(reads_ref) <- variant_names
   reads_ref <- as(reads_ref, "dgCMatrix")
@@ -144,27 +150,27 @@ LoadingMAEGATK_typewise <- function(samples_file, samples_path = NULL, patient, 
   # reads_alt <- reads_alt[,keep_cells]
   # reads_ref <- reads_ref[,keep_cells]
   consensus <- consensus[,keep_cells]
-  consensus <- matrix(consensus, nrow = length(variant_names), ncol = length(cell_ids))
+  consensus <- suppressWarnings(matrix(consensus, nrow = length(variant_names), ncol = length(cell_ids)))
   colnames(consensus) <- cell_ids
   rownames(consensus) <- variant_names
   consensus <- as(consensus, "dgCMatrix")
   coverage <- coverage[,keep_cells]
-  coverage <- matrix(coverage, nrow = length(variant_names), ncol = length(cell_ids))
+  coverage <- suppressWarnings(matrix(coverage, nrow = length(variant_names), ncol = length(cell_ids)))
   colnames(coverage) <- cell_ids
   rownames(coverage) <- variant_names
   coverage <- as(coverage, "dgCMatrix")
   fraction <- fraction[,keep_cells]
-  fraction <- matrix(fraction, nrow = length(variant_names), ncol = length(cell_ids))
+  fraction <- suppressWarnings(matrix(fraction, nrow = length(variant_names), ncol = length(cell_ids)))
   colnames(fraction) <- cell_ids
   rownames(fraction) <- variant_names
   fraction <- as(fraction, "dgCMatrix")
   reads_alt <- reads_alt[,keep_cells]
-  reads_alt <- matrix(reads_alt, nrow = length(variant_names), ncol = length(cell_ids))
+  reads_alt <- suppressWarnings(matrix(reads_alt, nrow = length(variant_names), ncol = length(cell_ids)))
   colnames(reads_alt) <- cell_ids
   rownames(reads_alt) <- variant_names
   reads_alt <- as(reads_alt, "dgCMatrix")
   reads_ref <- reads_ref[,keep_cells]
-  reads_ref <- matrix(reads_ref, nrow = length(variant_names), ncol = length(cell_ids))
+  reads_ref <- suppressWarnings(matrix(reads_ref, nrow = length(variant_names), ncol = length(cell_ids)))
   colnames(reads_ref) <- cell_ids
   rownames(reads_ref) <- variant_names
   reads_ref <- as(reads_ref, "dgCMatrix")
@@ -181,15 +187,15 @@ LoadingMAEGATK_typewise <- function(samples_file, samples_path = NULL, patient, 
     coverage_depth_per_cell <- rownames(coverage)
     coverage_depth_per_cell <- gsub("_._.$", "", coverage_depth_per_cell)
     coverage_depth_per_cell <- !duplicated(coverage_depth_per_cell)
+    coverage_depth_per_cell <- coverage[coverage_depth_per_cell,]
     cell_ids <- colnames(coverage)
     variant_names <- rownames(coverage)
-    coverage_depth_per_cell <- coverage[coverage_depth_per_cell,]
-    coverage_depth_per_cell <- matrix(coverage_depth_per_cell, nrow = length(variant_names), ncol = length(cell_ids))
+    coverage_depth_per_cell <- suppressWarnings(matrix(coverage, nrow = length(variant_names), ncol = length(cell_ids)))
     colnames(coverage_depth_per_cell) <- cell_ids
     rownames(coverage_depth_per_cell) <- variant_names
     coverage_depth_per_cell <- colMeans(coverage_depth_per_cell)
     meta_data_col <- data.frame(Cell = colnames(consensus), AverageCoverage = coverage_depth_per_cell)
-    meta_data_row <- data.frame(VariantName = rownames(consensus), Concordance = concordance)
+    meta_data_row <- data.frame(VariantName = rownames(consensus), Concordance = concordance, VariantQuality = variant_quality)
     se_output <- SummarizedExperiment(assays = list(consensus = consensus, fraction = fraction, coverage = coverage, alts = reads_alt, refs = reads_ref),
                                       colData = meta_data_col, rowData = meta_data_row)
     return(se_output)
