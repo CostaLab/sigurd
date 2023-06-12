@@ -12,6 +12,8 @@ AmpliconSupplementing <- function(scRNAseq, amplicon){
   print("We get the new meta data.")
   new_meta_data <- merge(colData(scRNAseq), colData(amplicon), by = "Cell", all.x = TRUE, all.y = TRUE,
                          suffixes = c("scRNAseq", "Amplicon"))
+  new_row_data <- merge(rowData(scRNAseq), rowData(amplicon), by = "VariantName", all.x = TRUE, all.y = TRUE,
+                        suffixes = c("scRNAseq", "Amplicon"))
 
   print("We get all cells and variants.")
   all_cells <- unique(c(colnames(scRNAseq), colnames(amplicon)))
@@ -47,6 +49,6 @@ AmpliconSupplementing <- function(scRNAseq, amplicon){
   #assays(scRNAseq)[["coverage"]][rownames(amplicon), colnames(amplicon)] <- as.matrix(assays(amplicon)$coverage)
 
   se <- SummarizedExperiment(assays = list(consensus = as(consensus, "dgCMatrix"), fraction = as(fraction, "dgCMatrix"), coverage = as(reads, "dgCMatrix"), alts = as(alts, "dgCMatrix"), refs = as(refs, "dgCMatrix")),
-                             colData = new_meta_data)
+                             colData = new_meta_data, rowData = new_row_data)
   return(se)
 }
