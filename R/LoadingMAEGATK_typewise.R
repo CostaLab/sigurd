@@ -196,7 +196,7 @@ LoadingMAEGATK_typewise <- function(samples_file, samples_path = NULL, patient, 
     coverage_depth_per_variant <- rowMeans(coverage)
     coverage_depth_per_cell <- colMeans(coverage_depth_per_cell)
     meta_data_col <- data.frame(Cell = colnames(consensus), AverageCoverage = coverage_depth_per_cell)
-    meta_data_col <- meta_data_col$Cell
+    rownames(meta_data_col) <- meta_data_col$Cell
     meta_data_row <- data.frame(VariantName = rownames(consensus), Concordance = concordance, VariantQuality = variant_quality, Depth = coverage_depth_per_variant)
     rownames(meta_data_row) <- meta_data_row$VariantName
     se_output <- SummarizedExperiment(assays = list(consensus = consensus, fraction = fraction, coverage = coverage, alts = reads_alt, refs = reads_ref),
