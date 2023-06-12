@@ -14,10 +14,12 @@ AmpliconSupplementing <- function(scRNAseq, amplicon){
                          suffixes = c("scRNAseq", "Amplicon"))
   new_row_data <- merge(rowData(scRNAseq), rowData(amplicon), by = "VariantName", all.x = TRUE, all.y = TRUE,
                         suffixes = c("scRNAseq", "Amplicon"))
+  rownames(new_row_data) <- new_row_data$VariantName
 
   print("We get all cells and variants.")
   all_cells <- unique(c(colnames(scRNAseq), colnames(amplicon)))
   all_variants <- unique(c(rownames(scRNAseq), rownames(amplicon)))
+  new_row_data <- new_row_data[all_variants,]
 
   print("We generate our output matrices.")
   consensus <- matrix(0, ncol = length(all_cells), nrow = length(all_variants))

@@ -24,8 +24,9 @@ CombineSEobjects <- function(se_somatic, se_MT, suffixes = c("_somatic", "_MT"))
   meta_row_somatic <- rowData(se_somatic)
   meta_row_MT      <- rowData(se_MT)
   if(ncol(meta_row_somatic) > 0 & ncol(meta_row_MT) > 0){
-    meta_row <- merge(meta_row_somatic, meta_row_MT, by = "Cell", all = TRUE, suffixes = suffixes)
-    meta_row <- meta_row[match(cells, meta_row$Cell),]
+    meta_row <- merge(meta_row_somatic, meta_row_MT, by = "VariantName", all = TRUE, suffixes = suffixes)
+    meta_row <- meta_row[match(features, meta_row$VariantName),]
+    rownames(meta_row) <- meta_row$VariantName
   } else if(ncol(meta_row_somatic) == 0 & ncol(meta_row_MT) > 0){
     meta_row_somatic <- matrix(NA, nrow = nrow(meta_row_somatic), ncol = ncol(meta_row_MT))
     rownames(meta_row_somatic) <- rownames(se_somatic)
@@ -41,7 +42,7 @@ CombineSEobjects <- function(se_somatic, se_MT, suffixes = c("_somatic", "_MT"))
     meta_row_MT <- DataFrame(meta_row_MT)
     meta_row_MT$VariantName <- rownames(meta_row_MT)
     meta_row <- merge(meta_row_somatic, meta_row_MT, by = "VariantName", all = TRUE, suffixes = suffixes)
-    meta_row <- meta_row[match(features, meta_row$VariantName),]
+    meta_row <- meta_row[match(features, meta_row$VariantName),]    
   }
 
   #assays_somatic <- assays(se_somatic)
