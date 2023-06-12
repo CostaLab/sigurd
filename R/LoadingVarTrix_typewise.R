@@ -292,12 +292,14 @@ LoadingVarTrix_typewise <- function(samples_file, samples_path = NULL, barcodes_
     # We want an assay for the Consensus information and for the fraction.
     # As meta data we add a data frame showing the cell id, the associated patient and the sample.
     coverage_depth_per_cell <- colMeans(reads_total)
+    coverage_depth_per_variant <- rowMeans(reads_total)
     meta_data <- data.frame(Cell = colnames(consensus_matrix_total), Type = type_use, AverageCoverage = coverage_depth_per_cell)
+    meta_row <- data.frame(VariantName = rownames(consensus_matrix_total), Depth = coverage_depth_per_variant)
     #se_merged <- SummarizedExperiment(assays = list(consensus = as(consensus_matrix_total, "dgCMatrix"), fraction = as(fraction_total, "dgCMatrix"), coverage = as(reads_total, "dgCMatrix")),
     #                                  colData = meta_data)
     se_merged <- SummarizedExperiment(assays = list(consensus = as(consensus_matrix_total, "CsparseMatrix"), fraction = as(fraction_total, "CsparseMatrix"), coverage = as(reads_total, "CsparseMatrix"),
                                                     alts = as(coverage_matrix_total, "CsparseMatrix"), refs = as(ref_matrix_total, "CsparseMatrix")),
-                                      colData = meta_data)
+                                      colData = meta_data, rowData = meta_row)
     return(se_merged)
   }
 }
