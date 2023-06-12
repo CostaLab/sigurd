@@ -294,7 +294,9 @@ LoadingVarTrix_typewise <- function(samples_file, samples_path = NULL, barcodes_
     coverage_depth_per_cell <- colMeans(reads_total)
     coverage_depth_per_variant <- rowMeans(reads_total)
     meta_data <- data.frame(Cell = colnames(consensus_matrix_total), Type = type_use, AverageCoverage = coverage_depth_per_cell)
+    rownames(meta_data) <- meta_data$Cell
     meta_row <- data.frame(VariantName = rownames(consensus_matrix_total), Depth = coverage_depth_per_variant)
+    rownames(meta_row) <- meta_row$VariantName
     #se_merged <- SummarizedExperiment(assays = list(consensus = as(consensus_matrix_total, "dgCMatrix"), fraction = as(fraction_total, "dgCMatrix"), coverage = as(reads_total, "dgCMatrix")),
     #                                  colData = meta_data)
     se_merged <- SummarizedExperiment(assays = list(consensus = as(consensus_matrix_total, "CsparseMatrix"), fraction = as(fraction_total, "CsparseMatrix"), coverage = as(reads_total, "CsparseMatrix"),
