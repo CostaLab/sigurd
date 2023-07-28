@@ -12,14 +12,42 @@ AmpliconSupplementing <- function(scRNAseq, amplicon){
   print("We get the new meta data.")
   new_meta_data <- merge(colData(scRNAseq), colData(amplicon), by = "Cell", all.x = TRUE, all.y = TRUE,
                          suffixes = c("scRNAseq", "Amplicon"))
+  rownames(new_meta_data) <- new_meta_data$Cell
+  # We add an AverageCoverage column to the new meta data.
+  new_meta_data$AverageCoverage                           <- new_meta_data$AverageCoveragescRNAseq
+  amplicon_value                                          <- new_meta_data$AverageCoverageAmplicon
+  names(amplicon_value)                                   <- colnames(amplicon)
+  amplicon_value                                          <- na.omit(amplicon_value)
+  new_meta_data[names(amplicon_value), "AverageCoverage"] <- amplicon_value
+
   new_row_data <- merge(rowData(scRNAseq), rowData(amplicon), by = "VariantName", all.x = TRUE, all.y = TRUE,
                         suffixes = c("scRNAseq", "Amplicon"))
   rownames(new_row_data) <- new_row_data$VariantName
+  # We add a VariantQuality column to the row data, showing the scRNAseq quality with the supplemented amplicon quality.
+  # We do the same for the concordance and the depth.
+  new_row_data$VariantQuality                           <- new_row_data$VariantQualityscRNAseq
+  amplicon_value                                        <- rowData(amplicon)$VariantQuality
+  names(amplicon_value)                                 <- rownames(amplicon)
+  amplicon_value                                        <- na.omit(amplicon_value)
+  new_row_data[names(amplicon_value), "VariantQuality"] <- amplicon_value
+  
+  new_row_data$Concordance                           <- new_row_data$ConcordancescRNAseq
+  amplicon_value                                     <- rowData(amplicon)$Concordance
+  names(amplicon_value)                              <- rownames(amplicon)
+  amplicon_value                                     <- na.omit(amplicon_value)
+  new_row_data[names(amplicon_value), "Concordance"] <- amplicon_value
+  
+  new_row_data$Depth                           <- new_row_data$DepthscRNAseq
+  amplicon_value                               <- rowData(amplicon)$Depth
+  names(amplicon_value)                        <- rownames(amplicon)
+  amplicon_value                               <- na.omit(amplicon_value)
+  new_row_data[names(amplicon_value), "Depth"] <- amplicon_value
 
   print("We get all cells and variants.")
-  all_cells <- unique(c(colnames(scRNAseq), colnames(amplicon)))
-  all_variants <- unique(c(rownames(scRNAseq), rownames(amplicon)))
-  new_row_data <- new_row_data[all_variants,]
+  all_cells     <- unique(c(colnames(scRNAseq), colnames(amplicon)))
+  all_variants  <- unique(c(rownames(scRNAseq), rownames(amplicon)))
+  new_meta_data <- new_meta_data[all_cells,]
+  new_row_data  <- new_row_data[all_variants,]
 
   print("We generate our output matrices.")
   consensus <- matrix(0, ncol = length(all_cells), nrow = length(all_variants))
