@@ -8,7 +8,10 @@ VariantQuantileThresholding(
   SE,
   min_coverage = 2,
   quantiles = c(0.1, 0.9),
-  thresholds = c(0.1, 0.9)
+  thresholds = c(0.1, 0.9),
+  top_cells = NULL,
+  top_VAF = NULL,
+  min_quality = 30
 )
 }
 \arguments{
@@ -19,8 +22,16 @@ VariantQuantileThresholding(
 \item{quantiles}{The lower and upper quantile you want to use.}
 
 \item{thresholds}{The VAF thresholds you want to use for the quantiles.}
+
+\item{top_cells}{The number of cells with at least top_VAF percent for a variant.}
+
+\item{top_VAF}{The VAF for the top cells.}
+
+\item{min_quality}{The minimum quality you want for the Variants of Interest. Can be ignored by setting it to NULL.}
 }
 \description{
 We get variants of interest using the quantile thresholding.
+If you use top_cells and top_VAF, you have to only supply one quantil value (quantiles = 0.9, thresholds = 0).
+This function is adapted from the Peter van Galen.
 Source: https://github.com/petervangalen/MAESTER-2021
 }

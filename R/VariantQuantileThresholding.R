@@ -24,6 +24,7 @@ VariantQuantileThresholding <- function(SE, min_coverage = 2, quantiles = c(0.1,
 
     print("Collect all information in a tibble")
     vars <- do.call(cbind, c(list(mean_af), list(mean_cov), list(rowData(SE)$VariantQuality), quantiles))
+    vars <- data.frame(Mean_AF = mean_af, Mean_Cov = mean_cov, Quality = rowData(SE)$VariantQuality, Quantile1 = quantiles[[1]], Quantile2 = quantiles[[2]])
 
     print("Thresholding using the quantile approach.")
     if(length(quantiles) != 2) stop("Your quantiles are not of length 2.")
