@@ -6,7 +6,7 @@
 #'@param voi Variants Of Interest.
 #'@param annotation_trait Cell Annotation at the bottom of the heat map. 
 #'@export
-HeatmapVoi <- function(SE, voi, annotation_trait = NULL, column_title = NULL){
+HeatmapVoi <- function(SE, voi, annotation_trait = NULL, column_title = NULL, remove_empty_cells = FALSE){
   #colours_list <- c("#a6cee3", "#1f78b4", "#b2df8a", "#33a02c", "#fb9a99",
   #                  "#e31a1c", "#fdbf6f", "#ff7f00", "#cab2d6", "#6a3d9a",
   #                  "#ffff99", "deeppink", "green", "blue", "gold", "indianred3",
@@ -25,6 +25,11 @@ HeatmapVoi <- function(SE, voi, annotation_trait = NULL, column_title = NULL){
     rownames(fraction) <- voi
   } else if(length(voi) > 1){
     fraction <- as.matrix(fraction)
+  }
+  # We remove cells that are negative for all variants.
+  if(remove_empty_cells){
+    cell_check <- colSums(fraction > 0) > 0
+    fraction <- fraction[,cell_check]
   }
   if(!is.null(annotation_trait)){
     colours_use <- hue_pal(length(unique(colData(SE)[,annotation_trait])))
@@ -48,7 +53,7 @@ HeatmapVoi <- function(SE, voi, annotation_trait = NULL, column_title = NULL){
                          row_names_gp = grid::gpar(fontsize = 20, fontface = "bold"),
                          col = colorRamp2(seq(0, round(max(fraction, na.rm = TRUE)), length.out = 9),
                                           c("#FCFCFC","#FFEDB0","#FFDF5F","#FEC510","#FA8E24","#F14C2B","#DA2828","#BE2222","#A31D1D")),
-                         show_row_names = T, show_column_names = F, cluster_columns = T, cluster_rows = F, name = "VAF",
+                         show_row_names = T, show_column_names = F, cluster_columns = T, clustering_method_columns = "complete", cluster_rows = F, name = "VAF",
                          heatmap_legend_param = list(border = "#000000", grid_height = unit(10, "mm")),
                          bottom_annotation = ha, border = T, use_raster = T,
                          column_title = column_title,
