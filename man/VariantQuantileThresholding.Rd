@@ -11,7 +11,12 @@ VariantQuantileThresholding(
   thresholds = c(0.1, 0.9),
   top_cells = NULL,
   top_VAF = NULL,
-  min_quality = 30
+  min_quality = 30,
+  mean_allele_frequency = 0,
+  group_of_interest = NULL,
+  group1 = NULL,
+  group2 = NULL,
+  group_factor = NULL
 )
 }
 \arguments{
@@ -28,6 +33,16 @@ VariantQuantileThresholding(
 \item{top_VAF}{The VAF for the top cells.}
 
 \item{min_quality}{The minimum quality you want for the Variants of Interest. Can be ignored by setting it to NULL.}
+
+\item{mean_allele_frequency}{The minimum mean allele frequency. Default = 0}
+
+\item{group_of_interest}{The column data that divides the cells.}
+
+\item{group1}{The first group of interest.}
+
+\item{group2}{The second group of interest.}
+
+\item{group_factor}{How much higher has the mean allele frequency to be in group 1 when compared to group 2?}
 }
 \description{
 We get variants of interest using the quantile thresholding.
