@@ -4,12 +4,12 @@
 \alias{SetVariantInfo}
 \title{GetVariantInfo}
 \usage{
-SetVariantInfo(SE, Seurat, information = "consensus", variants = NULL)
+SetVariantInfo(SE, seurat_object, information = "consensus", variants = NULL)
 }
 \arguments{
 \item{SE}{SummarizedExperiment object.}
 
-\item{Seurat}{The Seurat object.}
+\item{seurat_object}{The Seurat object.}
 
 \item{information}{The assay with the desired information. Default: consensus}
 
