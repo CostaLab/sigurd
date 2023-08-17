@@ -32,7 +32,7 @@ The mutation data was obtained from the Sanger Institute Catalogue Of Somatic Mu
 
 ```
 
-# Current Features v0.2.20
+# Current Features v0.2.21
 
 - Loading data from VarTrix and MAEGATK.
 - Transforming the data to be compatible for joint analysis.
@@ -57,19 +57,3 @@ This package implements approaches from the following packages and respositories
 [1] VarTrix. [github](https://github.com/10XGenomics/vartrix)
 
 [2] Miller, T.E., et al. Mitochondrial variant enrichment from high-throughput single-cell RNA sequencing resolves clonal populations. Nat Biotechnol (2022). [link](https://doi.org/10.1038/s41587-022-01210-8). See also: [MAEGATK Analysis](https://github.com/petervangalen/MAESTER-2021), [Data](https://vangalenlab.bwh.harvard.edu/resources/maester-2021/)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

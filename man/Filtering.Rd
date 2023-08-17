@@ -9,7 +9,6 @@ Filtering(
   blacklisted_barcodes_path = NULL,
   fraction_threshold = NULL,
   alts_threshold = NULL,
-  path_seurat = NULL,
   min_cells_per_variant = 2,
   min_variants_per_cell = 1,
   reject_value = "NoCall"
@@ -23,8 +22,6 @@ Filtering(
 \item{fraction_threshold}{Variants with an VAF below this threshold are set to 0. Numeric. Default = NULL.}
 
 \item{alts_threshold}{Variants with a number of alt reads less than this threshold are set to 0. Numeric. Default = NULL.}
-
-\item{path_seurat}{Path to a Seurat object. Cells not present in the object will be removed.}
 
 \item{min_cells_per_variant}{In how many cells should a variant be present to be included? Numeric. Default = 2.}
 
@@ -40,11 +37,10 @@ We do this for one sample at a time.
 We want to remove:
 \enumerate{
   \item all cells that are blacklisted,
-  \item all cells that are not in a Seurat object,
   \item all cells that do not have at least one variant with >1 (Reference),
   \item all variants that are for alternative transcripts,
   \item all variants that are always NoCall,
-  \item set variants with a VAF below a threshold to reference.
+  \item set variants with a VAF below a threshold to NoCall or Reference.
 }
 }
 \examples{
