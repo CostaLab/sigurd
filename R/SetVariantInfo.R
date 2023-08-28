@@ -37,6 +37,6 @@ SetVariantInfo <- function(SE, seurat_object, information = "consensus", variant
     stop("Error: 0 cells from the SE object are in the Seurat object.")
   }
   res <- res[rownames(res) %in% colnames(seurat_object), , drop = FALSE]
-  seurat_object <- Seurat::AddMetaData(seurat_object, res, col.name = colnames(res))
+  seurat_object <- Seurat::AddMetaData(seurat_object, res, col.name = paste0(colnames(res), "_", information))
   return(seurat_object)
 }
