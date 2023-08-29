@@ -8,19 +8,17 @@
 #'We want to remove:
 #' \enumerate{
 #'   \item all cells that are blacklisted,
-#'   \item all cells that are not in a Seurat object,
 #'   \item all cells that do not have at least one variant with >1 (Reference),
 #'   \item all variants that are for alternative transcripts,
 #'   \item all variants that are always NoCall,
-#'   \item set variants with a VAF below a threshold to reference.
+#'   \item set variants with a VAF below a threshold to NoCall or Reference.
 #' }
-#'@import fastmatch Matrix Seurat SummarizedExperiment
+#'@import fastmatch Matrix SummarizedExperiment
 #'@param se SummarizedExperiment object.
 #'@param blacklisted_barcodes_path Barcodes you want to remove. Path to a file with one column without header.
 #'@param fraction_threshold Variants with an VAF below this threshold are set to 0. Numeric. Default = NULL.
 #'@param alts_threshold Variants with a number of alt reads less than this threshold are set to 0. Numeric. Default = NULL.
 #'@param min_cells_per_variant In how many cells should a variant be present to be included? Numeric. Default = 2.
-#'@param path_seurat Path to a Seurat object. Cells not present in the object will be removed.
 #'@param min_variants_per_cell How many variants should be covered in a cell have to be included? Default = 1.
 #'@param reject_value Should cells that fall below a threshold (fraction_threshold or alts_threshold) be treated as Reference or NoCall? Default = NoCall.
 #'@examples
@@ -30,7 +28,7 @@
 #'   se_geno <- Filtering(se_geno, min_cells_per_variant = 2, fraction_threshold = 0.05)
 #' }
 #'@export
-Filtering <- function(se, blacklisted_barcodes_path = NULL, fraction_threshold = NULL, alts_threshold = NULL, path_seurat = NULL, min_cells_per_variant = 2, min_variants_per_cell = 1, reject_value = "NoCall"){
+Filtering <- function(se, blacklisted_barcodes_path = NULL, fraction_threshold = NULL, alts_threshold = NULL, min_cells_per_variant = 2, min_variants_per_cell = 1, reject_value = "NoCall"){
   # Checking if the reject_value variable is correct.
   if(!reject_value %in% c("Reference", "NoCall")){
     stop(paste0("Your reject_value is ", reject_value, ".\nIt should be Reference or NoCall."))
@@ -49,21 +47,13 @@ Filtering <- function(se, blacklisted_barcodes_path = NULL, fraction_threshold =
     se <- se[, barcodes_keep]
   }
 
-  if(!is.null(path_seurat)){
-    print("We load the Seurat object.")
-    scrna <- load_object(path_seurat)
 
-    print("We remove all cells that are not in the Seurat object.")
-    seu_cells <- colnames(se)
-    seu_cells <- seu_cells[seu_cells %in% colnames(scrna)]
-    se <- se[,seu_cells]
+  # If the fraction_threshold is 0, we skip the thresholding. 0 and NULL would be the same.
+  # We might want to use a fraction_threshold of 0 to use the same variable to create file paths later.
+    if(fraction_threshold == 0){
+    fraction_threshold <- NULL
   }
-
-  #print("We remove all variants for alternative transcripts.")
-  #keep_variants <- !grepl("_ENST", rownames(se))
-  #se <- se[keep_variants,]
-
-
+  
   if(!is.null(fraction_threshold)){
     if(any(fraction_threshold >= 1, fraction_threshold <= 0)){
       stop("Your fraction threshold is not 0 < x < 1.")

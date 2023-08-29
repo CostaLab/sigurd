@@ -4,7 +4,13 @@
 \alias{HeatmapVoi}
 \title{HeatmapVoi}
 \usage{
-HeatmapVoi(SE, voi, annotation_trait = NULL, column_title = NULL)
+HeatmapVoi(
+  SE,
+  voi,
+  annotation_trait = NULL,
+  column_title = NULL,
+  remove_empty_cells = FALSE
+)
 }
 \arguments{
 \item{SE}{SummarizedExperiment object.}

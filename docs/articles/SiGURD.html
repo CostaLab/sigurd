@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">sigurd</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.13</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.15</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -79,7 +79,7 @@ Aachen University, Aachen, 52074 Germany<br><div class="d-none name"><code>SiGUR
 <span><span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressPackageStartupMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va"><a href="https://bioconductor.org/packages/SummarizedExperiment" class="external-link">SummarizedExperiment</a></span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressPackageStartupMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va">VariantAnnotation</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><strong>R version</strong>: R version 4.1.2 (2021-11-01)</p>
-<p><strong>Package version</strong>: 0.2.13</p>
+<p><strong>Package version</strong>: 0.2.15</p>
 <div class="section level2">
 <h2 id="your-input-file-">Your input file.<a class="anchor" aria-label="anchor" href="#your-input-file-"></a>
 </h2>
@@ -276,28 +276,37 @@ variants. - Amplicon_MT: amplicon data analysed for MT variants.</p>
 <span><span class="co">## [1] "We transform the sparse matrices to matrices, so we can calculate the fraction."</span></span>
 <span><span class="co">## [1] "We generate a SummarizedExperiment object containing the fraction and the consensus matrices."</span></span></code></pre>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">Sample1_scRNAseq_MT</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/LoadingVarTrix_typewise.html">LoadingVarTrix_typewise</a></span><span class="op">(</span>samples_file <span class="op">=</span> <span class="va">sample_path</span>, vcf_path <span class="op">=</span> <span class="va">vcf_path_mt</span>, patient <span class="op">=</span> <span class="st">"Sample1"</span>, type_use <span class="op">=</span> <span class="st">"scRNAseq_MT"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">Sample1_scRNAseq_MT</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/LoadingMAEGATK_typewise.html">LoadingMAEGATK_typewise</a></span><span class="op">(</span>samples_file <span class="op">=</span> <span class="va">sample_path</span>, patient <span class="op">=</span> <span class="st">"Sample1"</span>, type_use <span class="op">=</span> <span class="st">"scRNAseq_MT"</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] "Loading the data for patient Sample1."</span></span>
 <span><span class="co">## [1] "We read in the samples file."</span></span>
 <span><span class="co">## [1] "We subset to the patient of interest."</span></span>
 <span><span class="co">## [1] "We get the different samples."</span></span>
-<span><span class="co">## [1] "We load the SNV files."</span></span>
-<span><span class="co">## [1] "We read the variants."</span></span>
 <span><span class="co">## [1] "We read in the cell barcodes output by CellRanger as a list."</span></span>
-<span><span class="co">## [1] "We read in the vcf file."</span></span>
-<span><span class="co">## [1] "We generate more accessible names."</span></span>
-<span><span class="co">## [1] "We read in the different sparse genotype matrices as a list."</span></span>
-<span><span class="co">## [1] "We have a slot per type of input data."</span></span>
+<span><span class="co">## [1] "We load the MAEGATK output files."</span></span>
 <span><span class="co">## [1] "Loading sample 1 of 2"</span></span>
 <span><span class="co">## [1] "Loading sample 2 of 2"</span></span>
-<span><span class="co">## [1] "We generate a large data.frame of all the snv matrices."</span></span>
-<span><span class="co">## [1] "We remove the matrix lists."</span></span>
-<span><span class="co">## [1] "We remove variants, that are not detected in at least 2 cells."</span></span>
+<span><span class="co">## [1] "We merge the samples."</span></span>
+<span><span class="co">## [1] "We get the allele frequency."</span></span>
+<span><span class="co">## [1] "We get the coverage information."</span></span>
+<span><span class="co">## [1] "We get the number of alternative reads per variant."</span></span>
+<span><span class="co">## [1] "We get the quality information."</span></span>
+<span><span class="co">## [1] "We get the number of reference reads."</span></span>
+<span><span class="co">## [1] "Calculating the strand concordance."</span></span>
+<span><span class="co">## [1] "We calculate the consensus information."</span></span>
+<span><span class="co">## [1] "We get the read information per position."</span></span>
+<span><span class="co">## [1] "We add the values together."</span></span>
+<span><span class="co">## [1] "We get the position according to their reference base."</span></span>
+<span><span class="co">## [1] "Now, we check the consensus value for all positions with the same reference base."</span></span>
+<span><span class="co">## [1] "A"</span></span>
+<span><span class="co">## [1] "C"</span></span>
+<span><span class="co">## [1] "G"</span></span>
+<span><span class="co">## [1] "T"</span></span>
+<span><span class="co">## [1] "N"</span></span>
+<span><span class="co">## [1] "Binding the matrices."</span></span>
+<span><span class="co">## [1] "We perform some filtering to reduce the memory needed."</span></span>
+<span><span class="co">## [1] "We remove variants, which are not covered in at least 2 cells ."</span></span>
 <span><span class="co">## [1] "We remove cells that are always NoCall."</span></span>
-<span><span class="co">## [1] "scRNAseq_MT Variants: 49081"</span></span>
-<span><span class="co">## [1] "scRNAseq_MT Cells: 10277"</span></span>
-<span><span class="co">## [1] "We transform the sparse matrices to matrices, so we can calculate the fraction."</span></span>
-<span><span class="co">## [1] "We generate a SummarizedExperiment object containing the fraction and the consensus matrices."</span></span></code></pre>
+<span><span class="co">## [1] "We add the information to the merged matrices."</span></span></code></pre>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">Sample1_combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/CombineSEobjects.html">CombineSEobjects</a></span><span class="op">(</span>se_somatic <span class="op">=</span> <span class="va">Sample1_scRNAseq_Somatic</span>, se_MT <span class="op">=</span> <span class="va">Sample1_scRNAseq_MT</span>, suffixes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"_somatic"</span>, <span class="st">"_MT"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/rm.html" class="external-link">rm</a></span><span class="op">(</span><span class="va">Sample1_scRNAseq_Somatic</span>, <span class="va">Sample1_scRNAseq_MT</span><span class="op">)</span></span>

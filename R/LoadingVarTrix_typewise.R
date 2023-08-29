@@ -12,6 +12,7 @@
 #'@param samples_path Path to the input folder. Must include a barcodes file.
 #'@param samples_file Path to the csv file with the samples to be loaded.
 #'@param vcf_path Path to the VCF file with the variants.
+#'@param snp_path Path to the SNP file used for VarTrix (SNV.loci.txt). 
 #'@param patient The patient you want to load.
 #'@param type_use The type of input. Has to be one of: scRNAseq_Somatic, Amplicon_Somatic, scRNAseq_MT, Amplicon_MT.
 #'@param min_reads The minimum number of reads we want. Otherwise we treat this as a NoCall. Default = NULL.
@@ -291,12 +292,16 @@ LoadingVarTrix_typewise <- function(samples_file, samples_path = NULL, barcodes_
     # We want an assay for the Consensus information and for the fraction.
     # As meta data we add a data frame showing the cell id, the associated patient and the sample.
     coverage_depth_per_cell <- colMeans(reads_total)
+    coverage_depth_per_variant <- rowMeans(reads_total)
     meta_data <- data.frame(Cell = colnames(consensus_matrix_total), Type = type_use, AverageCoverage = coverage_depth_per_cell)
+    rownames(meta_data) <- meta_data$Cell
+    meta_row <- data.frame(VariantName = rownames(consensus_matrix_total), Depth = coverage_depth_per_variant)
+    rownames(meta_row) <- meta_row$VariantName
     #se_merged <- SummarizedExperiment(assays = list(consensus = as(consensus_matrix_total, "dgCMatrix"), fraction = as(fraction_total, "dgCMatrix"), coverage = as(reads_total, "dgCMatrix")),
     #                                  colData = meta_data)
     se_merged <- SummarizedExperiment(assays = list(consensus = as(consensus_matrix_total, "CsparseMatrix"), fraction = as(fraction_total, "CsparseMatrix"), coverage = as(reads_total, "CsparseMatrix"),
                                                     alts = as(coverage_matrix_total, "CsparseMatrix"), refs = as(ref_matrix_total, "CsparseMatrix")),
-                                      colData = meta_data)
+                                      colData = meta_data, rowData = meta_row)
     return(se_merged)
   }
 }

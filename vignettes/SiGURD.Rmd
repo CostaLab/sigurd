@@ -75,7 +75,7 @@ Since the MT results are denser, they take longer to load.
 
 Sample1_scRNAseq_Somatic <- LoadingVarTrix_typewise(samples_file = sample_path, vcf_path = vcf_path, patient = "Sample1", type_use = "scRNAseq_Somatic")
 
-Sample1_scRNAseq_MT <- LoadingVarTrix_typewise(samples_file = sample_path, vcf_path = vcf_path_mt, patient = "Sample1", type_use = "scRNAseq_MT")
+Sample1_scRNAseq_MT <- LoadingMAEGATK_typewise(samples_file = sample_path, patient = "Sample1", type_use = "scRNAseq_MT")
 
 Sample1_combined <- CombineSEobjects(se_somatic = Sample1_scRNAseq_Somatic, se_MT = Sample1_scRNAseq_MT, suffixes = c("_somatic", "_MT"))
 rm(Sample1_scRNAseq_Somatic, Sample1_scRNAseq_MT)
