@@ -6,14 +6,13 @@
 #'@param samples_path Path to the input folder. Must include a barcodes file.
 #'@param samples_file Path to the csv file with the samples to be loaded.
 #'@param vcf_path Path to the VCF file with the variants.
-#'@param snp_path Path to the SNP file used for VarTrix (SNV.loci.txt). 
 #'@param patient The patient you want to load.
 #'@param type_use The type of input. Has to be one of: scRNAseq_Somatic, Amplicon_Somatic, scRNAseq_MT, Amplicon_MT.
 #'@param min_reads The minimum number of reads we want. Otherwise we treat this as a NoCall. Default = NULL.
 #'@param min_cells The minimum number of cells for a variant. Otherwise, we will remove a variant. Default = 2.
 #'@export
-LoadingVCF_typewise <- function(samples_file, samples_path = NULL, barcodes_path = NULL, snp_path = NULL, vcf_path, patient, sample = NULL, type_use = "scRNAseq_Somatic", min_reads = NULL, min_cells = 2, yield_size = 10000){
-  if(all(!is.null(samples_path), !is.null(barcodes_path), !is.null(sample), !is.null(snp_path))){
+LoadingVCF_typewise <- function(samples_file, samples_path = NULL, barcodes_path = NULL, vcf_path, patient, sample = NULL, type_use = "scRNAseq_Somatic", min_reads = NULL, min_cells = 2){
+  if(all(!is.null(samples_path), !is.null(barcodes_path), !is.null(sample))){
     print(paste0("Loading the data for sample ", sample, "."))
     samples_file <- data.frame(patient = patient, sample = sample, input_folder = samples_path, cells = barcodes_path)
     samples <- samples_file$sample
