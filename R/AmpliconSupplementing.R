@@ -23,20 +23,24 @@ AmpliconSupplementing <- function(scRNAseq, amplicon){
   new_row_data <- merge(rowData(scRNAseq), rowData(amplicon), by = "VariantName", all.x = TRUE, all.y = TRUE,
                         suffixes = c("scRNAseq", "Amplicon"))
   rownames(new_row_data) <- new_row_data$VariantName
-  # We add a VariantQuality column to the row data, showing the scRNAseq quality with the supplemented amplicon quality.
-  # We do the same for the concordance and the depth.
-  new_row_data$VariantQuality                           <- new_row_data$VariantQualityscRNAseq
-  amplicon_value                                        <- rowData(amplicon)$VariantQuality
-  names(amplicon_value)                                 <- rownames(amplicon)
-  amplicon_value                                        <- na.omit(amplicon_value)
-  new_row_data[names(amplicon_value), "VariantQuality"] <- amplicon_value
-  
-  new_row_data$Concordance                           <- new_row_data$ConcordancescRNAseq
-  amplicon_value                                     <- rowData(amplicon)$Concordance
-  names(amplicon_value)                              <- rownames(amplicon)
-  amplicon_value                                     <- na.omit(amplicon_value)
-  new_row_data[names(amplicon_value), "Concordance"] <- amplicon_value
-  
+  if("VariantQualityscRNAseq" %in% colnames(new_row_data)){
+    # We add a VariantQuality column to the row data, showing the scRNAseq quality with the supplemented amplicon quality.
+    # We do the same for the concordance and the depth.
+    new_row_data$VariantQuality                           <- new_row_data$VariantQualityscRNAseq
+    amplicon_value                                        <- rowData(amplicon)$VariantQuality
+    names(amplicon_value)                                 <- rownames(amplicon)
+    amplicon_value                                        <- na.omit(amplicon_value)
+    new_row_data[names(amplicon_value), "VariantQuality"] <- amplicon_value
+  }
+
+  if("ConcordancescRNAseq" %in% colnames(new_row_data)){
+    new_row_data$Concordance                           <- new_row_data$ConcordancescRNAseq
+    amplicon_value                                     <- rowData(amplicon)$Concordance
+    names(amplicon_value)                              <- rownames(amplicon)
+    amplicon_value                                     <- na.omit(amplicon_value)
+    new_row_data[names(amplicon_value), "Concordance"] <- amplicon_value
+  }
+
   new_row_data$Depth                           <- new_row_data$DepthscRNAseq
   amplicon_value                               <- rowData(amplicon)$Depth
   names(amplicon_value)                        <- rownames(amplicon)

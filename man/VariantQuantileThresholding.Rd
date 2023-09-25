@@ -11,7 +11,7 @@ VariantQuantileThresholding(
   thresholds = c(0.1, 0.9),
   top_cells = NULL,
   top_VAF = NULL,
-  min_quality = 30,
+  min_quality = NULL,
   mean_allele_frequency = 0,
   group_of_interest = NULL,
   group1 = NULL,

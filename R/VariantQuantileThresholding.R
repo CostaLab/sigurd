@@ -18,7 +18,7 @@
 #'@param group2 The second group of interest.
 #'@param group_factor How much higher has the mean allele frequency to be in group 1 when compared to group 2?
 #'@export
-VariantQuantileThresholding <- function(SE, min_coverage = 2, quantiles = c(0.1, 0.9), thresholds = c(0.1, 0.9), top_cells = NULL, top_VAF = NULL, min_quality = 30, mean_allele_frequency = 0,
+VariantQuantileThresholding <- function(SE, min_coverage = 2, quantiles = c(0.1, 0.9), thresholds = c(0.1, 0.9), top_cells = NULL, top_VAF = NULL, min_quality = NULL, mean_allele_frequency = 0,
                                         group_of_interest = NULL, group1 = NULL, group2 = NULL, group_factor = NULL){
   print("Get the mean allele frequency and coverage.")
   mean_af <- rowMeans(assays(SE)[["fraction"]], na.rm = TRUE)
