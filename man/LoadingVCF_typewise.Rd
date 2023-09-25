@@ -8,22 +8,18 @@ LoadingVCF_typewise(
   samples_file,
   samples_path = NULL,
   barcodes_path = NULL,
-  snp_path = NULL,
   vcf_path,
   patient,
   sample = NULL,
   type_use = "scRNAseq_Somatic",
   min_reads = NULL,
-  min_cells = 2,
-  yield_size = 10000
+  min_cells = 2
 )
 }
 \arguments{
 \item{samples_file}{Path to the csv file with the samples to be loaded.}
 
 \item{samples_path}{Path to the input folder. Must include a barcodes file.}
-
-\item{snp_path}{Path to the SNP file used for VarTrix (SNV.loci.txt).}
 
 \item{vcf_path}{Path to the VCF file with the variants.}
 
