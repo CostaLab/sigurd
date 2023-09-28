@@ -42,7 +42,7 @@ VariantQuantileThresholding <- function(SE, min_coverage = 2, quantiles = c(0.1,
     quantiles <- lapply(quantiles, function(x) apply(assays(SE)[["fraction"]], 1, quantile, x, na.rm = TRUE))
     # vars <- do.call(cbind, c(list(mean_af), list(mean_cov), list(rowData(SE)$VariantQuality), quantiles))
     if(!is.null(min_quality)){
-      vars <- data.frame(Mean_AF = mean_af, Mean_Cov = mean_cov, Quality = rowData(SE)$VariantQuality, Quantile1 = quantiles[[1]], Quantile2 = quantiles[[2]])
+      vars <- data.frame(Mean_AF = mean_af, Mean_Cov = mean_cov, VariantQuality = rowData(SE)$VariantQuality, Quantile1 = quantiles[[1]], Quantile2 = quantiles[[2]])
       vars <- vars[is.na(vars$VariantQuality), ]
       vars <- subset(vars, VariantQuality > min_quality)
     } else{
@@ -62,7 +62,7 @@ VariantQuantileThresholding <- function(SE, min_coverage = 2, quantiles = c(0.1,
     quantiles <- lapply(quantiles, function(x) apply(assays(SE)[["fraction"]], 1, quantile, x, na.rm = TRUE))
 
     if(!is.null(min_quality)){
-      vars <- data.frame(Mean_AF = mean_af, Mean_Cov = mean_cov, Quality = rowData(SE)$VariantQuality, Quantile1 = quantiles[[1]], Quantile2 = quantiles[[2]])
+      vars <- data.frame(Mean_AF = mean_af, Mean_Cov = mean_cov, VariantQuality = rowData(SE)$VariantQuality, Quantile1 = quantiles[[1]], Quantile2 = quantiles[[2]])
       vars <- vars[is.na(vars$VariantQuality), ]
       vars <- subset(vars, VariantQuality > min_quality)
     } else{
