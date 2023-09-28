@@ -50,10 +50,12 @@ Filtering <- function(se, blacklisted_barcodes_path = NULL, fraction_threshold =
 
   # If the fraction_threshold is 0, we skip the thresholding. 0 and NULL would be the same.
   # We might want to use a fraction_threshold of 0 to use the same variable to create file paths later.
+  if(!is.null(fraction_threshold)){
     if(fraction_threshold == 0){
-    fraction_threshold <- NULL
+      fraction_threshold <- NULL
+    }
   }
-  
+
   if(!is.null(fraction_threshold)){
     if(any(fraction_threshold >= 1, fraction_threshold <= 0)){
       stop("Your fraction threshold is not 0 < x < 1.")

@@ -10,8 +10,8 @@
 AmpliconSupplementing <- function(scRNAseq, amplicon){
   # We supplement the scRNAseq data with the amplicon data.
   print("We get the new meta data.")
-  new_meta_data <- merge(colData(scRNAseq), colData(amplicon), by = "Cell", all.x = TRUE, all.y = TRUE,
-                         suffixes = c("scRNAseq", "Amplicon"))
+  new_meta_data <- S4Vectors::merge(colData(scRNAseq), colData(amplicon), by = "Cell", all.x = TRUE, all.y = TRUE,
+                                    suffixes = c("scRNAseq", "Amplicon"))
   rownames(new_meta_data) <- new_meta_data$Cell
   # We add an AverageCoverage column to the new meta data.
   new_meta_data$AverageCoverage                           <- new_meta_data$AverageCoveragescRNAseq
