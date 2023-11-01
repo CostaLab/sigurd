@@ -21,28 +21,27 @@
 VariantQuantileThresholding <- function(SE, min_coverage = 2, quantiles = c(0.1, 0.9), thresholds = c(0.1, 0.9), top_cells = NULL, top_VAF = NULL, min_quality = NULL, mean_allele_frequency = 0,
                                         group_of_interest = NULL, group1 = NULL, group2 = NULL, group_factor = NULL){
   print("Get the mean allele frequency and coverage.")
-  mean_af <- rowMeans(assays(SE)[["fraction"]], na.rm = TRUE)
-  mean_cov <- rowMeans(assays(SE)[["coverage"]], na.rm = TRUE)
+  mean_af <- rowMeans(SummarizedExperiment::assays(SE)[["fraction"]], na.rm = TRUE)
+  mean_cov <- rowMeans(SummarizedExperiment::assays(SE)[["coverage"]], na.rm = TRUE)
   if(all(is.null(min_quality), is.numeric(min_quality))) stop("Error: Your minimum quality is not either NULL or a numeric.")
   if(all(is.null(mean_allele_frequency), is.numeric(mean_allele_frequency))) stop("Error: Your mean allele frequency is not either NULL or a numeric.")
   
   if(all(!is.null(group_of_interest), !is.null(group1), !is.null(group2))){
-    if(!group_of_interest %in% colnames(colData(SE))) stop("Error: Your group_of_interest is not in the colData.")
-    if(!group1 %in% colData(SE)[,group_of_interest]) stop("Error: Your group1 is not in the group_of_interest.")
-    if(!group2 %in% colData(SE)[,group_of_interest]) stop("Error: Your group2 is not in the group_of_interest.")
-    cells_group1 <- colData(SE)[,group_of_interest, drop = FALSE]
+    if(!group_of_interest %in% colnames(SummarizedExperiment::colData(SE))) stop("Error: Your group_of_interest is not in the colData.")
+    if(!group1 %in% SummarizedExperiment::colData(SE)[, group_of_interest]) stop("Error: Your group1 is not in the group_of_interest.")
+    if(!group2 %in% SummarizedExperiment::colData(SE)[, group_of_interest]) stop("Error: Your group2 is not in the group_of_interest.")
+    cells_group1 <- SummarizedExperiment::colData(SE)[, group_of_interest, drop = FALSE]
     cells_group1 <- cells_group1[cells_group1[, group_of_interest] == group1, , drop = FALSE]
-    cells_group2 <- colData(SE)[,group_of_interest, drop = FALSE]
+    cells_group2 <- SummarizedExperiment::colData(SE)[, group_of_interest, drop = FALSE]
     cells_group2 <- cells_group2[cells_group2[, group_of_interest] == group2, , drop = FALSE]
-    mean_af_group1 <- rowMeans(assays(SE)[["fraction"]][,rownames(cells_group1)], na.rm = TRUE)
-    mean_af_group2 <- rowMeans(assays(SE)[["fraction"]][,rownames(cells_group2)], na.rm = TRUE)
+    mean_af_group1 <- rowMeans(SummarizedExperiment::assays(SE)[["fraction"]][, rownames(cells_group1)], na.rm = TRUE)
+    mean_af_group2 <- rowMeans(SummarizedExperiment::assays(SE)[["fraction"]][, rownames(cells_group2)], na.rm = TRUE)
     mean_af_group_check <- mean_af_group1 > (group_factor * mean_af_group2)
 
     print("Get the quantiles of the VAFs of each variant.")
-    quantiles <- lapply(quantiles, function(x) apply(assays(SE)[["fraction"]], 1, quantile, x, na.rm = TRUE))
-    # vars <- do.call(cbind, c(list(mean_af), list(mean_cov), list(rowData(SE)$VariantQuality), quantiles))
+    quantiles <- lapply(quantiles, function(x) apply(SummarizedExperiment::assays(SE)[["fraction"]], 1, quantile, x, na.rm = TRUE))
     if(!is.null(min_quality)){
-      vars <- data.frame(Mean_AF = mean_af, Mean_Cov = mean_cov, VariantQuality = rowData(SE)$VariantQuality, Quantile1 = quantiles[[1]], Quantile2 = quantiles[[2]])
+      vars <- data.frame(Mean_AF = mean_af, Mean_Cov = mean_cov, VariantQuality = SummarizedExperiment::rowData(SE)$VariantQuality, Quantile1 = quantiles[[1]], Quantile2 = quantiles[[2]])
       vars <- vars[is.na(vars$VariantQuality), ]
       vars <- subset(vars, VariantQuality > min_quality)
     } else{
@@ -51,18 +50,17 @@ VariantQuantileThresholding <- function(SE, min_coverage = 2, quantiles = c(0.1,
     vars <- vars[mean_af_group_check,]
 
     print("Thresholding using the quantile approach.")
-    if(length(quantiles) != 2) stop("Your quantiles are not of length 2.")
+    if(length(quantiles)  != 2) stop("Your quantiles are not of length 2.")
     if(length(thresholds) != 2) stop("Your thresholds are not of length 2.")
-    #voi_ch <- subset(vars, vars[,1] > mean_allele_frequency & vars[,2] > min_coverage & vars[,4] < thresholds[1] & vars[,5] > thresholds[2])
     voi_ch <- subset(vars, Mean_AF > mean_allele_frequency & Mean_Cov > min_coverage & Quantile1 < thresholds[1] & Quantile2 > thresholds[2])
 
 
   } else if(any(is.null(top_cells), is.null(top_VAF))){
     print("Get the quantiles of the VAFs of each variant.")
-    quantiles <- lapply(quantiles, function(x) apply(assays(SE)[["fraction"]], 1, quantile, x, na.rm = TRUE))
+    quantiles <- lapply(quantiles, function(x) apply(SummarizedExperiment::assays(SE)[["fraction"]], 1, quantile, x, na.rm = TRUE))
 
     if(!is.null(min_quality)){
-      vars <- data.frame(Mean_AF = mean_af, Mean_Cov = mean_cov, VariantQuality = rowData(SE)$VariantQuality, Quantile1 = quantiles[[1]], Quantile2 = quantiles[[2]])
+      vars <- data.frame(Mean_AF = mean_af, Mean_Cov = mean_cov, VariantQuality = SummarizedExperiment::rowData(SE)$VariantQuality, Quantile1 = quantiles[[1]], Quantile2 = quantiles[[2]])
       vars <- vars[is.na(vars$VariantQuality), ]
       vars <- subset(vars, VariantQuality > min_quality)
     } else{
@@ -72,19 +70,18 @@ VariantQuantileThresholding <- function(SE, min_coverage = 2, quantiles = c(0.1,
     print("Thresholding using the quantile approach.")
     if(length(quantiles) != 2) stop("Your quantiles are not of length 2.")
     if(length(thresholds) != 2) stop("Your thresholds are not of length 2.")
-    #voi_ch <- subset(vars, vars[,1] > mean_allele_frequency & vars[,2] > min_coverage & vars[,4] < thresholds[1] & vars[,5] > thresholds[2])
     voi_ch <- subset(vars, Mean_AF > mean_allele_frequency & Mean_Cov > min_coverage & Quantile1 < thresholds[1] & Quantile2 > thresholds[2])
   } else{
     print("Get the quantile of the VAF of each variant.")
     if(length(quantiles) > 1) stop("You are providing more than 1 quantile. You should only provide 1.")
     if(length(thresholds) > 1) stop("You are providing more than 1 threshold. You should only provide 1.")
-    quantiles <- lapply(quantiles, function(x) apply(assays(SE)[["fraction"]], 1, quantile, x, na.rm = TRUE))
+    quantiles <- lapply(quantiles, function(x) apply(SummarizedExperiment::assays(SE)[["fraction"]], 1, quantile, x, na.rm = TRUE))
     quantiles <- quantiles[[1]]
-    top_cells_values <- assays(SE)[["fraction"]]
+    top_cells_values <- SummarizedExperiment::assays(SE)[["fraction"]]
     top_cells_values <- top_cells_values > top_VAF
     top_cells_values <- rowSums(top_cells_values)
     if(!is.null(min_quality)){
-      vars <- data.frame(Mean_AF = mean_af, Mean_Cov = mean_cov, Quality = rowData(SE)$VariantQuality, Quantile = quantiles, TopCells = top_cells_values)
+      vars <- data.frame(Mean_AF = mean_af, Mean_Cov = mean_cov, Quality = SummarizedExperiment::rowData(SE)$VariantQuality, Quantile = quantiles, TopCells = top_cells_values)
       vars <- vars[is.na(vars$VariantQuality), ]
       vars <- subset(vars, VariantQuality > min_quality)
     } else{

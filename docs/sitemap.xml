@@ -67,10 +67,16 @@
     <loc>/reference/GetCellInfoPerVariant.html</loc>
   </url>
   <url>
+    <loc>/reference/GetVariantInfo.html</loc>
+  </url>
+  <url>
     <loc>/reference/HeatmapVoi.html</loc>
   </url>
   <url>
     <loc>/reference/LoadingMAEGATK_typewise.html</loc>
+  </url>
+  <url>
+    <loc>/reference/LoadingVCF_typewise.html</loc>
   </url>
   <url>
     <loc>/reference/LoadingVarTrix.html</loc>
@@ -92,6 +98,9 @@
   </url>
   <url>
     <loc>/reference/SeparatingMatrixToList.html</loc>
+  </url>
+  <url>
+    <loc>/reference/SetVariantInfo.html</loc>
   </url>
   <url>
     <loc>/reference/VariantBurden.html</loc>
@@ -118,6 +127,9 @@
     <loc>/reference/VariantWiseFisherTest.html</loc>
   </url>
   <url>
+    <loc>/reference/char_to_numeric.html</loc>
+  </url>
+  <url>
     <loc>/reference/combine_NAMES.html</loc>
   </url>
   <url>
@@ -128,6 +140,9 @@
   </url>
   <url>
     <loc>/reference/getAltMatrix.html</loc>
+  </url>
+  <url>
+    <loc>/reference/getMutMatrix.html</loc>
   </url>
   <url>
     <loc>/reference/getReadMatrix.html</loc>

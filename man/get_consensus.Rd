@@ -17,4 +17,6 @@ get_consensus(alt_base, ref_base, input_matrix, chromosome_prefix = "chrM")
 }
 \description{
 We get the consensus information for a specific matrix.
+I want to remove some packages if they are not needed. See below which package apperantly wasn't needed.
+Package to remove: dplyr, SummarizedExperiment
 }

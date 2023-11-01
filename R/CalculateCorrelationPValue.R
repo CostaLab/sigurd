@@ -27,7 +27,7 @@ CalculateCorrelationPValue <- function(variant_values, other_mutation, all_varia
       result <- c(NA,NA,NA,NA,NA,NA)
       return(result)
     } else if(length(variant_values) > 2){
-      result <- cor.test(variant_values, other_variant_values)
+      result <- stats::cor.test(variant_values, other_variant_values)
       cells_som_alt <- sum(variant_values == 1)
       cells_som_ref <- sum(variant_values == 0)
       cells_MT_alt  <- sum(other_variant_values == 1)

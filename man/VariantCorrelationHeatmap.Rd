@@ -34,4 +34,6 @@ VariantCorrelationHeatmap(
 }
 \description{
 We generate a heatmap showing the correlation of somatic variants with the MT variants.
+Packages I want to remove. I cannot see where they are used.
+ggplot2 parallel rcompanion tidyr
 }

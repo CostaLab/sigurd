@@ -6,7 +6,7 @@
 #'@param se SummarizedExperiment object
 #'@export
 VariantBurden <- function(se){
-  burden <- colSums(assays(se)[["fraction"]])
-  colData(se)[,"Burden"] <- burden
+  burden <- colSums(SummarizedExperiment::assays(se)[["fraction"]])
+  SummarizedExperiment::colData(se)[,"Burden"] <- burden
   return(se)
 }

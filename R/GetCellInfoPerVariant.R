@@ -5,16 +5,15 @@
 #'@export
 GetCellInfoPerVariant <- function(se, voi_ch){
   print("Generate matrices with coverage, allele frequency and reference / variant reads")
-  cov_voi_mat <- assays(se)[["coverage"]][voi_ch,]
-  af_voi_mat  <- assays(se)[["fraction"]][voi_ch,]
+  cov_voi_mat <- SummarizedExperiment::assays(se)[["coverage"]][voi_ch,]
+  af_voi_mat  <- SummarizedExperiment::assays(se)[["fraction"]][voi_ch,]
 
   print("Add coverage and allele frequency info from variants of interest to cells_tib.")
-  cells_tib <- tibble(cell = colnames(se),
-                      Mean_Cov = se$depth)
+  cells_tib <- tibble::tibble(cell = colnames(se), Mean_Cov = se$depth)
   for(voi in voi_ch){
     cells_tib <- cells_tib %>%
-      left_join(as_tibble(assays(se)[["coverage"]][voi,], rownames = "cell"), by = "cell") %>%
-      left_join(as_tibble(assays(se)[["fraction"]][voi,], rownames = "cell"), by = "cell")
+      dplyr::left_join(tibble::as_tibble(SummarizedExperiment::assays(se)[["coverage"]][voi,], rownames = "cell"), by = "cell") %>%
+      dplyr::left_join(tibble::as_tibble(SummarizedExperiment::assays(se)[["fraction"]][voi,], rownames = "cell"), by = "cell")
     colnames(cells_tib) <- gsub("value.x", paste0("cov_", voi), colnames(cells_tib))
     colnames(cells_tib) <- gsub("value.y", paste0("af_", voi), colnames(cells_tib))
   }

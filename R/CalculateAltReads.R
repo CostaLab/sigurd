@@ -6,20 +6,20 @@
 #'@param chromosome_prefix List of matrices for the alternative reads.
 #'@export
 CalculateAltReads <- function(SE, chromosome_prefix = "chrM"){
-  ref_allele <- as.character(rowRanges(SE)$refAllele)
-  reads_A <- assays(SE)[["A_counts_fw"]] + assays(SE)[["A_counts_rev"]]
+  ref_allele <- as.character(SummarizedExperiment::rowRanges(SE)$refAllele)
+  reads_A <- SummarizedExperiment::assays(SE)[["A_counts_fw"]] + SummarizedExperiment::assays(SE)[["A_counts_rev"]]
   rownames(reads_A) <- paste0(chromosome_prefix, "_", 1:nrow(reads_A), "_", ref_allele, "_A")
   reads_A <- reads_A[ref_allele != "A",]
 
-  reads_C <- assays(SE)[["C_counts_fw"]] + assays(SE)[["C_counts_rev"]]
+  reads_C <- SummarizedExperiment::assays(SE)[["C_counts_fw"]] + SummarizedExperiment::assays(SE)[["C_counts_rev"]]
   rownames(reads_C) <- paste0(chromosome_prefix, "_", 1:nrow(reads_C), "_", ref_allele, "_C")
   reads_C <- reads_C[ref_allele != "C",]
 
-  reads_G <- assays(SE)[["G_counts_fw"]] + assays(SE)[["G_counts_rev"]]
+  reads_G <- SummarizedExperiment::assays(SE)[["G_counts_fw"]] + SummarizedExperiment::assays(SE)[["G_counts_rev"]]
   rownames(reads_G) <- paste0(chromosome_prefix, "_", 1:nrow(reads_G), "_", ref_allele, "_G")
   reads_G <- reads_G[ref_allele != "G",]
 
-  reads_T <- assays(SE)[["T_counts_fw"]] + assays(SE)[["T_counts_rev"]]
+  reads_T <- SummarizedExperiment::assays(SE)[["T_counts_fw"]] + SummarizedExperiment::assays(SE)[["T_counts_rev"]]
   rownames(reads_T) <- paste0(chromosome_prefix, "_", 1:nrow(reads_T), "_", ref_allele, "_T")
   reads_T <- reads_T[ref_allele != "T",]
   

@@ -5,11 +5,11 @@
 #'@param SE SummarizedExperiment object.
 #'@param chromosome_prefix List of matrices for the alternative reads.
 #'@export
-CalculateQuality <- function(SE, variants = rownames(reads_alt), chromosome_prefix = "chrM"){
+CalculateQuality <- function(SE, variants, chromosome_prefix = "chrM"){
   variants <- gsub(paste0(chromosome_prefix, "_"), "", variants)
   qualities <- lapply(c("A", "T", "C", "G"), function(x){
-    fwrev <- cbind(assays(SE)[[paste0(x, "_counts_fw")]], assays(SE)[[paste0(x, "_counts_rev")]])
-    qualities_fwrev <- cbind(assays(SE)[[paste0(x, "_qual_fw")]], assays(SE)[[paste0(x, "_qual_rev")]])
+    fwrev <- cbind(SummarizedExperiment::assays(SE)[[paste0(x, "_counts_fw")]], SummarizedExperiment::assays(SE)[[paste0(x, "_counts_rev")]])
+    qualities_fwrev <- cbind(SummarizedExperiment::assays(SE)[[paste0(x, "_qual_fw")]], SummarizedExperiment::assays(SE)[[paste0(x, "_qual_rev")]])
     variants_use <- strsplit(variants, "")
     variants_use <- sapply(variants_use, tail, n = 1)
     variants_use <- variants_use == x

@@ -1,5 +1,5 @@
 #'We calculate the consensus information from the MAEGATK results.
-#'@import dplyr MatrixGenerics SummarizedExperiment
+#'@import MatrixGenerics SummarizedExperiment
 #'@param SE SummarizedExperiment object.
 #'@param chromosome_prefix The chromosome name used as a prefix.
 #'@export
@@ -11,7 +11,7 @@ CalculateConsensus <- function(SE, chromosome_prefix = "chrM"){
   
   print("We get the read information per position.")
   letter <- c("A", "C", "G", "T")
-  ref_allele <- as.character(rowRanges(SE)$refAllele)
+  ref_allele <- as.character(SummarizedExperiment::rowRanges(SE)$refAllele)
   reads <- lapply(letter, getReadMatrix, SE = SE, chromosome_prefix = chromosome_prefix)
   # Since we have always the same 4 bases, we get all possible combinations by assigning numeric values.
   # A = 8, C = 4, G = 2, T = 1.

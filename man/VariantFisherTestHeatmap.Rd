@@ -22,4 +22,6 @@ VariantFisherTestHeatmap(
 }
 \description{
 We generate a heatmap showing the Fisher test of somatic variants with the MT variants.
+Packages I want to remove.
+ggplot2 parallel rcompanion tidyr
 }

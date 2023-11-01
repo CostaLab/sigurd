@@ -8,6 +8,8 @@ computeAFMutMatrix(SE, chromosome_prefix = "chrM")
 }
 \arguments{
 \item{SE}{SummarizedExperiment object.}
+
+\item{chromosome_prefix}{The prefix of the chromosome.}
 }
 \description{
 Calculate the allele frequency per variant.
@@ -16,5 +18,4 @@ We can get AF values greater than 1, which is due to uninformative reads.
 See: https://gatk.broadinstitute.org/hc/en-us/articles/360035532252-Allele-Depth-AD-is-lower-than-expected
 and https://github.com/caleblareau/mgatk/issues/1
 We simply set these values to 1, since that is the actual information we have in this case.
-This issue can be solved on the MAEGATK/GATK side.
 }

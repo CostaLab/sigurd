@@ -1,7 +1,9 @@
 #'VariantCorrelationHeatmap
 #'@description
 #'We generate a heatmap showing the correlation of somatic variants with the MT variants.
-#'@import circlize ComplexHeatmap ggplot2 Matrix parallel rcompanion tidyr grid
+#'Packages I want to remove. I cannot see where they are used.
+#'ggplot2 parallel rcompanion tidyr
+#'@import circlize ComplexHeatmap Matrix grid
 #'@param correlation_results Data.frame with the correlation results.
 #'@param output_path Path to the output folder.
 #'@param patient The patient for this heatmap.
@@ -38,7 +40,7 @@ VariantCorrelationHeatmap <- function(correlation_results, output_path = NULL, p
     pvalue_max <- max(pvalue_max, 100)
   }
   correlation_results$P_adj_logged[correlation_results$P_adj_logged == Inf] <- pvalue_max
-  col_fun <- colorRamp2(c(0,pvalue_max), c("white", "red"))
+  col_fun <- circlize::colorRamp2(c(0,pvalue_max), c("white", "red"))
   
   
   print("We set insignificant P values to NA.")
@@ -66,16 +68,16 @@ VariantCorrelationHeatmap <- function(correlation_results, output_path = NULL, p
   print("Since we can have no results left after the subsetting, we check if the P value matrix has values.")
   if(all(dim(p_values) > 0)){
     print("Generating the actual heat map.")
-    p1 <- Heatmap(p_values, name = "-log10(P)",
-                  column_title = paste0("Patient ", patient, "\nLogged adj. P values between the mutations"),
-                  row_title = "", show_row_names = TRUE, show_column_names = TRUE,
-                  col = col_fun, left_annotation = annotation_left, top_annotation = annotation_top,
-                  column_title_gp = grid::gpar(fontsize = 40), row_title_gp = grid::gpar(fontsize = 40),
-                  column_names_gp = grid::gpar(fontsize = 40), row_names_gp = grid::gpar(fontsize = 40),
-                  column_names_rot = 45,
-                  row_names_side = "left",
-                  heatmap_legend_param = list(labels_gp = gpar(fontsize = 40), title_gp = gpar(fontsize = 40, fontface = "bold")),
-                  cluster_columns = FALSE, cluster_rows = FALSE, use_raster = FALSE, show_row_dend = FALSE, show_column_dend = FALSE)
+    p1 <- ComplexHeatmap::Heatmap(p_values, name = "-log10(P)",
+                                  column_title = paste0("Patient ", patient, "\nLogged adj. P values between the mutations"),
+                                  row_title = "", show_row_names = TRUE, show_column_names = TRUE,
+                                  col = col_fun, left_annotation = annotation_left, top_annotation = annotation_top,
+                                  column_title_gp = grid::gpar(fontsize = 40), row_title_gp = grid::gpar(fontsize = 40),
+                                  column_names_gp = grid::gpar(fontsize = 40), row_names_gp = grid::gpar(fontsize = 40),
+                                  column_names_rot = 45,
+                                  row_names_side = "left",
+                                  heatmap_legend_param = list(labels_gp = grid::gpar(fontsize = 40), title_gp = grid::gpar(fontsize = 40, fontface = "bold")),
+                                  cluster_columns = FALSE, cluster_rows = FALSE, use_raster = FALSE, show_row_dend = FALSE, show_column_dend = FALSE)
     
     
     if(!is.null(output_path)){

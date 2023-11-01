@@ -16,4 +16,6 @@ VariantWiseCorrelation(variants_list, n_cores = 1, p_value_adjustment = "fdr")
 \description{
 We correlate the variants with each other using the Pearson correlation.
 This function calls CalculateCorrelationPValue to perform the actual correlation.
+Packages I want to remove.
+SummarizedExperiment
 }

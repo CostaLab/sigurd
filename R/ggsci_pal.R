@@ -14,8 +14,7 @@
 #'ucscgb: 26
 #'@export
 ggsci_pal <- function(option, ...){
-  func_name = glue("pal_{option}")
-  func_call = glue('{func_name}(...)')
-  assertthat::assert_that(func_name %in% ls("package:ggsci"))
+  func_name = glue::glue("pal_{option}")
+  func_call = glue::glue('{func_name}(...)')
   return(eval(parse(text=func_call)))
 }

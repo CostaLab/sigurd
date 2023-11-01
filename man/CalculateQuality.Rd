@@ -4,11 +4,7 @@
 \alias{CalculateQuality}
 \title{CalculateQuality}
 \usage{
-CalculateQuality(
-  SE,
-  variants = rownames(reads_alt),
-  chromosome_prefix = "chrM"
-)
+CalculateQuality(SE, variants, chromosome_prefix = "chrM")
 }
 \arguments{
 \item{SE}{SummarizedExperiment object.}

@@ -56,6 +56,7 @@ Filtering <- function(se, blacklisted_barcodes_path = NULL, fraction_threshold =
     }
   }
 
+
   if(!is.null(fraction_threshold)){
     if(any(fraction_threshold >= 1, fraction_threshold <= 0)){
       stop("Your fraction threshold is not 0 < x < 1.")
@@ -65,8 +66,8 @@ Filtering <- function(se, blacklisted_barcodes_path = NULL, fraction_threshold =
     print(paste0("We do not set fractions between ", fraction_threshold, " and 1 to 1."))
     print("This way, we retain the heterozygous information.")
     # Filtering using sparse matrices.
-    consensus_matrix <- assays(se)$consensus
-    fraction_matrix <- assays(se)$fraction
+    consensus_matrix <- SummarizedExperiment::assays(se)$consensus
+    fraction_matrix <- SummarizedExperiment::assays(se)$fraction
     position_matrix <- summary(fraction_matrix)
     position_matrix <- subset(position_matrix, x > 0 & x < fraction_threshold)
     # If no elements fall between 0 and the fraction_threshold, we do not have to change the matrices.
@@ -74,8 +75,8 @@ Filtering <- function(se, blacklisted_barcodes_path = NULL, fraction_threshold =
       ij <- as.matrix(position_matrix[, 1:2])
       consensus_matrix[ij] <- reject_value_numeric
       fraction_matrix[ij] <- 0
-      assays(se)$consensus <- consensus_matrix
-      assays(se)$fraction <- fraction_matrix
+      SummarizedExperiment::assays(se)$consensus <- consensus_matrix
+      SummarizedExperiment::assays(se)$fraction <- fraction_matrix
     }
   }
 
@@ -89,11 +90,11 @@ Filtering <- function(se, blacklisted_barcodes_path = NULL, fraction_threshold =
     if(reject_value == "NoCall") print("We set Alts, Refs and Coverage to 0.")
     if(reject_value == "Reference") print("We set Alts to 0 and adjust the Coverage.")
     # Filtering using sparse matrices.
-    consensus_matrix <- assays(se)$consensus
-    fraction_matrix <- assays(se)$fraction
-    coverage_matrix <- assays(se)$coverage
-    alts_matrix <- assays(se)$alts
-    refs_matrix <- assays(se)$refs
+    consensus_matrix <- SummarizedExperiment::assays(se)$consensus
+    fraction_matrix <- SummarizedExperiment::assays(se)$fraction
+    coverage_matrix <- SummarizedExperiment::assays(se)$coverage
+    alts_matrix <- SummarizedExperiment::assays(se)$alts
+    refs_matrix <- SummarizedExperiment::assays(se)$refs
     position_matrix <- summary(alts_matrix)
     position_matrix <- subset(position_matrix, x < alts_threshold)
     # If no elements fall between 0 and the alts_threshold, we do not have to change the matrices.
@@ -111,28 +112,28 @@ Filtering <- function(se, blacklisted_barcodes_path = NULL, fraction_threshold =
         refs_matrix[ij] <- 0
 	coverage_matrix[ij] <- 0
       }
-      assays(se)$consensus <- consensus_matrix
-      assays(se)$fraction <- fraction_matrix
-      assays(se)$coverage <- coverage_matrix
-      assays(se)$alts <- alts_matrix
-      assays(se)$refs <- refs_matrix
+      SummarizedExperiment::assays(se)$consensus <- consensus_matrix
+      SummarizedExperiment::assays(se)$fraction <- fraction_matrix
+      SummarizedExperiment::assays(se)$coverage <- coverage_matrix
+      SummarizedExperiment::assays(se)$alts <- alts_matrix
+      SummarizedExperiment::assays(se)$refs <- refs_matrix
     }
   }
 
 
   print("We remove all the variants that are always NoCall.")
-  consensus_test <- assays(se)$consensus > 0
+  consensus_test <- SummarizedExperiment::assays(se)$consensus > 0
   keep_variants <- rowSums(consensus_test) > 0
   se <- se[keep_variants,]
 
   print(paste0("We remove variants, that are not at least detected in ", min_cells_per_variant, " cells."))
-  keep_variants <- rowSums(assays(se)$consensus >= 1)
+  keep_variants <- rowSums(SummarizedExperiment::assays(se)$consensus >= 1)
   keep_variants <- keep_variants >= min_cells_per_variant
   se <- se[keep_variants,]
 
 
   print(paste0("We remove all cells that are not >= 1 (Ref) for at least ", min_variants_per_cell, " variant."))
-  consensus_test <- assays(se)$consensus >= 1
+  consensus_test <- SummarizedExperiment::assays(se)$consensus >= 1
   keep_cells <- colSums(consensus_test) > min_variants_per_cell
   se <- se[,keep_cells]
   return(se)

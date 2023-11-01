@@ -9,8 +9,8 @@
 #'@param chromosome_prefix The chromosome prefix used.
 #'@export
 getRefMatrix <- function(SE_object, letter, chromosome_prefix = "chrM"){
-  ref_allele <- as.character(rowRanges(SE_object)$refAllele)
-  mat <- (assays(SE_object)[[paste0(letter, "_counts_fw")]] + assays(SE_object)[[paste0(letter, "_counts_rev")]])
+  ref_allele <- as.character(SummarizedExperiment::rowRanges(SE_object)$refAllele)
+  mat <- (SummarizedExperiment::assays(SE_object)[[paste0(letter, "_counts_fw")]] + SummarizedExperiment::assays(SE_object)[[paste0(letter, "_counts_rev")]])
   rownames(mat) <- paste0(chromosome_prefix, "_", as.character(1:dim(mat)[1]), "_", toupper(ref_allele), ">", letter)
   mat <- mat[toupper(ref_allele) %in% letter,]
   return(mat)

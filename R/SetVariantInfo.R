@@ -28,7 +28,7 @@ SetVariantInfo <- function(SE, seurat_object, information = "consensus", variant
   if(!assay_check){
     stop("The assay you wants is not present in the object.")
   }
-  res <- t(assays(SE)[[information]][variants, , drop = FALSE])
+  res <- t(SummarizedExperiment::assays(SE)[[information]][variants, , drop = FALSE])
   # We check if all the cells are actually in the Seurat object.
   # If not, we only add the information for the ones present. 
   # We execute an error function if there are zero cells present.

@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">sigurd</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.15</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.29</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -79,7 +79,7 @@ Aachen University, Aachen, 52074 Germany<br><div class="d-none name"><code>SiGUR
 <span><span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressPackageStartupMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va"><a href="https://bioconductor.org/packages/SummarizedExperiment" class="external-link">SummarizedExperiment</a></span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressPackageStartupMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va">VariantAnnotation</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><strong>R version</strong>: R version 4.1.2 (2021-11-01)</p>
-<p><strong>Package version</strong>: 0.2.15</p>
+<p><strong>Package version</strong>: 0.2.29</p>
 <div class="section level2">
 <h2 id="your-input-file-">Your input file.<a class="anchor" aria-label="anchor" href="#your-input-file-"></a>
 </h2>
@@ -109,17 +109,17 @@ Aachen University, Aachen, 52074 Germany<br><div class="d-none name"><code>SiGUR
 <span><span class="co">## 8                                                NADA</span></span>
 <span><span class="co">## 9                                                NADA</span></span>
 <span><span class="co">## 10                                               NADA</span></span>
-<span><span class="co">##                    input_folder</span></span>
-<span><span class="co">## 1  ~/test_data/VarTrix/Somatic/</span></span>
-<span><span class="co">## 2       ~/test_data/VarTrix/MT/</span></span>
-<span><span class="co">## 3          ~/test_data/MAEGATK/</span></span>
-<span><span class="co">## 4  ~/test_data/VarTrix/Somatic/</span></span>
-<span><span class="co">## 5       ~/test_data/VarTrix/MT/</span></span>
-<span><span class="co">## 6          ~/test_data/MAEGATK/</span></span>
-<span><span class="co">## 7     ~/test_data/MAESTER_data/</span></span>
-<span><span class="co">## 8     ~/test_data/MAESTER_data/</span></span>
-<span><span class="co">## 9     ~/test_data/MAESTER_data/</span></span>
-<span><span class="co">## 10    ~/test_data/MAESTER_data/</span></span>
+<span><span class="co">##                                                                                        input_path</span></span>
+<span><span class="co">## 1                                                                    ~/test_data/VarTrix/Somatic/</span></span>
+<span><span class="co">## 2                                                                         ~/test_data/VarTrix/MT/</span></span>
+<span><span class="co">## 3                                             ~/test_data/MAEGATK/Minus_Sample1/final/maegatk.rds</span></span>
+<span><span class="co">## 4                                                                    ~/test_data/VarTrix/Somatic/</span></span>
+<span><span class="co">## 5                                                                         ~/test_data/VarTrix/MT/</span></span>
+<span><span class="co">## 6                                              ~/test_data/MAEGATK/Plus_Sample1/final/maegatk.rds</span></span>
+<span><span class="co">## 7        ~/test_data/MAESTER_data/SW_CellLineMix_All_mr3/final/SW_CellLineMix_All_mr3_maegatk.rds</span></span>
+<span><span class="co">## 8  ~/test_data/MAESTER_data/SW_CellLineMix_RNAseq_mr3/final/SW_CellLineMix_RNAseq_mr3_maegatk.rds</span></span>
+<span><span class="co">## 9          ~/test_data/MAESTER_data/TenX_BPDCN712_All_mr3/final/TenX_BPDCN712_All_mr3_maegatk.rds</span></span>
+<span><span class="co">## 10   ~/test_data/MAESTER_data/TenX_BPDCN712_RNAseq_mr3/final/TenX_BPDCN712_RNAseq_mr3_maegatk.rds</span></span>
 <span><span class="co">##                                                   cells</span></span>
 <span><span class="co">## 1  ~/test_data/Minus_Sample1/Minus_Sample1_barcodes.tsv</span></span>
 <span><span class="co">## 2  ~/test_data/Minus_Sample1/Minus_Sample1_barcodes.tsv</span></span>
@@ -141,8 +141,8 @@ on a chromosomal prefix for your data. See the loading of data
 below.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">vcf_path</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"CosmicSubset_filtered.vcf"</span>, package <span class="op">=</span> <span class="st">"sigurd"</span><span class="op">)</span></span>
-<span><span class="va">vcf</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/VariantAnnotation/man/readVcf-methods.html" class="external-link">readVcf</a></span><span class="op">(</span><span class="va">vcf_path</span><span class="op">)</span></span>
-<span><span class="va">vcf_info</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/VariantAnnotation/man/VCF-class.html" class="external-link">info</a></span><span class="op">(</span><span class="va">vcf</span><span class="op">)</span></span>
+<span><span class="va">vcf</span> <span class="op">&lt;-</span> <span class="fu">VariantAnnotation</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/VariantAnnotation/man/readVcf-methods.html" class="external-link">readVcf</a></span><span class="op">(</span><span class="va">vcf_path</span><span class="op">)</span></span>
+<span><span class="va">vcf_info</span> <span class="op">&lt;-</span> <span class="fu">VariantAnnotation</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/VariantAnnotation/man/VCF-class.html" class="external-link">info</a></span><span class="op">(</span><span class="va">vcf</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">vcf</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## class: CollapsedVCF </span></span>
 <span><span class="co">## dim: 1684 0 </span></span>
@@ -208,8 +208,8 @@ below.</p>
 <span><span class="co">## 1684 X:g.15823131_1582313..        10</span></span></code></pre>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">vcf_path_mt</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html" class="external-link">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, <span class="st">"chrM_Input_VCF_NoMAF_Filtering.vcf"</span>, package <span class="op">=</span> <span class="st">"sigurd"</span><span class="op">)</span></span>
-<span><span class="va">vcf_mt</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/VariantAnnotation/man/readVcf-methods.html" class="external-link">readVcf</a></span><span class="op">(</span><span class="va">vcf_path_mt</span><span class="op">)</span></span>
-<span><span class="va">vcf_mt_info</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/VariantAnnotation/man/VCF-class.html" class="external-link">info</a></span><span class="op">(</span><span class="va">vcf_mt</span><span class="op">)</span></span>
+<span><span class="va">vcf_mt</span> <span class="op">&lt;-</span> <span class="fu">VariantAnnotation</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/VariantAnnotation/man/readVcf-methods.html" class="external-link">readVcf</a></span><span class="op">(</span><span class="va">vcf_path_mt</span><span class="op">)</span></span>
+<span><span class="va">vcf_mt_info</span> <span class="op">&lt;-</span> <span class="fu">VariantAnnotation</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/VariantAnnotation/man/VCF-class.html" class="external-link">info</a></span><span class="op">(</span><span class="va">vcf_mt</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">vcf_mt</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## class: CollapsedVCF </span></span>
 <span><span class="co">## dim: 49708 0 </span></span>
@@ -331,7 +331,6 @@ clustered.</p>
 <code class="sourceCode R"><span><span class="va">voi_ch</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/VariantQuantileThresholding.html">VariantQuantileThresholding</a></span><span class="op">(</span>SE <span class="op">=</span> <span class="va">Sample1_combined</span>, min_coverage <span class="op">=</span> <span class="fl">2</span>, quantiles <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.1</span>, <span class="fl">0.9</span><span class="op">)</span>, thresholds <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.1</span>, <span class="fl">0.9</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] "Get the mean allele frequency and coverage."</span></span>
 <span><span class="co">## [1] "Get the quantiles of the VAFs of each variant."</span></span>
-<span><span class="co">## [1] "Collect all information in a tibble"</span></span>
 <span><span class="co">## [1] "Thresholding using the quantile approach."</span></span></code></pre>
 <div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">hm</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/HeatmapVoi.html">HeatmapVoi</a></span><span class="op">(</span>SE <span class="op">=</span> <span class="va">Sample1_combined</span>, voi <span class="op">=</span> <span class="va">voi_ch</span><span class="op">)</span></span>
@@ -346,9 +345,9 @@ use the correlation between variants. For this, we combine the somatic
 and the MT results. Since the possible number of tests/correlations is
 quite large, you can use multiple cores to perform the calculations.</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co">#Sample1_split_rows &lt;- RowWiseSplit(Sample1_combined, remove_nocalls = FALSE)</span></span>
+<code class="sourceCode R"><span><span class="co">#Sample1_split_rows &lt;- RowWiseSplit(Sample1_combined, remove_nocalls = FALSE, n_cores = 19)</span></span>
 <span></span>
-<span><span class="co">#results_fishertest  &lt;- VariantWiseFisherTest(Sample1_split_rows, n_cores = 8)</span></span>
+<span><span class="co">#results_fishertest  &lt;- VariantWiseFisherTest(Sample1_split_rows, n_cores = 19)</span></span>
 <span><span class="co">#rm(Sample1_split_rows)</span></span>
 <span></span>
 <span><span class="co">#variant_association_heatmap &lt;- VariantFisherTestHeatmap(results_fishertest, patient = "Sample1", min_alt_cells = 3)</span></span>

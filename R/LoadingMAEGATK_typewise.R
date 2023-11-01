@@ -42,13 +42,16 @@ LoadingMAEGATK_typewise <- function(samples_file, samples_path = NULL, patient, 
   se_ls <- list()
   for(i in 1:nrow(samples_file)){
     print(paste0("Loading sample ", i, " of ", nrow(samples_file)))
-    input_folder_use <- samples_file$input_folder[i]
+    input_file_use <- samples_file$input_path[i]
     sample_use <- samples_file$sample[i]
 
+    # We check if the file exists.
+    if(!file.exists(input_file_use)){
+      stop(paste0("Error: the file ", input_file_use, " does not exist."))
+    }
+
     # We get the final output file for either mgatk or maegatk.
-    final_output_file <- list.files(paste0(input_folder_use, sample_use, "/final/"), full.names = TRUE)
-    final_output_file <- grep(paste0("maegtk.rds|maegatk.rds|mgatk.rds|", sample_use, ".rds"), final_output_file, value = TRUE)
-    se_ls[[sample_use]] <- load_object(final_output_file)
+    se_ls[[sample_use]] <- load_object(input_file_use)
     colnames(se_ls[[sample_use]]) <- paste0(sample_use, "_", colnames(se_ls[[sample_use]]))
     barcodes_use <- paste0(sample_use, "_", barcodes[[sample_use]][,1])
     barcodes_use <- barcodes_use[barcodes_use %in% colnames(se_ls[[sample_use]])]
@@ -63,7 +66,7 @@ LoadingMAEGATK_typewise <- function(samples_file, samples_path = NULL, patient, 
 
 
   print("We get the allele frequency.")
-  fraction <- computeAFMutMatrix(se_merged, chromosome_prefix = chromosome_prefix)
+  fraction <- computeAFMutMatrix(SE = se_merged, chromosome_prefix = chromosome_prefix)
 
 
   print("We get the coverage information.")
@@ -100,80 +103,23 @@ LoadingMAEGATK_typewise <- function(samples_file, samples_path = NULL, patient, 
   print(paste0("We remove variants, which are not covered in at least ", min_cells, " cells ."))
   keep_variants <- rowSums(consensus >= 1)
   keep_variants <- keep_variants >= min_cells
-  # If we only have one cell or one variant, we loose the matrix.
-  cell_ids <- colnames(consensus)
-  variant_names <- names(keep_variants[keep_variants])
-  # consensus <- consensus[keep_variants,]
-  # coverage <- coverage[keep_variants,]
-  # fraction <- fraction[keep_variants,]
-  # concordance <- concordance[keep_variants]
-  # reads_alt <- reads_alt[keep_variants,]
-  # reads_ref <- reads_ref[keep_variants,]
-  consensus <- consensus[keep_variants,]
-  consensus <- suppressWarnings(matrix(consensus, nrow = length(variant_names), ncol = length(cell_ids)))
-  colnames(consensus) <- cell_ids
-  rownames(consensus) <- variant_names
-  consensus <- as(consensus, "dgCMatrix")
-  coverage <- coverage[keep_variants,]
-  coverage <- suppressWarnings(matrix(coverage, nrow = length(variant_names), ncol = length(cell_ids)))
-  colnames(coverage) <- cell_ids
-  rownames(coverage) <- variant_names
-  coverage <- as(coverage, "dgCMatrix")
-  fraction <- fraction[keep_variants,]
-  fraction <- suppressWarnings(matrix(fraction, nrow = length(variant_names), ncol = length(cell_ids)))
-  colnames(fraction) <- cell_ids
-  rownames(fraction) <- variant_names
-  fraction <- as(fraction, "dgCMatrix")
-  concordance <- concordance[keep_variants]
+  consensus       <- consensus[keep_variants, , drop = FALSE]
+  coverage        <- coverage[keep_variants, , drop = FALSE]
+  fraction        <- fraction[keep_variants, , drop = FALSE]
+  concordance     <- concordance[keep_variants]
   variant_quality <- variant_quality[keep_variants]
-  reads_alt <- reads_alt[keep_variants,]
-  reads_alt <- suppressWarnings(matrix(reads_alt, nrow = length(variant_names), ncol = length(cell_ids)))
-  colnames(reads_alt) <- cell_ids
-  rownames(reads_alt) <- variant_names
-  reads_alt <- as(reads_alt, "dgCMatrix")
-  reads_ref <- reads_ref[keep_variants,]
-  reads_ref <- suppressWarnings(matrix(reads_ref, nrow = length(variant_names), ncol = length(cell_ids)))
-  colnames(reads_ref) <- cell_ids
-  rownames(reads_ref) <- variant_names
-  reads_ref <- as(reads_ref, "dgCMatrix")
+  reads_alt       <- reads_alt[keep_variants, , drop = FALSE]
+  reads_ref       <- reads_ref[keep_variants, , drop = FALSE]
 
 
   print("We remove cells that are always NoCall.")
   consensus_test <- consensus > 0
   keep_cells <- colSums(consensus_test) > 0
-  # If we only have one cell or one variant, we loose the matrix.
-  cell_ids <- colnames(consensus)
-  variant_names <- names(keep_variants[keep_variants])
-  # consensus <- consensus[,keep_cells]
-  # coverage <- coverage[,keep_cells]
-  # fraction <- fraction[,keep_cells]
-  # reads_alt <- reads_alt[,keep_cells]
-  # reads_ref <- reads_ref[,keep_cells]
-  consensus <- consensus[,keep_cells]
-  consensus <- suppressWarnings(matrix(consensus, nrow = length(variant_names), ncol = length(cell_ids)))
-  colnames(consensus) <- cell_ids
-  rownames(consensus) <- variant_names
-  consensus <- as(consensus, "dgCMatrix")
-  coverage <- coverage[,keep_cells]
-  coverage <- suppressWarnings(matrix(coverage, nrow = length(variant_names), ncol = length(cell_ids)))
-  colnames(coverage) <- cell_ids
-  rownames(coverage) <- variant_names
-  coverage <- as(coverage, "dgCMatrix")
-  fraction <- fraction[,keep_cells]
-  fraction <- suppressWarnings(matrix(fraction, nrow = length(variant_names), ncol = length(cell_ids)))
-  colnames(fraction) <- cell_ids
-  rownames(fraction) <- variant_names
-  fraction <- as(fraction, "dgCMatrix")
-  reads_alt <- reads_alt[,keep_cells]
-  reads_alt <- suppressWarnings(matrix(reads_alt, nrow = length(variant_names), ncol = length(cell_ids)))
-  colnames(reads_alt) <- cell_ids
-  rownames(reads_alt) <- variant_names
-  reads_alt <- as(reads_alt, "dgCMatrix")
-  reads_ref <- reads_ref[,keep_cells]
-  reads_ref <- suppressWarnings(matrix(reads_ref, nrow = length(variant_names), ncol = length(cell_ids)))
-  colnames(reads_ref) <- cell_ids
-  rownames(reads_ref) <- variant_names
-  reads_ref <- as(reads_ref, "dgCMatrix")
+  consensus <- consensus[, keep_cells, drop = FALSE]
+  coverage  <- coverage[, keep_cells, drop = FALSE]
+  fraction  <- fraction[, keep_cells, drop = FALSE]
+  reads_alt <- reads_alt[, keep_cells, drop = FALSE]
+  reads_ref <- reads_ref[, keep_cells, drop = FALSE]
 
 
   # We check if the matrices are empty (0 cells, 0 variants). Then we simply return NULL.
@@ -199,8 +145,8 @@ LoadingMAEGATK_typewise <- function(samples_file, samples_path = NULL, patient, 
     rownames(meta_data_col) <- meta_data_col$Cell
     meta_data_row <- data.frame(VariantName = rownames(consensus), Concordance = concordance, VariantQuality = variant_quality, Depth = coverage_depth_per_variant)
     rownames(meta_data_row) <- meta_data_row$VariantName
-    se_output <- SummarizedExperiment(assays = list(consensus = consensus, fraction = fraction, coverage = coverage, alts = reads_alt, refs = reads_ref),
-                                      colData = meta_data_col, rowData = meta_data_row)
+    se_output <- SummarizedExperiment::SummarizedExperiment(assays = list(consensus = consensus, fraction = fraction, coverage = coverage, alts = reads_alt, refs = reads_ref),
+                                                            colData = meta_data_col, rowData = meta_data_row)
     return(se_output)
   }
 }

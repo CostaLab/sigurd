@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">sigurd</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.15</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.29</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -53,7 +53,6 @@
 <span>  blacklisted_barcodes_path <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  fraction_threshold <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  alts_threshold <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  path_seurat <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  min_cells_per_variant <span class="op">=</span> <span class="fl">2</span>,</span>
 <span>  min_variants_per_cell <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  reject_value <span class="op">=</span> <span class="st">"NoCall"</span></span>
@@ -78,10 +77,6 @@
 <dd><p>Variants with a number of alt reads less than this threshold are set to 0. Numeric. Default = NULL.</p></dd>
 
 
-<dt>path_seurat</dt>
-<dd><p>Path to a Seurat object. Cells not present in the object will be removed.</p></dd>
-
-
 <dt>min_cells_per_variant</dt>
 <dd><p>In how many cells should a variant be present to be included? Numeric. Default = 2.</p></dd>
 
@@ -98,11 +93,10 @@
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>We do this for one sample at a time.
 We want to remove:</p><ol><li><p>all cells that are blacklisted,</p></li>
-<li><p>all cells that are not in a Seurat object,</p></li>
 <li><p>all cells that do not have at least one variant with &gt;1 (Reference),</p></li>
 <li><p>all variants that are for alternative transcripts,</p></li>
 <li><p>all variants that are always NoCall,</p></li>
-<li><p>set variants with a VAF below a threshold to reference.</p></li>
+<li><p>set variants with a VAF below a threshold to NoCall or Reference.</p></li>
 </ol></div>
 
     <div class="section level2">

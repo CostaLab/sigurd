@@ -45,14 +45,14 @@ These files are needed for VarTrix and not MGATK/MAEGATK. Since MAEGATK only ana
 
 ```{r InputVCF, warning = FALSE, message = FALSE, output = FALSE}
 vcf_path <- system.file("extdata", "CosmicSubset_filtered.vcf", package = "sigurd")
-vcf <- readVcf(vcf_path)
-vcf_info <- info(vcf)
+vcf <- VariantAnnotation::readVcf(vcf_path)
+vcf_info <- VariantAnnotation::info(vcf)
 print(vcf)
 print(vcf_info)
 
 vcf_path_mt <- system.file("extdata", "chrM_Input_VCF_NoMAF_Filtering.vcf", package = "sigurd")
-vcf_mt <- readVcf(vcf_path_mt)
-vcf_mt_info <- info(vcf_mt)
+vcf_mt <- VariantAnnotation::readVcf(vcf_path_mt)
+vcf_mt_info <- VariantAnnotation::info(vcf_mt)
 print(vcf_mt)
 print(vcf_mt_info)
 
@@ -78,6 +78,10 @@ Sample1_scRNAseq_Somatic <- LoadingVarTrix_typewise(samples_file = sample_path, 
 Sample1_scRNAseq_MT <- LoadingMAEGATK_typewise(samples_file = sample_path, patient = "Sample1", type_use = "scRNAseq_MT")
 
 Sample1_combined <- CombineSEobjects(se_somatic = Sample1_scRNAseq_Somatic, se_MT = Sample1_scRNAseq_MT, suffixes = c("_somatic", "_MT"))
+se_somatic = Sample1_scRNAseq_Somatic
+se_MT = Sample1_scRNAseq_MT
+suffixes = c("_somatic", "_MT")
+
 rm(Sample1_scRNAseq_Somatic, Sample1_scRNAseq_MT)
 Sample1_combined <- Filtering(Sample1_combined, min_cells_per_variant = 2, fraction_threshold = 0.05)
 Sample1_combined <- VariantBurden(Sample1_combined)
@@ -106,9 +110,9 @@ Since the possible number of tests/correlations is quite large, you can use mult
 
 
 ```{r VariantAssociation, warning = FALSE, message = FALSE, output = FALSE}
-#Sample1_split_rows <- RowWiseSplit(Sample1_combined, remove_nocalls = FALSE)
+#Sample1_split_rows <- RowWiseSplit(Sample1_combined, remove_nocalls = FALSE, n_cores = 19)
 
-#results_fishertest  <- VariantWiseFisherTest(Sample1_split_rows, n_cores = 8)
+#results_fishertest  <- VariantWiseFisherTest(Sample1_split_rows, n_cores = 19)
 #rm(Sample1_split_rows)
 
 #variant_association_heatmap <- VariantFisherTestHeatmap(results_fishertest, patient = "Sample1", min_alt_cells = 3)

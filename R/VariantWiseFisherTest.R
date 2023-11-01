@@ -2,7 +2,9 @@
 #'@description
 #'We perform the Fisher test to determine which variants are associated.
 #'This function calls CalculateFisherTestPValue to perform the actual testing.
-#'@import Matrix parallel SummarizedExperiment
+#'Packages I want to remove.
+#'SummarizedExperiment
+#'@import Matrix parallel
 #'@param variants_list List of fraction values.
 #'@param n_cores Number of cores you want to use. Numeric.
 #'@param p_value_adjustment Method for P value adjustment. See p.adjust for details.
@@ -22,7 +24,7 @@ VariantWiseFisherTest <- function(variants_list, n_cores = 1, p_value_adjustment
     variants_values_use <- variants_list[[variant_use]]
     variants_list_use <- variants_list[names(variants_list) != variant_use]
     all_variants <- names(variants_list_use)
-    results <- mclapply(X = all_variants, CalculateFisherTestPValue, variant_values = variants_values_use, all_variants_list = variants_list_use, mc.cores = n_cores)
+    results <- parallel::mclapply(X = all_variants, CalculateFisherTestPValue, variant_values = variants_values_use, all_variants_list = variants_list_use, mc.cores = n_cores)
     results <- do.call("rbind", results)
     results <- data.frame(Variant1 = variant_use, Variant2 = all_variants, P = results[,1], OddsRatio = results[,2],
                           Cells_Alt_1_2 = results[,3], Cells_Alt_1_Ref_2 = results[,4], Cells_Alt_2_Ref_1 = results[,5], Cells_Ref_1_2 = results[,6])

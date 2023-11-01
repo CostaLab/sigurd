@@ -1,7 +1,9 @@
 #'get_consensus
 #'@description
 #'We get the consensus information for a specific matrix.
-#'@import dplyr MatrixGenerics SummarizedExperiment
+#'I want to remove some packages if they are not needed. See below which package apperantly wasn't needed.
+#'Package to remove: dplyr, SummarizedExperiment
+#'@import MatrixGenerics
 #'@param letter The alternative base.
 #'@param ref_base The reference base.
 #'@param input_matrix Input matrix with the present reads numerically encoded.
@@ -20,8 +22,6 @@ get_consensus <- function(alt_base, ref_base, input_matrix, chromosome_prefix = 
   # Both is not accurate in this context. Therefore, we set these cases to 0 (NoCall). 
   other_homo_values <- base_numeric[!base_numeric %in% base_numeric[c(alt_base, ref_base)]]
 
-  
-  #output_matrix <- input_matrix
   output_matrix <- matrix(0, nrow = nrow(input_matrix), ncol = ncol(input_matrix))
   rownames(output_matrix) <- rownames(input_matrix)
   colnames(output_matrix) <- colnames(input_matrix)

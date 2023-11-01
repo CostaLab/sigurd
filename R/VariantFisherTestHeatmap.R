@@ -1,7 +1,9 @@
 #'VariantFisherTestHeatmap
 #'@description
 #'We generate a heatmap showing the Fisher test of somatic variants with the MT variants.
-#'@import circlize ComplexHeatmap ggplot2 Matrix parallel rcompanion tidyr grid
+#'Packages I want to remove.
+#'ggplot2 parallel rcompanion tidyr
+#'@import circlize ComplexHeatmap Matrix grid
 #'@param fisher_results Data.frame with the correlation results.
 #'@param patient The patient for this heatmap.
 #'@param min_alt_cells Minimum number of mutated cells needed, otherwise an association will not be plotted.
@@ -12,13 +14,13 @@ VariantFisherTestHeatmap <- function(fisher_results, patient, min_alt_cells = 5,
   fisher_results <- subset(fisher_results, P_adj_logged > -log10(0.05))
   fisher_results <- subset(fisher_results, Cells_Alt_1_2 >= min_alt_cells)
   fisher_results <- subset(fisher_results, OddsRatio > min_oddsratio)
-  
-  
+
+
   print("We get the unique variants.")
   somatic_uniques <- unique(fisher_results$Variant1)
   mt_uniques      <- unique(fisher_results$Variant2)
-  
-  
+
+
   print("Getting the maximum P value.")
   pvalue_max <- as.numeric(na.omit(fisher_results$P_adj_logged))
   if(length(pvalue_max) > 1){
@@ -33,7 +35,7 @@ VariantFisherTestHeatmap <- function(fisher_results, patient, min_alt_cells = 5,
     pvalue_max <- max(pvalue_max, 100)
   }
   fisher_results$P_adj_logged[fisher_results$P_adj_logged == Inf] <- pvalue_max
-  col_fun <- colorRamp2(c(0,pvalue_max), c("white", "red"))
+  col_fun <- circlize::colorRamp2(c(0,pvalue_max), c("white", "red"))
   
   
   print("We set insignificant P values to NA.")
@@ -48,7 +50,7 @@ VariantFisherTestHeatmap <- function(fisher_results, patient, min_alt_cells = 5,
     fisher_results_subset <- subset(fisher_results, Variant1 == somatic_uniques[i])
     p_values_use <- fisher_results_subset$P_adj_logged
     names(p_values_use) <- fisher_results_subset$Variant2
-    p_values[somatic_uniques[i],names(p_values_use)] <- p_values_use
+    p_values[somatic_uniques[i], names(p_values_use)] <- p_values_use
   }
   
   
@@ -61,13 +63,13 @@ VariantFisherTestHeatmap <- function(fisher_results, patient, min_alt_cells = 5,
   print("Since we can have no results left after the subsetting, we check if the P value matrix has values.")
   if(all(dim(p_values) > 0)){
     print("Generating the actual heat map.")
-    p <- Heatmap(p_values, name = "-log10(P)",
-                 column_title = paste0("Patient ", patient, "\nLogged adj. P values between the variants"),
-                 row_title = "", show_row_names = TRUE, show_column_names = TRUE,
-                 col = col_fun, left_annotation = annotation_left, top_annotation = annotation_top,
-                 column_names_rot = 45, row_names_side = "left",
-                 column_names_gp = grid::gpar(hjust = 1),
-                 cluster_columns = FALSE, cluster_rows = FALSE, use_raster = FALSE, show_row_dend = FALSE, show_column_dend = FALSE)
+    p <- ComplexHeatmap::Heatmap(p_values, name = "-log10(P)",
+                                 column_title = paste0("Patient ", patient, "\nLogged adj. P values between the variants"),
+                                 row_title = "", show_row_names = TRUE, show_column_names = TRUE,
+                                 col = col_fun, left_annotation = annotation_left, top_annotation = annotation_top,
+                                 column_names_rot = 45, row_names_side = "left",
+                                 column_names_gp = grid::gpar(hjust = 1),
+                                 cluster_columns = FALSE, cluster_rows = FALSE, use_raster = FALSE, show_row_dend = FALSE, show_column_dend = FALSE)
   }
   return(p)
 }

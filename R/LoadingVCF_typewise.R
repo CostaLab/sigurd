@@ -3,6 +3,8 @@
 #'We load a cellwise pileup result from a VCF file.
 #'
 #'@import Matrix SummarizedExperiment VariantAnnotation
+#'@importFrom GenomeInfoDb seqnames
+#'@importFrom BiocGenerics start
 #'@param samples_path Path to the input folder. Must include a barcodes file.
 #'@param samples_file Path to the csv file with the samples to be loaded.
 #'@param vcf_path Path to the VCF file with the variants.
@@ -33,25 +35,14 @@ LoadingVCF_typewise <- function(samples_file, samples_path = NULL, barcodes_path
   }
 
 
-  # A function to convert the heterozyguous/homozyguous information from the VCF to the consensus information from VarTrix.
-  # We define this function here, since we will not use it anywhere else.
-  # Maybe move it to a separate function.
-  char_to_numeric <- function(char_value) {
-    if(char_value == "1/1") return(2)
-    if(char_value %in% c("1/0", "0/1")) return(2)
-    if(char_value == "0/0") return(1)
-    return(0)
-  }
-
-
   print("We read in the cell barcodes output by CellRanger as a list.")
   barcodes <- lapply(samples_file$cells, read.table)
   names(barcodes) <- samples
 
 
   print("We read in the vcf file.")
-  vcf                <- readVcf(vcf_path)
-  vcf_info           <- info(vcf)
+  vcf      <- VariantAnnotation::readVcf(vcf_path)
+  vcf_info <- VariantAnnotation::info(vcf)
 
 
   print("We load the VCF file.")
@@ -61,14 +52,15 @@ LoadingVCF_typewise <- function(samples_file, samples_path = NULL, barcodes_path
   consensus_matrix_total <- c()
   for(i in 1:length(samples)){
     print(paste0("Loading sample ", i, " of ", nrow(samples_file)))
-    input_folder_use <- samples_file$input_folder[i]
+    input_folder_use <- samples_file$input_path[i]
     sample_use <- samples_file$sample[i]
 
     # The cell barcodes and variants.
     cellbarcodes_use <- barcodes[[sample_use]]
 
     # We load the VCF file.
-    vcf_data <- paste0(input_folder_use, sample_use, "/cellSNP.cells.sorted.vcf.gz")
+    # vcf_data <- paste0(input_folder_use, sample_use, "/cellSNP.cells.sorted.vcf.gz")
+    vcf_data <- paste0(input_folder_use)
     depth_to_add                      <- VariantAnnotation::readGeno(vcf_data, "DP")
     depth_to_add[is.na(depth_to_add)] <- 0
     rownames(depth_to_add)            <- make.names(rownames(depth_to_add))
@@ -76,14 +68,14 @@ LoadingVCF_typewise <- function(samples_file, samples_path = NULL, barcodes_path
     depth_to_add                      <- as(depth_to_add, "sparseMatrix")
     reads_matrix_total                <- cbind(reads_matrix_total, depth_to_add)
 
-    alts_to_add                       <- readGeno(vcf_data, "AD")
+    alts_to_add                       <- VariantAnnotation::readGeno(vcf_data, "AD")
     alts_to_add[is.na(alts_to_add)]   <- 0
     rownames(alts_to_add)             <- make.names(rownames(alts_to_add))
     colnames(alts_to_add)             <- paste0(sample_use, "_", colnames(alts_to_add))
     alts_to_add                       <- as(alts_to_add, "sparseMatrix")
     coverage_matrix_total             <- cbind(coverage_matrix_total, alts_to_add)
 
-    consensus_to_add                  <- readGeno(vcf_data, "GT")
+    consensus_to_add                  <- VariantAnnotation::readGeno(vcf_data, "GT")
     consensus_to_add                  <- matrix(sapply(consensus_to_add, char_to_numeric), nrow = nrow(consensus_to_add), dimnames = list(make.names(rownames(consensus_to_add)), paste0(sample_use, "_", colnames(consensus_to_add))))
     consensus_to_add                  <- as(consensus_to_add, "sparseMatrix")
     consensus_matrix_total            <- cbind(consensus_matrix_total, consensus_to_add)
@@ -95,12 +87,12 @@ LoadingVCF_typewise <- function(samples_file, samples_path = NULL, barcodes_path
   print("We generate more accessible names.")
   if(all(c("GENE", "AA", "CDS") %in% colnames(vcf_info))){
     new_names <- paste0(vcf_info$GENE, "_", vcf_info$AA, "_", vcf_info$CDS)
-    names(new_names) <- make.names(paste0(as.character(rep(seqnames(vcf)@values, seqnames(vcf)@lengths)), ".", start(vcf), "_", as.character(ref(vcf)), ".", as.character(unlist(alt(vcf)))))
+    names(new_names) <- make.names(paste0(as.character(rep(GenomeInfoDb::seqnames(vcf)@values, GenomeInfoDb::seqnames(vcf)@lengths)), ".", BiocGenerics::start(vcf), "_", as.character(VariantAnnotation::ref(vcf)), ".", as.character(unlist(VariantAnnotation::alt(vcf)))))
     new_names <- new_names[rownames(ref_matrix_total)]
   } else{
     new_names <- rownames(vcf_info)
     new_names <- gsub(":|\\/|\\?", "_", new_names)
-    names(new_names) <-	make.names(paste0(as.character(rep(seqnames(vcf)@values, seqnames(vcf)@lengths)), ".", start(vcf), "_", as.character(ref(vcf)), ".", as.character(unlist(alt(vcf)))))
+    names(new_names) <-	make.names(paste0(as.character(rep(GenomeInfoDb::seqnames(vcf)@values, GenomeInfoDb::seqnames(vcf)@lengths)), ".", BiocGenerics::start(vcf), "_", as.character(VariantAnnotation::ref(vcf)), ".", as.character(unlist(VariantAnnotation::alt(vcf)))))
     new_names <- new_names[rownames(ref_matrix_total)]
   }
 
@@ -188,11 +180,11 @@ LoadingVCF_typewise <- function(samples_file, samples_path = NULL, barcodes_path
 
 
   print("We transform the sparse matrices to matrices, so we can calculate the fraction.")
-  coverage_matrix_total                             <- as.matrix(coverage_matrix_total)
-  ref_matrix_total                                  <- as.matrix(ref_matrix_total)
-  consensus_matrix_total                            <- as.matrix(consensus_matrix_total)
-  reads_total                                       <- coverage_matrix_total + ref_matrix_total
-  fraction_total                                    <- coverage_matrix_total / reads_total
+  coverage_matrix_total                 <- as.matrix(coverage_matrix_total)
+  ref_matrix_total                      <- as.matrix(ref_matrix_total)
+  consensus_matrix_total                <- as.matrix(consensus_matrix_total)
+  reads_total                           <- coverage_matrix_total + ref_matrix_total
+  fraction_total                        <- coverage_matrix_total / reads_total
   fraction_total[is.na(fraction_total)] <- 0
   gc()
 
@@ -213,11 +205,11 @@ LoadingVCF_typewise <- function(samples_file, samples_path = NULL, barcodes_path
     rownames(meta_data) <- meta_data$Cell
     meta_row <- data.frame(VariantName = rownames(consensus_matrix_total), Depth = coverage_depth_per_variant)
     rownames(meta_row) <- meta_row$VariantName
-    #se_merged <- SummarizedExperiment(assays = list(consensus = as(consensus_matrix_total, "dgCMatrix"), fraction = as(fraction_total, "dgCMatrix"), coverage = as(reads_total, "dgCMatrix")),
-    #                                  colData = meta_data)
-    se_merged <- SummarizedExperiment(assays = list(consensus = as(consensus_matrix_total, "CsparseMatrix"), fraction = as(fraction_total, "CsparseMatrix"), coverage = as(reads_total, "CsparseMatrix"),
-                                                    alts = as(coverage_matrix_total, "CsparseMatrix"), refs = as(ref_matrix_total, "CsparseMatrix")),
-                                      colData = meta_data, rowData = meta_row)
+    #se_merged <- SummarizedExperiment::SummarizedExperiment(assays = list(consensus = as(consensus_matrix_total, "dgCMatrix"), fraction = as(fraction_total, "dgCMatrix"), coverage = as(reads_total, "dgCMatrix")),
+    #                                                        colData = meta_data)
+    se_merged <- SummarizedExperiment::SummarizedExperiment(assays = list(consensus = as(consensus_matrix_total, "CsparseMatrix"), fraction = as(fraction_total, "CsparseMatrix"), coverage = as(reads_total, "CsparseMatrix"),
+                                                            alts = as(coverage_matrix_total, "CsparseMatrix"), refs = as(ref_matrix_total, "CsparseMatrix")),
+                                                            colData = meta_data, rowData = meta_row)
     return(se_merged)
   }
 }
