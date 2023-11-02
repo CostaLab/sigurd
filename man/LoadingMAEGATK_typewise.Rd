@@ -11,7 +11,8 @@ LoadingMAEGATK_typewise(
   type_use = "scRNAseq_MT",
   chromosome_prefix = "chrM",
   min_cells = 2,
-  barcodes_path = NULL
+  barcodes_path = NULL,
+  verbose = TRUE
 )
 }
 \arguments{
@@ -24,6 +25,8 @@ LoadingMAEGATK_typewise(
 \item{type_use}{The type of input. Has to be one of: scRNAseq_MT, Amplicon_MT. Only used if samples_path is not NULL.}
 
 \item{chromosome_prefix}{The prefix you want use. Default: "chrM"}
+
+\item{verbose}{Should the function be verbose? Default = TRUE}
 }
 \description{
 We load the MAEGATK output and transform it to be compatible with the VarTrix output.

@@ -4,12 +4,14 @@
 \alias{CalculateConsensus}
 \title{We calculate the consensus information from the MAEGATK results.}
 \usage{
-CalculateConsensus(SE, chromosome_prefix = "chrM")
+CalculateConsensus(SE, chromosome_prefix = "chrM", verbose = FALSE)
 }
 \arguments{
 \item{SE}{SummarizedExperiment object.}
 
 \item{chromosome_prefix}{The chromosome name used as a prefix.}
+
+\item{verbose}{Should the function be verbose? Default = FALSE}
 }
 \description{
 We calculate the consensus information from the MAEGATK results.

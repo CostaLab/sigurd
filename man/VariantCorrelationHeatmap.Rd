@@ -12,7 +12,8 @@ VariantCorrelationHeatmap(
   min_correlation = 0.5,
   width_use = 2000,
   height_use = 2000,
-  padding_use = c(165, 165, 2, 2)
+  padding_use = c(165, 165, 2, 2),
+  verbose = TRUE
 )
 }
 \arguments{
@@ -31,6 +32,8 @@ VariantCorrelationHeatmap(
 \item{height_use}{Height of the heatmap in px.}
 
 \item{padding_use}{Space around the heatmap in mm. If this is to low, the variant names might be cut off.}
+
+\item{verbose}{Should the function be verbose? Default = TRUE}
 }
 \description{
 We generate a heatmap showing the correlation of somatic variants with the MT variants.

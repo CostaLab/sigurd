@@ -4,12 +4,14 @@
 \alias{AmpliconSupplementing}
 \title{Supplementing scRNAseq values with Amplicon values}
 \usage{
-AmpliconSupplementing(scRNAseq, amplicon)
+AmpliconSupplementing(scRNAseq, amplicon, verbose = TRUE)
 }
 \arguments{
 \item{scRNAseq}{The SummarizedExperiment object containing the scRNAseq data.}
 
 \item{amplicon}{The SummarizedExperiment object containing the amplicon data.}
+
+\item{verbose}{Should the function be verbose? Default = TRUE}
 }
 \description{
 We replace the values from an scRNAseq experiment with values we have from an amplicon experiment.

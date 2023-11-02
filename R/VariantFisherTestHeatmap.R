@@ -8,20 +8,21 @@
 #'@param patient The patient for this heatmap.
 #'@param min_alt_cells Minimum number of mutated cells needed, otherwise an association will not be plotted.
 #'@param min_oddsratio Minimum correlation needed. 
+#'@param verbose Should the function be verbose? Default = TRUE
 #'@export
-VariantFisherTestHeatmap <- function(fisher_results, patient, min_alt_cells = 5, min_oddsratio = 1){
+VariantFisherTestHeatmap <- function(fisher_results, patient, min_alt_cells = 5, min_oddsratio = 1, verbose = TRUE){
   fisher_results$P_adj_logged <- -log10(fisher_results$P_adj)
   fisher_results <- subset(fisher_results, P_adj_logged > -log10(0.05))
   fisher_results <- subset(fisher_results, Cells_Alt_1_2 >= min_alt_cells)
   fisher_results <- subset(fisher_results, OddsRatio > min_oddsratio)
 
 
-  print("We get the unique variants.")
+  if(verbose) print("We get the unique variants.")
   somatic_uniques <- unique(fisher_results$Variant1)
   mt_uniques      <- unique(fisher_results$Variant2)
 
 
-  print("Getting the maximum P value.")
+  if(verbose) print("Getting the maximum P value.")
   pvalue_max <- as.numeric(na.omit(fisher_results$P_adj_logged))
   if(length(pvalue_max) > 1){
     pvalue_max <- pvalue_max[pvalue_max != Inf]
@@ -38,11 +39,11 @@ VariantFisherTestHeatmap <- function(fisher_results, patient, min_alt_cells = 5,
   col_fun <- circlize::colorRamp2(c(0,pvalue_max), c("white", "red"))
   
   
-  print("We set insignificant P values to NA.")
+  if(verbose) print("We set insignificant P values to NA.")
   fisher_results$P_adj_logged <- ifelse(fisher_results$P_adj_logged > -log10(0.05), fisher_results$P_adj_logged, NA)
   
   
-  print("We generate a matrix with the adjusted P values.")
+  if(verbose) print("We generate a matrix with the adjusted P values.")
   p_values <- matrix(NA, nrow = length(somatic_uniques), ncol = length(mt_uniques))
   rownames(p_values) <- somatic_uniques
   colnames(p_values) <- mt_uniques
@@ -54,15 +55,15 @@ VariantFisherTestHeatmap <- function(fisher_results, patient, min_alt_cells = 5,
   }
   
   
-  print("Setting the column and row annotations for the heat map.")
+  if(verbose) print("Setting the column and row annotations for the heat map.")
   annotation_top <- ComplexHeatmap::columnAnnotation(Mutations = mt_uniques,
                                                      show_legend = FALSE, show_annotation_name = FALSE)
   annotation_left <- ComplexHeatmap::rowAnnotation(Mutations = somatic_uniques,
                                                    show_legend = FALSE, show_annotation_name = FALSE)
   
-  print("Since we can have no results left after the subsetting, we check if the P value matrix has values.")
+  if(verbose) print("Since we can have no results left after the subsetting, we check if the P value matrix has values.")
   if(all(dim(p_values) > 0)){
-    print("Generating the actual heat map.")
+    if(verbose) print("Generating the actual heat map.")
     p <- ComplexHeatmap::Heatmap(p_values, name = "-log10(P)",
                                  column_title = paste0("Patient ", patient, "\nLogged adj. P values between the variants"),
                                  row_title = "", show_row_names = TRUE, show_column_names = TRUE,

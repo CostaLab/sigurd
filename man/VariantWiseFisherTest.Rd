@@ -4,7 +4,12 @@
 \alias{VariantWiseFisherTest}
 \title{VariantWiseFisherTest}
 \usage{
-VariantWiseFisherTest(variants_list, n_cores = 1, p_value_adjustment = "fdr")
+VariantWiseFisherTest(
+  variants_list,
+  n_cores = 1,
+  p_value_adjustment = "fdr",
+  verbose = TRUE
+)
 }
 \arguments{
 \item{variants_list}{List of fraction values.}
@@ -12,6 +17,8 @@ VariantWiseFisherTest(variants_list, n_cores = 1, p_value_adjustment = "fdr")
 \item{n_cores}{Number of cores you want to use. Numeric.}
 
 \item{p_value_adjustment}{Method for P value adjustment. See p.adjust for details.}
+
+\item{verbose}{Should the function be verbose? Default = TRUE}
 }
 \description{
 We perform the Fisher test to determine which variants are associated.

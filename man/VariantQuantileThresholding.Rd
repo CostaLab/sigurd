@@ -16,7 +16,8 @@ VariantQuantileThresholding(
   group_of_interest = NULL,
   group1 = NULL,
   group2 = NULL,
-  group_factor = NULL
+  group_factor = NULL,
+  verbose = TRUE
 )
 }
 \arguments{
@@ -43,6 +44,8 @@ VariantQuantileThresholding(
 \item{group2}{The second group of interest.}
 
 \item{group_factor}{How much higher has the mean allele frequency to be in group 1 when compared to group 2?}
+
+\item{verbose}{Should the function be verbose? Default = TRUE}
 }
 \description{
 We get variants of interest using the quantile thresholding.

@@ -12,46 +12,47 @@
 #'@param type_use The type of input. Has to be one of: scRNAseq_Somatic, Amplicon_Somatic, scRNAseq_MT, Amplicon_MT.
 #'@param min_reads The minimum number of reads we want. Otherwise we treat this as a NoCall. Default = NULL.
 #'@param min_cells The minimum number of cells for a variant. Otherwise, we will remove a variant. Default = 2.
+#'@param verbose Should the function be verbose? Default = TRUE
 #'@export
-LoadingVCF_typewise <- function(samples_file, samples_path = NULL, barcodes_path = NULL, vcf_path, patient, sample = NULL, type_use = "scRNAseq_Somatic", min_reads = NULL, min_cells = 2){
+LoadingVCF_typewise <- function(samples_file, samples_path = NULL, barcodes_path = NULL, vcf_path, patient, sample = NULL, type_use = "scRNAseq_Somatic", min_reads = NULL, min_cells = 2, verbose = TRUE){
   if(all(!is.null(samples_path), !is.null(barcodes_path), !is.null(sample))){
-    print(paste0("Loading the data for sample ", sample, "."))
+    if(verbose) print(paste0("Loading the data for sample ", sample, "."))
     samples_file <- data.frame(patient = patient, sample = sample, input_folder = samples_path, cells = barcodes_path)
     samples <- samples_file$sample
   } else{
-    print(paste0("Loading the data for patient ", patient, "."))
-    print("We read in the samples file.")
+    if(verbose) print(paste0("Loading the data for patient ", patient, "."))
+    if(verbose) print("We read in the samples file.")
     samples_file <- read.csv(samples_file, stringsAsFactors = FALSE)
 
 
-    print("We subset to the patient of interest.")
+    if(verbose) print("We subset to the patient of interest.")
     samples_file <- samples_file[grep("vcf", samples_file$source, ignore.case = TRUE),]
     samples_file <- samples_file[samples_file$patient == patient,]
     samples_file <- samples_file[samples_file$type == type_use,]
 
 
-    print("We get the different samples.")
+    if(verbose) print("We get the different samples.")
     samples <- samples_file$sample
   }
 
 
-  print("We read in the cell barcodes output by CellRanger as a list.")
+  if(verbose) print("We read in the cell barcodes output by CellRanger as a list.")
   barcodes <- lapply(samples_file$cells, read.table)
   names(barcodes) <- samples
 
 
-  print("We read in the vcf file.")
+  if(verbose) print("We read in the vcf file.")
   vcf      <- VariantAnnotation::readVcf(vcf_path)
   vcf_info <- VariantAnnotation::info(vcf)
 
 
-  print("We load the VCF file.")
+  if(verbose) print("We load the VCF file.")
   reads_matrix_total <- c() # The total number of reads
   coverage_matrix_total <- c() # The alternative reads
   ref_matrix_total <- c() # The reference reads
   consensus_matrix_total <- c()
   for(i in 1:length(samples)){
-    print(paste0("Loading sample ", i, " of ", nrow(samples_file)))
+    if(verbose) print(paste0("Loading sample ", i, " of ", nrow(samples_file)))
     input_folder_use <- samples_file$input_path[i]
     sample_use <- samples_file$sample[i]
 
@@ -84,7 +85,7 @@ LoadingVCF_typewise <- function(samples_file, samples_path = NULL, barcodes_path
   rm(consensus_to_add, alts_to_add, depth_to_add)
 
 
-  print("We generate more accessible names.")
+  if(verbose) print("We generate more accessible names.")
   if(all(c("GENE", "AA", "CDS") %in% colnames(vcf_info))){
     new_names <- paste0(vcf_info$GENE, "_", vcf_info$AA, "_", vcf_info$CDS)
     names(new_names) <- make.names(paste0(as.character(rep(GenomeInfoDb::seqnames(vcf)@values, GenomeInfoDb::seqnames(vcf)@lengths)), ".", BiocGenerics::start(vcf), "_", as.character(VariantAnnotation::ref(vcf)), ".", as.character(unlist(VariantAnnotation::alt(vcf)))))
@@ -98,8 +99,8 @@ LoadingVCF_typewise <- function(samples_file, samples_path = NULL, barcodes_path
 
 
   if(!is.null(min_reads)){
-    print(paste0("We set read values below the threshold of ", min_reads, " to 0."))
-    print("We then generate the consensus matrix again.")
+    if(verbose) print(paste0("We set read values below the threshold of ", min_reads, " to 0."))
+    if(verbose) print("We then generate the consensus matrix again.")
     ref_matrix_total@x[ref_matrix_total@x < min_reads] <- 0
     coverage_matrix_total@x[coverage_matrix_total@x < min_reads] <- 0
 
@@ -126,7 +127,7 @@ LoadingVCF_typewise <- function(samples_file, samples_path = NULL, barcodes_path
   rownames(consensus_matrix_total) <- new_names
 
 
-  print(paste0("We remove variants, that are not detected in at least ", min_cells, " cells."))
+  if(verbose) print(paste0("We remove variants, that are not detected in at least ", min_cells, " cells."))
   keep_variants <- rowSums(consensus_matrix_total >= 1)
   keep_variants <- keep_variants >= min_cells
   # If we only have one cell or one variant, we loose the matrix.
@@ -149,7 +150,7 @@ LoadingVCF_typewise <- function(samples_file, samples_path = NULL, barcodes_path
   ref_matrix_total <- as(ref_matrix_total, "dgCMatrix")
 
 
-  print("We remove cells that are always NoCall.")
+  if(verbose) print("We remove cells that are always NoCall.")
   consensus_test <- consensus_matrix_total > 0
   keep_cells <- colSums(consensus_test) > 0
   # If we only have one cell or one variant, we loose the matrix.
@@ -172,14 +173,14 @@ LoadingVCF_typewise <- function(samples_file, samples_path = NULL, barcodes_path
   ref_matrix_total <- as(ref_matrix_total, "dgCMatrix")
 
 
-  print(paste0(type_use, " Variants: ", nrow(consensus_matrix_total)))
-  print(paste0(type_use, " Cells: ", ncol(consensus_matrix_total)))
+  if(verbose) print(paste0(type_use, " Variants: ", nrow(consensus_matrix_total)))
+  if(verbose) print(paste0(type_use, " Cells: ", ncol(consensus_matrix_total)))
 
   rm(consensus_test, keep_variants, keep_cells)
   gc()
 
 
-  print("We transform the sparse matrices to matrices, so we can calculate the fraction.")
+  if(verbose) print("We transform the sparse matrices to matrices, so we can calculate the fraction.")
   coverage_matrix_total                 <- as.matrix(coverage_matrix_total)
   ref_matrix_total                      <- as.matrix(ref_matrix_total)
   consensus_matrix_total                <- as.matrix(consensus_matrix_total)
@@ -192,11 +193,11 @@ LoadingVCF_typewise <- function(samples_file, samples_path = NULL, barcodes_path
   # We check if the matrices are empty (0 cells, 0 variants). Then we simply return NULL.
   dim_test <- dim(reads_total)
   if(any(dim_test == 0)){
-    print(paste0("The filtering left ", dim_test[1], " variants and ", dim_test[2], "cells."))
-    print("Returning NULL.")
+    if(verbose) print(paste0("The filtering left ", dim_test[1], " variants and ", dim_test[2], "cells."))
+    if(verbose) print("Returning NULL.")
     return(NULL)
   } else {
-    print("We generate a SummarizedExperiment object containing the fraction and the consensus matrices.")
+    if(verbose) print("We generate a SummarizedExperiment object containing the fraction and the consensus matrices.")
     # We want an assay for the Consensus information and for the fraction.
     # As meta data we add a data frame showing the cell id, the associated patient and the sample.
     coverage_depth_per_cell <- colMeans(reads_total)

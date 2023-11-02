@@ -11,7 +11,8 @@ Filtering(
   alts_threshold = NULL,
   min_cells_per_variant = 2,
   min_variants_per_cell = 1,
-  reject_value = "NoCall"
+  reject_value = "NoCall",
+  verbose = TRUE
 )
 }
 \arguments{
@@ -28,6 +29,8 @@ Filtering(
 \item{min_variants_per_cell}{How many variants should be covered in a cell have to be included? Default = 1.}
 
 \item{reject_value}{Should cells that fall below a threshold (fraction_threshold or alts_threshold) be treated as Reference or NoCall? Default = NoCall.}
+
+\item{verbose}{Should the function be verbose? Default = TRUE}
 }
 \description{
 We filter a SummarizedExperiment object to exclude variants and cells.

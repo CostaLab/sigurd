@@ -8,7 +8,8 @@ VariantFisherTestHeatmap(
   fisher_results,
   patient,
   min_alt_cells = 5,
-  min_oddsratio = 1
+  min_oddsratio = 1,
+  verbose = TRUE
 )
 }
 \arguments{
@@ -19,6 +20,8 @@ VariantFisherTestHeatmap(
 \item{min_alt_cells}{Minimum number of mutated cells needed, otherwise an association will not be plotted.}
 
 \item{min_oddsratio}{Minimum correlation needed.}
+
+\item{verbose}{Should the function be verbose? Default = TRUE}
 }
 \description{
 We generate a heatmap showing the Fisher test of somatic variants with the MT variants.

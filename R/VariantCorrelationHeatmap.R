@@ -12,21 +12,22 @@
 #'@param width_use Width of the heatmap in px.
 #'@param height_use Height of the heatmap in px.
 #'@param padding_use Space around the heatmap in mm. If this is to low, the variant names might be cut off.
+#'@param verbose Should the function be verbose? Default = TRUE
 #'@export
 VariantCorrelationHeatmap <- function(correlation_results, output_path = NULL, patient, min_alt_cells = 5, min_correlation = 0.5,
-                                      width_use = 2000, height_use = 2000, padding_use = c(165,165,2,2)){
+                                      width_use = 2000, height_use = 2000, padding_use = c(165,165,2,2), verbose = TRUE){
   correlation_results$P_adj_logged <- -log10(correlation_results$P_adj)
   correlation_results <- subset(correlation_results, P_adj_logged > -log10(0.05))
   correlation_results <- subset(correlation_results, Cells_1_Alt >= min_alt_cells & Cells_2_Alt >= min_alt_cells)
   correlation_results <- subset(correlation_results, Corr > min_correlation)
   
   
-  print("We get the unique variants.")
+  if(verbose) print("We get the unique variants.")
   somatic_uniques <- unique(correlation_results$Variant1)
   mt_uniques      <- unique(correlation_results$Variant2)
   
   
-  print("Getting the maximum P value.")
+  if(verbose) print("Getting the maximum P value.")
   pvalue_max <- as.numeric(na.omit(correlation_results$P_adj_logged))
   if(length(pvalue_max) > 1){
     pvalue_max <- pvalue_max[pvalue_max != Inf]
@@ -43,11 +44,11 @@ VariantCorrelationHeatmap <- function(correlation_results, output_path = NULL, p
   col_fun <- circlize::colorRamp2(c(0,pvalue_max), c("white", "red"))
   
   
-  print("We set insignificant P values to NA.")
+  if(verbose) print("We set insignificant P values to NA.")
   correlation_results$P_adj_logged <- ifelse(correlation_results$P_adj_logged > -log10(0.05), correlation_results$P_adj_logged, NA)
   
   
-  print("We generate a matrix with the adjusted P values.")
+  if(verbose) print("We generate a matrix with the adjusted P values.")
   p_values <- matrix(NA, nrow = length(somatic_uniques), ncol = length(mt_uniques))
   rownames(p_values) <- somatic_uniques
   colnames(p_values) <- mt_uniques
@@ -59,15 +60,15 @@ VariantCorrelationHeatmap <- function(correlation_results, output_path = NULL, p
   }
   
   
-  print("Setting the column and row annotations for the heat map.")
+  if(verbose) print("Setting the column and row annotations for the heat map.")
   annotation_top <- ComplexHeatmap::columnAnnotation(Mutations = mt_uniques,
                                                      show_legend = FALSE, show_annotation_name = FALSE)
   annotation_left <- ComplexHeatmap::rowAnnotation(Mutations = somatic_uniques,
                                                    show_legend = FALSE, show_annotation_name = FALSE)
   
-  print("Since we can have no results left after the subsetting, we check if the P value matrix has values.")
+  if(verbose) print("Since we can have no results left after the subsetting, we check if the P value matrix has values.")
   if(all(dim(p_values) > 0)){
-    print("Generating the actual heat map.")
+    if(verbose) print("Generating the actual heat map.")
     p1 <- ComplexHeatmap::Heatmap(p_values, name = "-log10(P)",
                                   column_title = paste0("Patient ", patient, "\nLogged adj. P values between the mutations"),
                                   row_title = "", show_row_names = TRUE, show_column_names = TRUE,
@@ -81,7 +82,7 @@ VariantCorrelationHeatmap <- function(correlation_results, output_path = NULL, p
     
     
     if(!is.null(output_path)){
-      print("Saving the png.")
+      if(verbose) print("Saving the png.")
       png(paste0(output_path, "Correlation_Pvalue_", patient, ".png"), width = width_use, height = height_use, units = "px", type = "cairo", antialias = "none")
       draw(p1, padding = unit(padding_use, "mm"))
       dev.off()

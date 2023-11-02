@@ -21,6 +21,7 @@
 #'@param min_cells_per_variant In how many cells should a variant be present to be included? Numeric. Default = 2.
 #'@param min_variants_per_cell How many variants should be covered in a cell have to be included? Default = 1.
 #'@param reject_value Should cells that fall below a threshold (fraction_threshold or alts_threshold) be treated as Reference or NoCall? Default = NoCall.
+#'@param verbose Should the function be verbose? Default = TRUE
 #'@examples
 #' \dontrun{
 #'   # Removing all variants that are not detected in at least 2 cells.
@@ -28,7 +29,7 @@
 #'   se_geno <- Filtering(se_geno, min_cells_per_variant = 2, fraction_threshold = 0.05)
 #' }
 #'@export
-Filtering <- function(se, blacklisted_barcodes_path = NULL, fraction_threshold = NULL, alts_threshold = NULL, min_cells_per_variant = 2, min_variants_per_cell = 1, reject_value = "NoCall"){
+Filtering <- function(se, blacklisted_barcodes_path = NULL, fraction_threshold = NULL, alts_threshold = NULL, min_cells_per_variant = 2, min_variants_per_cell = 1, reject_value = "NoCall", verbose = TRUE){
   # Checking if the reject_value variable is correct.
   if(!reject_value %in% c("Reference", "NoCall")){
     stop(paste0("Your reject_value is ", reject_value, ".\nIt should be Reference or NoCall."))
@@ -39,7 +40,7 @@ Filtering <- function(se, blacklisted_barcodes_path = NULL, fraction_threshold =
 
 
   if(!is.null(blacklisted_barcodes_path)){
-    print("We remove the unwanted cell barcodes.")
+    if(verbose) print("We remove the unwanted cell barcodes.")
     blacklisted_barcodes <- read.table(blacklisted_barcodes_path, header = FALSE)
     blacklisted_barcodes <- blacklisted_barcodes[,1]
     barcodes_keep <- colnames(se)
@@ -61,10 +62,10 @@ Filtering <- function(se, blacklisted_barcodes_path = NULL, fraction_threshold =
     if(any(fraction_threshold >= 1, fraction_threshold <= 0)){
       stop("Your fraction threshold is not 0 < x < 1.")
     }
-    print(paste0("We assume that cells with a fraction smaller than our threshold are actually ", reject_value, "."))
-    print(paste0("We set consensus values to ", reject_value_numeric, " (", reject_value, ") and fraction values to 0."))
-    print(paste0("We do not set fractions between ", fraction_threshold, " and 1 to 1."))
-    print("This way, we retain the heterozygous information.")
+    if(verbose) print(paste0("We assume that cells with a fraction smaller than our threshold are actually ", reject_value, "."))
+    if(verbose) print(paste0("We set consensus values to ", reject_value_numeric, " (", reject_value, ") and fraction values to 0."))
+    if(verbose) print(paste0("We do not set fractions between ", fraction_threshold, " and 1 to 1."))
+    if(verbose) print("This way, we retain the heterozygous information.")
     # Filtering using sparse matrices.
     consensus_matrix <- SummarizedExperiment::assays(se)$consensus
     fraction_matrix <- SummarizedExperiment::assays(se)$fraction
@@ -85,10 +86,10 @@ Filtering <- function(se, blacklisted_barcodes_path = NULL, fraction_threshold =
     if(any(!is.numeric(alts_threshold), is.infinite(alts_threshold))){
       stop("Your alts_threshold should be a numeric value.")
     }
-    print(paste0("We assume that cells with a number of alternative reads smaller than our threshold are actually ", reject_value, "."))
-    print(paste0("We set consensus values to ", reject_value_numeric, " (", reject_value, "), fraction values to 0."))
-    if(reject_value == "NoCall") print("We set Alts, Refs and Coverage to 0.")
-    if(reject_value == "Reference") print("We set Alts to 0 and adjust the Coverage.")
+    if(verbose) print(paste0("We assume that cells with a number of alternative reads smaller than our threshold are actually ", reject_value, "."))
+    if(verbose) print(paste0("We set consensus values to ", reject_value_numeric, " (", reject_value, "), fraction values to 0."))
+    if(reject_value == "NoCall") if(verbose) print("We set Alts, Refs and Coverage to 0.")
+    if(reject_value == "Reference") if(verbose) print("We set Alts to 0 and adjust the Coverage.")
     # Filtering using sparse matrices.
     consensus_matrix <- SummarizedExperiment::assays(se)$consensus
     fraction_matrix <- SummarizedExperiment::assays(se)$fraction
@@ -121,18 +122,18 @@ Filtering <- function(se, blacklisted_barcodes_path = NULL, fraction_threshold =
   }
 
 
-  print("We remove all the variants that are always NoCall.")
+  if(verbose) print("We remove all the variants that are always NoCall.")
   consensus_test <- SummarizedExperiment::assays(se)$consensus > 0
   keep_variants <- rowSums(consensus_test) > 0
   se <- se[keep_variants,]
 
-  print(paste0("We remove variants, that are not at least detected in ", min_cells_per_variant, " cells."))
+  if(verbose) print(paste0("We remove variants, that are not at least detected in ", min_cells_per_variant, " cells."))
   keep_variants <- rowSums(SummarizedExperiment::assays(se)$consensus >= 1)
   keep_variants <- keep_variants >= min_cells_per_variant
   se <- se[keep_variants,]
 
 
-  print(paste0("We remove all cells that are not >= 1 (Ref) for at least ", min_variants_per_cell, " variant."))
+  if(verbose) print(paste0("We remove all cells that are not >= 1 (Ref) for at least ", min_variants_per_cell, " variant."))
   consensus_test <- SummarizedExperiment::assays(se)$consensus >= 1
   keep_cells <- colSums(consensus_test) > min_variants_per_cell
   se <- se[,keep_cells]

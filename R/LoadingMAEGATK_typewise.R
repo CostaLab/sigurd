@@ -10,38 +10,39 @@
 #'@param type_use The type of input. Has to be one of: scRNAseq_MT, Amplicon_MT. Only used if samples_path is not NULL.
 #'@param patient The patient you want to load.
 #'@param chromosome_prefix The prefix you want use. Default: "chrM"
+#'@param verbose Should the function be verbose? Default = TRUE
 #'@export
 LoadingMAEGATK_typewise <- function(samples_file, samples_path = NULL, patient, type_use = "scRNAseq_MT", chromosome_prefix = "chrM",
-                                    min_cells = 2, barcodes_path = NULL){
+                                    min_cells = 2, barcodes_path = NULL, verbose = TRUE){
   if(all(!is.null(samples_path), !is.null(barcodes_path))){
-    print(paste0("Loading the data for patient ", patient, "."))
+    if(verbose) print(paste0("Loading the data for patient ", patient, "."))
     samples <- list.files(samples_path)
     samples <- grep(patient, samples, value = TRUE)
     samples_file <- data.frame(patient = patient, sample = samples, input_folder = samples_path, cells = barcodes_path)
   } else{
-    print(paste0("Loading the data for patient ", patient, "."))
-    print("We read in the samples file.")
+    if(verbose) print(paste0("Loading the data for patient ", patient, "."))
+    if(verbose) print("We read in the samples file.")
     samples_file <- read.csv(samples_file)
 
-    print("We subset to the patient of interest.")
+    if(verbose) print("We subset to the patient of interest.")
     samples_file <- samples_file[grep("maegatk|mgatk", samples_file$source, ignore.case = TRUE),]
     samples_file <- samples_file[grep(patient, samples_file$patient),]
     samples_file <- samples_file[grep(type_use, samples_file$type),]
 
-    print("We get the different samples.")
+    if(verbose) print("We get the different samples.")
     samples <- samples_file$sample
   }
 
 
-  print("We read in the cell barcodes output by CellRanger as a list.")
+  if(verbose) print("We read in the cell barcodes output by CellRanger as a list.")
   barcodes <- lapply(samples_file$cells, read.table)
   names(barcodes) <- samples
 
 
-  print("We load the MAEGATK output files.")
+  if(verbose) print("We load the MAEGATK output files.")
   se_ls <- list()
   for(i in 1:nrow(samples_file)){
-    print(paste0("Loading sample ", i, " of ", nrow(samples_file)))
+    if(verbose) print(paste0("Loading sample ", i, " of ", nrow(samples_file)))
     input_file_use <- samples_file$input_path[i]
     sample_use <- samples_file$sample[i]
 
@@ -59,39 +60,39 @@ LoadingMAEGATK_typewise <- function(samples_file, samples_path = NULL, patient, 
   }
 
 
-  print("We merge the samples.")
+  if(verbose) print("We merge the samples.")
   se_merged <- do.call("cbind", se_ls)
   rm(se_ls)
   gc()
 
 
-  print("We get the allele frequency.")
+  if(verbose) print("We get the allele frequency.")
   fraction <- computeAFMutMatrix(SE = se_merged, chromosome_prefix = chromosome_prefix)
 
 
-  print("We get the coverage information.")
+  if(verbose) print("We get the coverage information.")
   coverage <- CalculateCoverage(SE = se_merged, chromosome_prefix = chromosome_prefix)
   if(!all(rownames(fraction) == rownames(coverage))){
     coverage <- coverage[match(rownames(fraction), rownames(coverage)),]
   }
 
 
-  print("We get the number of alternative reads per variant.")
+  if(verbose) print("We get the number of alternative reads per variant.")
   reads_alt <- CalculateAltReads(SE = se_merged, chromosome_prefix = chromosome_prefix)
 
 
-  print("We get the quality information.")
+  if(verbose) print("We get the quality information.")
   variant_quality <- CalculateQuality(SE = se_merged, variants = rownames(reads_alt), chromosome_prefix = chromosome_prefix)
 
 
-  print("We get the number of reference reads.")
+  if(verbose) print("We get the number of reference reads.")
   reads_ref <- coverage - reads_alt
 
-  print("Calculating the strand concordance.")
+  if(verbose) print("Calculating the strand concordance.")
   concordance <- CalculateStrandCorrelation(SE = se_merged, chromosome_prefix = chromosome_prefix)
 
 
-  print("We calculate the consensus information.")
+  if(verbose) print("We calculate the consensus information.")
   consensus <- CalculateConsensus(SE = se_merged, chromosome_prefix = chromosome_prefix)
   # We order the consensus matrix like the coverage matrix.
   if(!all(rownames(fraction) == rownames(consensus))){
@@ -99,8 +100,8 @@ LoadingMAEGATK_typewise <- function(samples_file, samples_path = NULL, patient, 
   }
 
 
-  print("We perform some filtering to reduce the memory needed.")
-  print(paste0("We remove variants, which are not covered in at least ", min_cells, " cells ."))
+  if(verbose) print("We perform some filtering to reduce the memory needed.")
+  if(verbose) print(paste0("We remove variants, which are not covered in at least ", min_cells, " cells ."))
   keep_variants <- rowSums(consensus >= 1)
   keep_variants <- keep_variants >= min_cells
   consensus       <- consensus[keep_variants, , drop = FALSE]
@@ -112,7 +113,7 @@ LoadingMAEGATK_typewise <- function(samples_file, samples_path = NULL, patient, 
   reads_ref       <- reads_ref[keep_variants, , drop = FALSE]
 
 
-  print("We remove cells that are always NoCall.")
+  if(verbose) print("We remove cells that are always NoCall.")
   consensus_test <- consensus > 0
   keep_cells <- colSums(consensus_test) > 0
   consensus <- consensus[, keep_cells, drop = FALSE]
@@ -125,11 +126,11 @@ LoadingMAEGATK_typewise <- function(samples_file, samples_path = NULL, patient, 
   # We check if the matrices are empty (0 cells, 0 variants). Then we simply return NULL.
   dim_test <- dim(coverage)
   if(any(dim_test == 0)){
-    print(paste0("The filtering left ", dim_test[1], " variants and ", dim_test[2], "cells."))
-    print("Returning NULL.")
+    if(verbose) print(paste0("The filtering left ", dim_test[1], " variants and ", dim_test[2], "cells."))
+    if(verbose) print("Returning NULL.")
     return(NULL)
   } else{
-    print("We add the information to the merged matrices.")
+    if(verbose) print("We add the information to the merged matrices.")
     coverage_depth_per_cell <- rownames(coverage)
     coverage_depth_per_cell <- gsub("_._.$", "", coverage_depth_per_cell)
     coverage_depth_per_cell <- !duplicated(coverage_depth_per_cell)

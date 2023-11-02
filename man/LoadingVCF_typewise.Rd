@@ -13,7 +13,8 @@ LoadingVCF_typewise(
   sample = NULL,
   type_use = "scRNAseq_Somatic",
   min_reads = NULL,
-  min_cells = 2
+  min_cells = 2,
+  verbose = TRUE
 )
 }
 \arguments{
@@ -30,6 +31,8 @@ LoadingVCF_typewise(
 \item{min_reads}{The minimum number of reads we want. Otherwise we treat this as a NoCall. Default = NULL.}
 
 \item{min_cells}{The minimum number of cells for a variant. Otherwise, we will remove a variant. Default = 2.}
+
+\item{verbose}{Should the function be verbose? Default = TRUE}
 }
 \description{
 We load a cellwise pileup result from a VCF file.

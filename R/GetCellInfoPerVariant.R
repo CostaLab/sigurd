@@ -2,13 +2,14 @@
 #'@import dplyr SummarizedExperiment tibble tidyverse
 #'@param se SummarizedExperiment object.
 #'@param voi_ch Variants of interest.
+#'@param verbose Should the function be verbose? Default = FALSE
 #'@export
-GetCellInfoPerVariant <- function(se, voi_ch){
-  print("Generate matrices with coverage, allele frequency and reference / variant reads")
+GetCellInfoPerVariant <- function(se, voi_ch, verbose = FALSE){
+  if(verbose) print("Generate matrices with coverage, allele frequency and reference / variant reads")
   cov_voi_mat <- SummarizedExperiment::assays(se)[["coverage"]][voi_ch,]
   af_voi_mat  <- SummarizedExperiment::assays(se)[["fraction"]][voi_ch,]
 
-  print("Add coverage and allele frequency info from variants of interest to cells_tib.")
+  if(verbose) print("Add coverage and allele frequency info from variants of interest to cells_tib.")
   cells_tib <- tibble::tibble(cell = colnames(se), Mean_Cov = se$depth)
   for(voi in voi_ch){
     cells_tib <- cells_tib %>%

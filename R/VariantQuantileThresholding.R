@@ -17,10 +17,11 @@
 #'@param group1 The first group of interest.
 #'@param group2 The second group of interest.
 #'@param group_factor How much higher has the mean allele frequency to be in group 1 when compared to group 2?
+#'@param verbose Should the function be verbose? Default = TRUE
 #'@export
 VariantQuantileThresholding <- function(SE, min_coverage = 2, quantiles = c(0.1, 0.9), thresholds = c(0.1, 0.9), top_cells = NULL, top_VAF = NULL, min_quality = NULL, mean_allele_frequency = 0,
-                                        group_of_interest = NULL, group1 = NULL, group2 = NULL, group_factor = NULL){
-  print("Get the mean allele frequency and coverage.")
+                                        group_of_interest = NULL, group1 = NULL, group2 = NULL, group_factor = NULL, verbose = TRUE){
+  if(verbose) print("Get the mean allele frequency and coverage.")
   mean_af <- rowMeans(SummarizedExperiment::assays(SE)[["fraction"]], na.rm = TRUE)
   mean_cov <- rowMeans(SummarizedExperiment::assays(SE)[["coverage"]], na.rm = TRUE)
   if(all(is.null(min_quality), is.numeric(min_quality))) stop("Error: Your minimum quality is not either NULL or a numeric.")
@@ -38,7 +39,7 @@ VariantQuantileThresholding <- function(SE, min_coverage = 2, quantiles = c(0.1,
     mean_af_group2 <- rowMeans(SummarizedExperiment::assays(SE)[["fraction"]][, rownames(cells_group2)], na.rm = TRUE)
     mean_af_group_check <- mean_af_group1 > (group_factor * mean_af_group2)
 
-    print("Get the quantiles of the VAFs of each variant.")
+    if(verbose) print("Get the quantiles of the VAFs of each variant.")
     quantiles <- lapply(quantiles, function(x) apply(SummarizedExperiment::assays(SE)[["fraction"]], 1, quantile, x, na.rm = TRUE))
     if(!is.null(min_quality)){
       vars <- data.frame(Mean_AF = mean_af, Mean_Cov = mean_cov, VariantQuality = SummarizedExperiment::rowData(SE)$VariantQuality, Quantile1 = quantiles[[1]], Quantile2 = quantiles[[2]])
@@ -49,14 +50,14 @@ VariantQuantileThresholding <- function(SE, min_coverage = 2, quantiles = c(0.1,
     }
     vars <- vars[mean_af_group_check,]
 
-    print("Thresholding using the quantile approach.")
+    if(verbose) print("Thresholding using the quantile approach.")
     if(length(quantiles)  != 2) stop("Your quantiles are not of length 2.")
     if(length(thresholds) != 2) stop("Your thresholds are not of length 2.")
     voi_ch <- subset(vars, Mean_AF > mean_allele_frequency & Mean_Cov > min_coverage & Quantile1 < thresholds[1] & Quantile2 > thresholds[2])
 
 
   } else if(any(is.null(top_cells), is.null(top_VAF))){
-    print("Get the quantiles of the VAFs of each variant.")
+    if(verbose) print("Get the quantiles of the VAFs of each variant.")
     quantiles <- lapply(quantiles, function(x) apply(SummarizedExperiment::assays(SE)[["fraction"]], 1, quantile, x, na.rm = TRUE))
 
     if(!is.null(min_quality)){
@@ -67,12 +68,12 @@ VariantQuantileThresholding <- function(SE, min_coverage = 2, quantiles = c(0.1,
       vars <- data.frame(Mean_AF = mean_af, Mean_Cov = mean_cov, Quantile1 = quantiles[[1]], Quantile2 = quantiles[[2]])
     }
 
-    print("Thresholding using the quantile approach.")
+    if(verbose) print("Thresholding using the quantile approach.")
     if(length(quantiles) != 2) stop("Your quantiles are not of length 2.")
     if(length(thresholds) != 2) stop("Your thresholds are not of length 2.")
     voi_ch <- subset(vars, Mean_AF > mean_allele_frequency & Mean_Cov > min_coverage & Quantile1 < thresholds[1] & Quantile2 > thresholds[2])
   } else{
-    print("Get the quantile of the VAF of each variant.")
+    if(verbose) print("Get the quantile of the VAF of each variant.")
     if(length(quantiles) > 1) stop("You are providing more than 1 quantile. You should only provide 1.")
     if(length(thresholds) > 1) stop("You are providing more than 1 threshold. You should only provide 1.")
     quantiles <- lapply(quantiles, function(x) apply(SummarizedExperiment::assays(SE)[["fraction"]], 1, quantile, x, na.rm = TRUE))

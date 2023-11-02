@@ -9,7 +9,8 @@ VariantCloneSizeThresholding(
   min_coverage = 2,
   fraction_negative_cells = 0.9,
   min_clone_size = 10,
-  vaf_threshold = 0.5
+  vaf_threshold = 0.5,
+  verbose = TRUE
 )
 }
 \arguments{
@@ -22,6 +23,8 @@ VariantCloneSizeThresholding(
 \item{min_clone_size}{minimum number of cells.}
 
 \item{vaf_threshold}{Variant Allele Threshold. Cells above this threshold are considered mutated.}
+
+\item{verbose}{Should the function be verbose? Default = TRUE}
 }
 \description{
 We get variants of interest using a clone size thresholding.
