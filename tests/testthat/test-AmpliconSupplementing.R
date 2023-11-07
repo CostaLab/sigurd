@@ -64,23 +64,4 @@ test_that("Testing AmpliconSupplementing.", {
   expect_equal(assays(test_result)[["coverage"]], amplicon_coverage)
   expect_equal(assays(test_result)[["alts"]], amplicon_alts)
   expect_equal(assays(test_result)[["refs"]], amplicon_refs)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 })

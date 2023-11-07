@@ -7,8 +7,10 @@
 #'The input file is a specifically formated csv file with all the necessary information to run the analysis.
 #'Note that the source column in the input file needs to be one of the following: vartrix, mgaetk, mgatk.
 #'This is hard coded and case insensitive.
-#'
-#'@import Matrix SummarizedExperiment VariantAnnotation
+#'@importFrom utils read.csv read.table
+#'@importFrom VariantAnnotation readVcf info
+#'@importFrom SummarizedExperiment SummarizedExperiment
+#'@importFrom Matrix readMM
 #'@param samples_path Path to the input folder. Must include a barcodes file.
 #'@param samples_file Path to the csv file with the samples to be loaded.
 #'@param vcf_path Path to the VCF file with the variants.
@@ -17,17 +19,18 @@
 #'@param type_use The type of input. Has to be one of: scRNAseq_Somatic, Amplicon_Somatic, scRNAseq_MT, Amplicon_MT.
 #'@param min_reads The minimum number of reads we want. Otherwise we treat this as a NoCall. Default = NULL.
 #'@param min_cells The minimum number of cells for a variant. Otherwise, we will remove a variant. Default = 2.
+#'@param barcodes_path The path to the cell barcodes tsv. Default = NULL
 #'@param verbose Should the function be verbose? Default = TRUE
 #'@export
-LoadingVarTrix_typewise <- function(samples_file, samples_path = NULL, barcodes_path = NULL, snp_path = NULL, vcf_path, patient, sample = NULL, type_use = "scRNAseq_Somatic", min_reads = NULL, min_cells = 2, verbose = TRUE){
-  if(all(!is.null(samples_path), !is.null(barcodes_path), !is.null(sample), !is.null(snp_path))){
-    if(verbose) print(paste0("Loading the data for sample ", sample, "."))
-    samples_file <- data.frame(patient = patient, sample = sample, input_path = samples_path, cells = barcodes_path)
+LoadingVarTrix_typewise <- function(samples_file, samples_path = NULL, barcodes_path = NULL, snp_path = NULL, vcf_path, patient, type_use = "scRNAseq_Somatic", min_reads = NULL, min_cells = 2, verbose = TRUE){
+  if(all(!is.null(samples_path), !is.null(barcodes_path), !is.null(snp_path))){
+    if(verbose) print(paste0("Loading the data for sample ", patient, "."))
+    samples_file <- data.frame(patient = patient, sample = patient, input_path = samples_path, cells = barcodes_path)
     samples <- samples_file$sample
   } else{
     if(verbose) print(paste0("Loading the data for patient ", patient, "."))
     if(verbose) print("We read in the samples file.")
-    samples_file <- read.csv(samples_file, stringsAsFactors = FALSE)
+    samples_file <- utils::read.csv(samples_file, stringsAsFactors = FALSE)
 
     if(verbose) print("We subset to the patient of interest.")
     samples_file <- samples_file[grep("vartrix", samples_file$source, ignore.case = TRUE),]
@@ -48,12 +51,12 @@ LoadingVarTrix_typewise <- function(samples_file, samples_path = NULL, barcodes_
 
 
   if(verbose) print("We read the variants.")
-  snps_list <- lapply(path_snps, read.table, header = FALSE)
+  snps_list <- lapply(path_snps, utils::read.table, header = FALSE)
   names(snps_list) <- samples
 
 
   if(verbose) print("We read in the cell barcodes output by CellRanger as a list.")
-  barcodes <- lapply(samples_file$cells, read.table)
+  barcodes <- lapply(samples_file$cells, utils::read.table)
   names(barcodes) <- samples
 
 

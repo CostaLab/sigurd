@@ -4,7 +4,7 @@
 #'If you use top_cells and top_VAF, you have to only supply one quantil value (quantiles = 0.9, thresholds = 0).
 #'This function is adapted from the Peter van Galen.
 #'Source: https://github.com/petervangalen/MAESTER-2021
-#'@import dplyr SummarizedExperiment
+#'@importFrom SummarizedExperiment assays colData rowData 
 #'@param SE SummarizedExperiment object.
 #'@param min_coverage Minimum coverage needed.
 #'@param quantiles The lower and upper quantile you want to use. 
@@ -44,7 +44,7 @@ VariantQuantileThresholding <- function(SE, min_coverage = 2, quantiles = c(0.1,
     if(!is.null(min_quality)){
       vars <- data.frame(Mean_AF = mean_af, Mean_Cov = mean_cov, VariantQuality = SummarizedExperiment::rowData(SE)$VariantQuality, Quantile1 = quantiles[[1]], Quantile2 = quantiles[[2]])
       vars <- vars[is.na(vars$VariantQuality), ]
-      vars <- subset(vars, VariantQuality > min_quality)
+      vars <- subset(vars, vars$VariantQuality > min_quality)
     } else{
       vars <- data.frame(Mean_AF = mean_af, Mean_Cov = mean_cov, Quantile1 = quantiles[[1]], Quantile2 = quantiles[[2]])
     }
@@ -53,7 +53,7 @@ VariantQuantileThresholding <- function(SE, min_coverage = 2, quantiles = c(0.1,
     if(verbose) print("Thresholding using the quantile approach.")
     if(length(quantiles)  != 2) stop("Your quantiles are not of length 2.")
     if(length(thresholds) != 2) stop("Your thresholds are not of length 2.")
-    voi_ch <- subset(vars, Mean_AF > mean_allele_frequency & Mean_Cov > min_coverage & Quantile1 < thresholds[1] & Quantile2 > thresholds[2])
+    voi_ch <- subset(vars, vars$Mean_AF > mean_allele_frequency & vars$Mean_Cov > min_coverage & vars$Quantile1 < thresholds[1] & vars$Quantile2 > thresholds[2])
 
 
   } else if(any(is.null(top_cells), is.null(top_VAF))){
@@ -63,7 +63,7 @@ VariantQuantileThresholding <- function(SE, min_coverage = 2, quantiles = c(0.1,
     if(!is.null(min_quality)){
       vars <- data.frame(Mean_AF = mean_af, Mean_Cov = mean_cov, VariantQuality = SummarizedExperiment::rowData(SE)$VariantQuality, Quantile1 = quantiles[[1]], Quantile2 = quantiles[[2]])
       vars <- vars[is.na(vars$VariantQuality), ]
-      vars <- subset(vars, VariantQuality > min_quality)
+      vars <- subset(vars, vars$VariantQuality > min_quality)
     } else{
       vars <- data.frame(Mean_AF = mean_af, Mean_Cov = mean_cov, Quantile1 = quantiles[[1]], Quantile2 = quantiles[[2]])
     }
@@ -71,7 +71,7 @@ VariantQuantileThresholding <- function(SE, min_coverage = 2, quantiles = c(0.1,
     if(verbose) print("Thresholding using the quantile approach.")
     if(length(quantiles) != 2) stop("Your quantiles are not of length 2.")
     if(length(thresholds) != 2) stop("Your thresholds are not of length 2.")
-    voi_ch <- subset(vars, Mean_AF > mean_allele_frequency & Mean_Cov > min_coverage & Quantile1 < thresholds[1] & Quantile2 > thresholds[2])
+    voi_ch <- subset(vars, vars$Mean_AF > mean_allele_frequency & vars$Mean_Cov > min_coverage & vars$Quantile1 < thresholds[1] & vars$Quantile2 > thresholds[2])
   } else{
     if(verbose) print("Get the quantile of the VAF of each variant.")
     if(length(quantiles) > 1) stop("You are providing more than 1 quantile. You should only provide 1.")
@@ -84,11 +84,11 @@ VariantQuantileThresholding <- function(SE, min_coverage = 2, quantiles = c(0.1,
     if(!is.null(min_quality)){
       vars <- data.frame(Mean_AF = mean_af, Mean_Cov = mean_cov, Quality = SummarizedExperiment::rowData(SE)$VariantQuality, Quantile = quantiles, TopCells = top_cells_values)
       vars <- vars[is.na(vars$VariantQuality), ]
-      vars <- subset(vars, VariantQuality > min_quality)
+      vars <- subset(vars, vars$VariantQuality > min_quality)
     } else{
       vars <- data.frame(Mean_AF = mean_af, Mean_Cov = mean_cov, Quantile = quantiles, TopCells = top_cells_values)
     }
-    voi_ch <- subset(vars, Mean_Cov > min_coverage & Quantile <= thresholds[1] & TopCells >= top_cells)
+    voi_ch <- subset(vars, vars$Mean_Cov > min_coverage & vars$Quantile <= thresholds[1] & vars$TopCells >= top_cells)
   }
   voi_ch <- rownames(voi_ch)
   return(voi_ch)

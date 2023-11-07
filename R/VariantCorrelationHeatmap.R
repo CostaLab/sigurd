@@ -3,7 +3,9 @@
 #'We generate a heatmap showing the correlation of somatic variants with the MT variants.
 #'Packages I want to remove. I cannot see where they are used.
 #'ggplot2 parallel rcompanion tidyr
-#'@import circlize ComplexHeatmap Matrix grid
+#'@importFrom circlize colorRamp2
+#'@importFrom ComplexHeatmap columnAnnotation rowAnnotation Heatmap
+#'@importFrom grid gpar
 #'@param correlation_results Data.frame with the correlation results.
 #'@param output_path Path to the output folder.
 #'@param patient The patient for this heatmap.
@@ -17,9 +19,9 @@
 VariantCorrelationHeatmap <- function(correlation_results, output_path = NULL, patient, min_alt_cells = 5, min_correlation = 0.5,
                                       width_use = 2000, height_use = 2000, padding_use = c(165,165,2,2), verbose = TRUE){
   correlation_results$P_adj_logged <- -log10(correlation_results$P_adj)
-  correlation_results <- subset(correlation_results, P_adj_logged > -log10(0.05))
-  correlation_results <- subset(correlation_results, Cells_1_Alt >= min_alt_cells & Cells_2_Alt >= min_alt_cells)
-  correlation_results <- subset(correlation_results, Corr > min_correlation)
+  correlation_results <- subset(correlation_results, correlation_results$P_adj_logged > -log10(0.05))
+  correlation_results <- subset(correlation_results, correlation_results$Cells_1_Alt >= min_alt_cells & correlation_results$Cells_2_Alt >= min_alt_cells)
+  correlation_results <- subset(correlation_results, correlation_results$Corr > min_correlation)
   
   
   if(verbose) print("We get the unique variants.")
@@ -53,7 +55,7 @@ VariantCorrelationHeatmap <- function(correlation_results, output_path = NULL, p
   rownames(p_values) <- somatic_uniques
   colnames(p_values) <- mt_uniques
   for(i in 1:length(somatic_uniques)){
-    correlation_results_subset <- subset(correlation_results, Variant1 == somatic_uniques[i])
+    correlation_results_subset <- subset(correlation_results, correlation_results$Variant1 == somatic_uniques[i])
     p_values_use <- correlation_results_subset$P_adj_logged
     names(p_values_use) <- correlation_results_subset$Variant2
     p_values[somatic_uniques[i],names(p_values_use)] <- p_values_use

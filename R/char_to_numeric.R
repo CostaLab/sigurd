@@ -1,8 +1,8 @@
 #'char_to_numeric
 #'@description
-#'A function to convert the heterozyguous/homozyguous information from the VCF to the consensus information from VarTrix.
+#'A function to convert the heterozygous/homozygous information from the VCF to the consensus information from VarTrix.
 #'It is only used in LoadingVCF_typewise.R.
-#'@param char_value 
+#'@param char_value What is the genotype encoding you want to convert? 
 #'@export
 char_to_numeric <- function(char_value) {
   if(char_value == "1/1") return(2)

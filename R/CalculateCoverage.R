@@ -1,7 +1,8 @@
 #'CalculateCoverage
 #'@description
 #'We calculate the coverage information per variant from the MAEGATK results.
-#'@import MatrixGenerics SummarizedExperiment
+# #'@import MatrixGenerics
+#'@importFrom SummarizedExperiment rowRanges assays
 #'@param SE SummarizedExperiment object.
 #'@param chromosome_prefix List of matrices for the alternative reads.
 #'@export

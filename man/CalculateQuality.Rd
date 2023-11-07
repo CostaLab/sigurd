@@ -9,6 +9,8 @@ CalculateQuality(SE, variants, chromosome_prefix = "chrM")
 \arguments{
 \item{SE}{SummarizedExperiment object.}
 
+\item{variants}{The variants you want to get the quality for.}
+
 \item{chromosome_prefix}{List of matrices for the alternative reads.}
 }
 \description{

@@ -23,6 +23,4 @@ VariantWiseFisherTest(
 \description{
 We perform the Fisher test to determine which variants are associated.
 This function calls CalculateFisherTestPValue to perform the actual testing.
-Packages I want to remove.
-SummarizedExperiment
 }

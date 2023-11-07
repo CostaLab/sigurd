@@ -1,7 +1,7 @@
 #'combine_sparseMatrix
 #'@description
 #'We combine two sparse matrices
-#'@import SummarizedExperiment BiocGenerics Matrix
+#'@importFrom Matrix sparseMatrix
 #'@param matrix_1 Your first sparse matrix.
 #'@param matrix_2 Your second matrix.
 #'@export

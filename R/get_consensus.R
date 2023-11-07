@@ -2,9 +2,8 @@
 #'@description
 #'We get the consensus information for a specific matrix.
 #'I want to remove some packages if they are not needed. See below which package apperantly wasn't needed.
-#'Package to remove: dplyr, SummarizedExperiment
-#'@import MatrixGenerics
-#'@param letter The alternative base.
+#'@importFrom methods as
+#'@param alt_base The alternative base.
 #'@param ref_base The reference base.
 #'@param input_matrix Input matrix with the present reads numerically encoded.
 #'@param chromosome_prefix The chromosome name used as a prefix.
@@ -43,7 +42,7 @@ get_consensus <- function(alt_base, ref_base, input_matrix, chromosome_prefix = 
   output_matrix[input_matrix %in% other_homo_values] <- 0
   
   rownames(output_matrix) <- paste0(chromosome_prefix, "_", gsub("[^[:digit:]., ]", "", rownames(output_matrix)), "_", ref_base, "_", alt_base)
-  #output_matrix <- as(output_matrix, "dgCMatrix")
-  output_matrix <- as(output_matrix, "CsparseMatrix")
+  #output_matrix <- methods::as(output_matrix, "dgCMatrix")
+  output_matrix <- methods::as(output_matrix, "CsparseMatrix")
   return(output_matrix)
 }

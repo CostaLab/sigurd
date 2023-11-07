@@ -14,6 +14,8 @@ getMutMatrix(SE, cov, letter, ref_allele, chromosome_prefix)
 \item{letter}{The base we are interested in.}
 
 \item{ref_allele}{Vector of reference alleles.}
+
+\item{chromosome_prefix}{The chromosome prefix used.}
 }
 \description{
 This function gets the allele frequency for a specific allele. It is used in computeAFMutMatrix.

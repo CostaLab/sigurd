@@ -1,0 +1,2 @@
+patient,sample,source,type,bam,input_path,cells
+Test,Test,VCF,scRNAseq_Somatic,NA,test_data/VCF_Test/cellSNP.cells.vcf,test_data/LoadingMAEGATK_typewise_Test_Barcodes.tsv

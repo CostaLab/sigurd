@@ -1,7 +1,9 @@
 #'CalculateStrandCorrelation
 #'@description
 #'We calculate the correlation between the amount of forward and reverse reads per variant.
-#'@import MatrixGenerics SummarizedExperiment data.table
+#'@importFrom SummarizedExperiment rowRanges assays
+#'@importFrom data.table data.table
+#'@importFrom dplyr sym
 #'@param SE SummarizedExperiment object.
 #'@param chromosome_prefix List of matrices for the alternative reads.
 #'@export
@@ -32,10 +34,14 @@ CalculateStrandCorrelation <- function(SE, chromosome_prefix = "chrM"){
   rownames(reads_C_rev) <- paste0(chromosome_prefix, "_", 1:nrow(reads_C_rev), "_", ref_allele, "_C")
   reads_C_fw  <- reads_C_fw[ref_allele != "C",]
   reads_C_rev <- reads_C_rev[ref_allele != "C",]
+#  dt <- merge(data.table::data.table(summary(reads_C_fw)),
+#              data.table::data.table(summary(reads_C_rev)),
+#              by.x = c("i", "j"), by.y = c("i", "j"),
+#              all = TRUE)[x.x > 0 | x.y > 0]
   dt <- merge(data.table::data.table(summary(reads_C_fw)),
               data.table::data.table(summary(reads_C_rev)),
               by.x = c("i", "j"), by.y = c("i", "j"),
-              all = TRUE)[x.x >0 | x.y >0]
+              all = TRUE)[!!dplyr::sym("x.x") > 0 | !!dplyr::sym("x.y") > 0]
   dt <- data.table::data.table(variant = variants_C[dt[[1]]],
                                cell_id = dt[[2]],
                                fw = dt[[3]], rev = dt[[4]])

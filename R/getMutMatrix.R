@@ -2,11 +2,13 @@
 #'@description
 #'This function gets the allele frequency for a specific allele. It is used in computeAFMutMatrix.
 #'Source: https://github.com/petervangalen/MAESTER-2021
-#'@import SummarizedExperiment
+#'@importFrom SummarizedExperiment assays
+#'@importFrom methods as
 #'@param SE SummarizedExperiment object.
 #'@param cov The coverage matrix from MAEGATK/MGATK.
 #'@param letter The base we are interested in.
 #'@param ref_allele Vector of reference alleles.
+#'@param chromosome_prefix The chromosome prefix used.
 #'@export
 getMutMatrix <- function(SE, cov, letter, ref_allele, chromosome_prefix){
   names_rows <- paste0(chromosome_prefix, "_", 1:nrow(cov), "_", toupper(ref_allele), "_", letter)
@@ -20,6 +22,6 @@ getMutMatrix <- function(SE, cov, letter, ref_allele, chromosome_prefix){
   gc()
   mat[mat > 1] <- 1
   rownames(mat) <- names_rows
-  mat <- as(mat, "CsparseMatrix")
+  mat <- methods::as(mat, "CsparseMatrix")
   return(mat)
 }

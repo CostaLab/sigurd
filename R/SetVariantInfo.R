@@ -2,7 +2,9 @@
 #'@description
 #'We add the genotyping information for a set of variants to a Seurat object.
 #'The function returns a matrix with the values from the specified assay.
-#'@import SummarizedExperiment Seurat
+#'@importFrom SummarizedExperiment assays
+#'@importFrom Matrix t
+#'@importFrom Seurat AddMetaData
 #'@param SE SummarizedExperiment object.
 #'@param seurat_object The Seurat object.
 #'@param information The assay with the desired information. Default: consensus

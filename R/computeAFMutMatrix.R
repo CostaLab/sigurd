@@ -6,7 +6,7 @@
 #'See: https://gatk.broadinstitute.org/hc/en-us/articles/360035532252-Allele-Depth-AD-is-lower-than-expected
 #'and https://github.com/caleblareau/mgatk/issues/1
 #'We simply set these values to 1, since that is the actual information we have in this case.
-#'@import SummarizedExperiment
+#'@importFrom SummarizedExperiment assays rowRanges
 #'@param SE SummarizedExperiment object.
 #'@param chromosome_prefix The prefix of the chromosome.
 #'@export

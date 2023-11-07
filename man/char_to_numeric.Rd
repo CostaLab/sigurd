@@ -7,9 +7,9 @@
 char_to_numeric(char_value)
 }
 \arguments{
-\item{char_value}{}
+\item{char_value}{What is the genotype encoding you want to convert?}
 }
 \description{
-A function to convert the heterozyguous/homozyguous information from the VCF to the consensus information from VarTrix.
+A function to convert the heterozygous/homozygous information from the VCF to the consensus information from VarTrix.
 It is only used in LoadingVCF_typewise.R.
 }

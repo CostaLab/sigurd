@@ -18,6 +18,10 @@ HeatmapVoi(
 \item{voi}{Variants Of Interest.}
 
 \item{annotation_trait}{Cell Annotation at the bottom of the heat map.}
+
+\item{column_title}{The title of the heat map. Default = NULL}
+
+\item{remove_empty_cells}{Should cells that have a fraction of 0 for all variants be removed? Default = FALSE}
 }
 \description{
 We plot a heatmap of a set of Variants Of Interest using the Variant Allele Frequency values of a SummarizedExperiment object.

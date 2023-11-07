@@ -6,8 +6,13 @@
 #'@param file_name The path to the file.
 #'@export
 load_object <- function(file_name){
-  con <- archive::file_read(file = file_name)
-  res <- readRDS(file = con)
-  close(con)
-  return(res)
+  if(!file.exists(file_name)) stop(paste0("File '",file_name,"' not found."))
+  
+  if(requireNamespace("archive", quietly = TRUE)){
+    con <- archive::file_read(file = file_name)
+    res <- readRDS(file = con)
+    close(con)
+    return(res)
+  }
+  res <- readRDS(file = file_name)
 }

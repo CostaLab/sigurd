@@ -1,5 +1,5 @@
 #'Get the counts for a specific base over all positions.
-#'@import SummarizedExperiment
+#'@importFrom SummarizedExperiment assays rowRanges
 #'@param SE SummarizedExperiment object.
 #'@param letter The base for which we want the counts.
 #'@param chromosome_prefix The chromosome name used as a prefix.

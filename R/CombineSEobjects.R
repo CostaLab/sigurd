@@ -1,7 +1,8 @@
 #'CombineSEobjects
 #'@description
 #'We combine two SummarizedExperiment objects.
-#'@import SummarizedExperiment BiocGenerics
+# #'@import BiocGenerics
+#'@importFrom SummarizedExperiment assays colData rowData SummarizedExperiment
 #'@param se_somatic SummarizedExperiment object for the somatic variants.
 #'@param se_MT SummarizedExperiment object for the MT variants.
 #'@param suffixes The suffixes you want to add to the meta data.frame.

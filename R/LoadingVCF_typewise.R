@@ -1,10 +1,18 @@
 #'LoadingVCF_typewise
 #'@description
 #'We load a cellwise pileup result from a VCF file.
-#'
-#'@import Matrix SummarizedExperiment VariantAnnotation
+#'If you want to only load a single sample without the use of an input file, you have to set the following variables.
+#' \enumerate{
+#'   \item samples_path
+#'   \item barcodes_path
+#'   \item patient
+#'   \item samples_file = NULL
+#' }
 #'@importFrom GenomeInfoDb seqnames
 #'@importFrom BiocGenerics start
+#'@importFrom utils read.table read.csv
+#'@importFrom VariantAnnotation readVcf info readGeno ref alt
+#'@importFrom SummarizedExperiment SummarizedExperiment
 #'@param samples_path Path to the input folder. Must include a barcodes file.
 #'@param samples_file Path to the csv file with the samples to be loaded.
 #'@param vcf_path Path to the VCF file with the variants.
@@ -12,17 +20,18 @@
 #'@param type_use The type of input. Has to be one of: scRNAseq_Somatic, Amplicon_Somatic, scRNAseq_MT, Amplicon_MT.
 #'@param min_reads The minimum number of reads we want. Otherwise we treat this as a NoCall. Default = NULL.
 #'@param min_cells The minimum number of cells for a variant. Otherwise, we will remove a variant. Default = 2.
+#'@param barcodes_path Path to the cell barcodes tsv. Default = NULL
 #'@param verbose Should the function be verbose? Default = TRUE
 #'@export
-LoadingVCF_typewise <- function(samples_file, samples_path = NULL, barcodes_path = NULL, vcf_path, patient, sample = NULL, type_use = "scRNAseq_Somatic", min_reads = NULL, min_cells = 2, verbose = TRUE){
-  if(all(!is.null(samples_path), !is.null(barcodes_path), !is.null(sample))){
-    if(verbose) print(paste0("Loading the data for sample ", sample, "."))
-    samples_file <- data.frame(patient = patient, sample = sample, input_folder = samples_path, cells = barcodes_path)
+LoadingVCF_typewise <- function(samples_file, samples_path = NULL, barcodes_path = NULL, vcf_path, patient, type_use = "scRNAseq_Somatic", min_reads = NULL, min_cells = 2, verbose = TRUE){
+  if(all(!is.null(samples_path), !is.null(barcodes_path))){
+    if(verbose) print(paste0("Loading the data for sample ", patient, "."))
+    samples_file <- data.frame(patient = patient, sample = patient, input_path = samples_path, cells = barcodes_path)
     samples <- samples_file$sample
   } else{
     if(verbose) print(paste0("Loading the data for patient ", patient, "."))
     if(verbose) print("We read in the samples file.")
-    samples_file <- read.csv(samples_file, stringsAsFactors = FALSE)
+    samples_file <- utils::read.csv(samples_file, stringsAsFactors = FALSE)
 
 
     if(verbose) print("We subset to the patient of interest.")
@@ -37,7 +46,7 @@ LoadingVCF_typewise <- function(samples_file, samples_path = NULL, barcodes_path
 
 
   if(verbose) print("We read in the cell barcodes output by CellRanger as a list.")
-  barcodes <- lapply(samples_file$cells, read.table)
+  barcodes <- lapply(samples_file$cells, utils::read.table)
   names(barcodes) <- samples
 
 

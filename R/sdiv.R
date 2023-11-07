@@ -1,5 +1,5 @@
 #'Division of sparse matrix.
-#'@import Matrix
+#'@importFrom Matrix sparseMatrix
 #'@param X First sparse matrix.
 #'@param Y Second sparse matrix.
 #'@param names The dimension names (dimnames(X)).

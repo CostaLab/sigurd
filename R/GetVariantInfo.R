@@ -2,7 +2,7 @@
 #'@description
 #'We get the genotyping information for a set of variants.
 #'The function returns a matrix with the values from the specified assay.
-#'@import SummarizedExperiment
+#'@importFrom SummarizedExperiment assays
 #'@param SE SummarizedExperiment object.
 #'@param information The assay with the desired information. Default: consensus
 #'@param variants A vector of variants.

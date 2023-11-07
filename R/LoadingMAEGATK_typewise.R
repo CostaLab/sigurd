@@ -3,26 +3,34 @@
 #'We load the MAEGATK output and transform it to be compatible with the VarTrix output.
 #'The input file is a specifically formated csv file with all the necessary information to run the analysis.
 #'Note that the source column in the input file needs to be one of the following: vartrix, mgaetk, mgatk.
-#'This is hard coded and case insensitive.
-#'@import Matrix SummarizedExperiment
+#'If you want to only load a single sample without the use of an input file, you have to set the following variables.
+#' \enumerate{
+#'   \item samples_path
+#'   \item barcodes_path
+#'   \item patient
+#'   \item samples_file = NULL
+#' }
+#'@importFrom utils read.csv read.table
+#'@importFrom SummarizedExperiment SummarizedExperiment
 #'@param samples_path Path to the input folder.
 #'@param samples_file Path to the csv file with the samples to be loaded.
 #'@param type_use The type of input. Has to be one of: scRNAseq_MT, Amplicon_MT. Only used if samples_path is not NULL.
 #'@param patient The patient you want to load.
 #'@param chromosome_prefix The prefix you want use. Default: "chrM"
+#'@param min_cells The minimum number of cells with coverage for a variant. Variants with coverage in less than this amount of cells are removed. Default = 2
+#'@param barcodes_path Path to the barcodes file tsv. Default = NULL
 #'@param verbose Should the function be verbose? Default = TRUE
 #'@export
 LoadingMAEGATK_typewise <- function(samples_file, samples_path = NULL, patient, type_use = "scRNAseq_MT", chromosome_prefix = "chrM",
                                     min_cells = 2, barcodes_path = NULL, verbose = TRUE){
   if(all(!is.null(samples_path), !is.null(barcodes_path))){
     if(verbose) print(paste0("Loading the data for patient ", patient, "."))
-    samples <- list.files(samples_path)
-    samples <- grep(patient, samples, value = TRUE)
-    samples_file <- data.frame(patient = patient, sample = samples, input_folder = samples_path, cells = barcodes_path)
+    samples <- patient
+    samples_file <- data.frame(patient = patient, sample = samples, input_path = samples_path, cells = barcodes_path)
   } else{
     if(verbose) print(paste0("Loading the data for patient ", patient, "."))
     if(verbose) print("We read in the samples file.")
-    samples_file <- read.csv(samples_file)
+    samples_file <- utils::read.csv(samples_file)
 
     if(verbose) print("We subset to the patient of interest.")
     samples_file <- samples_file[grep("maegatk|mgatk", samples_file$source, ignore.case = TRUE),]
@@ -35,7 +43,7 @@ LoadingMAEGATK_typewise <- function(samples_file, samples_path = NULL, patient, 
 
 
   if(verbose) print("We read in the cell barcodes output by CellRanger as a list.")
-  barcodes <- lapply(samples_file$cells, read.table)
+  barcodes        <- lapply(samples_file$cells, utils::read.table)
   names(barcodes) <- samples
 
 
@@ -44,7 +52,7 @@ LoadingMAEGATK_typewise <- function(samples_file, samples_path = NULL, patient, 
   for(i in 1:nrow(samples_file)){
     if(verbose) print(paste0("Loading sample ", i, " of ", nrow(samples_file)))
     input_file_use <- samples_file$input_path[i]
-    sample_use <- samples_file$sample[i]
+    sample_use     <- samples_file$sample[i]
 
     # We check if the file exists.
     if(!file.exists(input_file_use)){
@@ -52,11 +60,11 @@ LoadingMAEGATK_typewise <- function(samples_file, samples_path = NULL, patient, 
     }
 
     # We get the final output file for either mgatk or maegatk.
-    se_ls[[sample_use]] <- load_object(input_file_use)
+    se_ls[[sample_use]]           <- load_object(input_file_use)
     colnames(se_ls[[sample_use]]) <- paste0(sample_use, "_", colnames(se_ls[[sample_use]]))
-    barcodes_use <- paste0(sample_use, "_", barcodes[[sample_use]][,1])
-    barcodes_use <- barcodes_use[barcodes_use %in% colnames(se_ls[[sample_use]])]
-    se_ls[[sample_use]] <- se_ls[[sample_use]][,barcodes_use]
+    barcodes_use                  <- paste0(sample_use, "_", barcodes[[sample_use]][,1])
+    barcodes_use                  <- barcodes_use[barcodes_use %in% colnames(se_ls[[sample_use]])]
+    se_ls[[sample_use]]           <- se_ls[[sample_use]][, barcodes_use]
   }
 
 
@@ -88,6 +96,7 @@ LoadingMAEGATK_typewise <- function(samples_file, samples_path = NULL, patient, 
   if(verbose) print("We get the number of reference reads.")
   reads_ref <- coverage - reads_alt
 
+
   if(verbose) print("Calculating the strand concordance.")
   concordance <- CalculateStrandCorrelation(SE = se_merged, chromosome_prefix = chromosome_prefix)
 
@@ -102,11 +111,11 @@ LoadingMAEGATK_typewise <- function(samples_file, samples_path = NULL, patient, 
 
   if(verbose) print("We perform some filtering to reduce the memory needed.")
   if(verbose) print(paste0("We remove variants, which are not covered in at least ", min_cells, " cells ."))
-  keep_variants <- rowSums(consensus >= 1)
-  keep_variants <- keep_variants >= min_cells
+  keep_variants   <- rowSums(consensus >= 1)
+  keep_variants   <- keep_variants >= min_cells
   consensus       <- consensus[keep_variants, , drop = FALSE]
-  coverage        <- coverage[keep_variants, , drop = FALSE]
-  fraction        <- fraction[keep_variants, , drop = FALSE]
+  coverage        <- coverage[keep_variants, ,  drop = FALSE]
+  fraction        <- fraction[keep_variants, ,  drop = FALSE]
   concordance     <- concordance[keep_variants]
   variant_quality <- variant_quality[keep_variants]
   reads_alt       <- reads_alt[keep_variants, , drop = FALSE]
@@ -116,11 +125,11 @@ LoadingMAEGATK_typewise <- function(samples_file, samples_path = NULL, patient, 
   if(verbose) print("We remove cells that are always NoCall.")
   consensus_test <- consensus > 0
   keep_cells <- colSums(consensus_test) > 0
-  consensus <- consensus[, keep_cells, drop = FALSE]
-  coverage  <- coverage[, keep_cells, drop = FALSE]
-  fraction  <- fraction[, keep_cells, drop = FALSE]
-  reads_alt <- reads_alt[, keep_cells, drop = FALSE]
-  reads_ref <- reads_ref[, keep_cells, drop = FALSE]
+  consensus  <- consensus[, keep_cells, drop = FALSE]
+  coverage   <- coverage[,  keep_cells, drop = FALSE]
+  fraction   <- fraction[,  keep_cells, drop = FALSE]
+  reads_alt  <- reads_alt[, keep_cells, drop = FALSE]
+  reads_ref  <- reads_ref[, keep_cells, drop = FALSE]
 
 
   # We check if the matrices are empty (0 cells, 0 variants). Then we simply return NULL.
@@ -131,21 +140,22 @@ LoadingMAEGATK_typewise <- function(samples_file, samples_path = NULL, patient, 
     return(NULL)
   } else{
     if(verbose) print("We add the information to the merged matrices.")
-    coverage_depth_per_cell <- rownames(coverage)
-    coverage_depth_per_cell <- gsub("_._.$", "", coverage_depth_per_cell)
-    coverage_depth_per_cell <- !duplicated(coverage_depth_per_cell)
-    coverage_depth_per_cell <- coverage[coverage_depth_per_cell,]
-    cell_ids <- colnames(coverage_depth_per_cell)
-    variant_names <- rownames(coverage_depth_per_cell)
-    coverage_depth_per_cell <- suppressWarnings(matrix(coverage, nrow = length(variant_names), ncol = length(cell_ids)))
+    coverage_depth_per_cell           <- rownames(coverage)
+    coverage_depth_per_cell           <- gsub("_._.$", "", coverage_depth_per_cell)
+    coverage_depth_per_cell           <- !duplicated(coverage_depth_per_cell)
+    coverage_depth_per_cell           <- coverage[coverage_depth_per_cell,]
+    cell_ids                          <- colnames(coverage_depth_per_cell)
+    variant_names                     <- rownames(coverage_depth_per_cell)
+    coverage_depth_per_cell           <- suppressWarnings(matrix(coverage, nrow = length(variant_names), ncol = length(cell_ids)))
     colnames(coverage_depth_per_cell) <- cell_ids
     rownames(coverage_depth_per_cell) <- variant_names
-    coverage_depth_per_variant <- rowMeans(coverage)
-    coverage_depth_per_cell <- colMeans(coverage_depth_per_cell)
-    meta_data_col <- data.frame(Cell = colnames(consensus), AverageCoverage = coverage_depth_per_cell)
-    rownames(meta_data_col) <- meta_data_col$Cell
-    meta_data_row <- data.frame(VariantName = rownames(consensus), Concordance = concordance, VariantQuality = variant_quality, Depth = coverage_depth_per_variant)
-    rownames(meta_data_row) <- meta_data_row$VariantName
+    coverage_depth_per_variant        <- rowMeans(coverage)
+    coverage_depth_per_cell           <- colMeans(coverage_depth_per_cell)
+    meta_data_col                     <- data.frame(Cell = colnames(consensus), AverageCoverage = coverage_depth_per_cell)
+    rownames(meta_data_col)           <- meta_data_col$Cell
+    meta_data_row                     <- data.frame(VariantName = rownames(consensus), Concordance = concordance, VariantQuality = variant_quality, Depth = coverage_depth_per_variant)
+    rownames(meta_data_row)           <- meta_data_row$VariantName
+
     se_output <- SummarizedExperiment::SummarizedExperiment(assays = list(consensus = consensus, fraction = fraction, coverage = coverage, alts = reads_alt, refs = reads_ref),
                                                             colData = meta_data_col, rowData = meta_data_row)
     return(se_output)

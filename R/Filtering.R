@@ -13,7 +13,9 @@
 #'   \item all variants that are always NoCall,
 #'   \item set variants with a VAF below a threshold to NoCall or Reference.
 #' }
-#'@import fastmatch Matrix SummarizedExperiment
+#'@importFrom Matrix summary
+#'@importFrom SummarizedExperiment assays
+#'@importFrom utils read.table
 #'@param se SummarizedExperiment object.
 #'@param blacklisted_barcodes_path Barcodes you want to remove. Path to a file with one column without header.
 #'@param fraction_threshold Variants with an VAF below this threshold are set to 0. Numeric. Default = NULL.
@@ -41,7 +43,7 @@ Filtering <- function(se, blacklisted_barcodes_path = NULL, fraction_threshold =
 
   if(!is.null(blacklisted_barcodes_path)){
     if(verbose) print("We remove the unwanted cell barcodes.")
-    blacklisted_barcodes <- read.table(blacklisted_barcodes_path, header = FALSE)
+    blacklisted_barcodes <- utils::read.table(blacklisted_barcodes_path, header = FALSE)
     blacklisted_barcodes <- blacklisted_barcodes[,1]
     barcodes_keep <- colnames(se)
     barcodes_keep <- barcodes_keep[!barcodes_keep %in% blacklisted_barcodes]
@@ -69,7 +71,7 @@ Filtering <- function(se, blacklisted_barcodes_path = NULL, fraction_threshold =
     # Filtering using sparse matrices.
     consensus_matrix <- SummarizedExperiment::assays(se)$consensus
     fraction_matrix <- SummarizedExperiment::assays(se)$fraction
-    position_matrix <- summary(fraction_matrix)
+    position_matrix <- Matrix::summary(fraction_matrix)
     position_matrix <- subset(position_matrix, x > 0 & x < fraction_threshold)
     # If no elements fall between 0 and the fraction_threshold, we do not have to change the matrices.
     if(nrow(position_matrix) > 0){

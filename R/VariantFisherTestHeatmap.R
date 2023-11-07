@@ -2,8 +2,9 @@
 #'@description
 #'We generate a heatmap showing the Fisher test of somatic variants with the MT variants.
 #'Packages I want to remove.
-#'ggplot2 parallel rcompanion tidyr
-#'@import circlize ComplexHeatmap Matrix grid
+#'@importFrom ComplexHeatmap columnAnnotation rowAnnotation Heatmap
+#'@importFrom circlize colorRamp2
+#'@importFrom grid gpar
 #'@param fisher_results Data.frame with the correlation results.
 #'@param patient The patient for this heatmap.
 #'@param min_alt_cells Minimum number of mutated cells needed, otherwise an association will not be plotted.
@@ -12,9 +13,9 @@
 #'@export
 VariantFisherTestHeatmap <- function(fisher_results, patient, min_alt_cells = 5, min_oddsratio = 1, verbose = TRUE){
   fisher_results$P_adj_logged <- -log10(fisher_results$P_adj)
-  fisher_results <- subset(fisher_results, P_adj_logged > -log10(0.05))
-  fisher_results <- subset(fisher_results, Cells_Alt_1_2 >= min_alt_cells)
-  fisher_results <- subset(fisher_results, OddsRatio > min_oddsratio)
+  fisher_results <- subset(fisher_results, fisher_results$P_adj_logged > -log10(0.05))
+  fisher_results <- subset(fisher_results, fisher_results$Cells_Alt_1_2 >= min_alt_cells)
+  fisher_results <- subset(fisher_results, fisher_results$OddsRatio > min_oddsratio)
 
 
   if(verbose) print("We get the unique variants.")
@@ -48,7 +49,7 @@ VariantFisherTestHeatmap <- function(fisher_results, patient, min_alt_cells = 5,
   rownames(p_values) <- somatic_uniques
   colnames(p_values) <- mt_uniques
   for(i in 1:length(somatic_uniques)){
-    fisher_results_subset <- subset(fisher_results, Variant1 == somatic_uniques[i])
+    fisher_results_subset <- subset(fisher_results, fisher_results$Variant1 == somatic_uniques[i])
     p_values_use <- fisher_results_subset$P_adj_logged
     names(p_values_use) <- fisher_results_subset$Variant2
     p_values[somatic_uniques[i], names(p_values_use)] <- p_values_use

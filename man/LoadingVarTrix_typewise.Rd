@@ -11,7 +11,6 @@ LoadingVarTrix_typewise(
   snp_path = NULL,
   vcf_path,
   patient,
-  sample = NULL,
   type_use = "scRNAseq_Somatic",
   min_reads = NULL,
   min_cells = 2,
@@ -22,6 +21,8 @@ LoadingVarTrix_typewise(
 \item{samples_file}{Path to the csv file with the samples to be loaded.}
 
 \item{samples_path}{Path to the input folder. Must include a barcodes file.}
+
+\item{barcodes_path}{The path to the cell barcodes tsv. Default = NULL}
 
 \item{snp_path}{Path to the SNP file used for VarTrix (SNV.loci.txt).}
 

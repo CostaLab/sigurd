@@ -20,24 +20,38 @@ Encoding: UTF-8
 LazyData: true
 Imports: 
     archive,
-    bigmemory,
-    circlize,
+    BiocGenerics,
     ComplexHeatmap,
+    circlize,
+    data.table,
     dplyr,
     fastmatch,
+    GenomeInfoDb,
     ggplot2,
+    ggsci,
+    glue,
     grid,
-    magrittr,
     Matrix,
+    MatrixGenerics,
+    magrittr,
+    methods,
     parallel,
     rcompanion,
     S4Vectors,
     Seurat,
     SummarizedExperiment,
+    scales,
+    tibble,
     tidyr,
     tidyverse,
     VariantAnnotation
 RoxygenNote: 7.2.3
-Suggests: 
+Suggests:
+    GenomicRanges,
+    IRanges,
+    knitr,
+    rmarkdown,
+    SeuratObject,
     testthat (>= 3.0.0)
+VignetteBuilder: knitr
 Config/testthat/edition: 3

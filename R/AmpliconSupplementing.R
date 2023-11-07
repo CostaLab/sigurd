@@ -2,7 +2,8 @@
 #'
 #'@description
 #'We replace the values from an scRNAseq experiment with values we have from an amplicon experiment.
-#'@import Matrix SummarizedExperiment
+#'@importFrom S4Vectors merge
+#'@importFrom SummarizedExperiment colData rowData assays SummarizedExperiment
 #'@param scRNAseq The SummarizedExperiment object containing the scRNAseq data. 
 #'@param amplicon The SummarizedExperiment object containing the amplicon data.
 #'@param verbose Should the function be verbose? Default = TRUE
@@ -82,7 +83,7 @@ AmpliconSupplementing <- function(scRNAseq, amplicon, verbose = TRUE){
   #SummarizedExperiment::assays(scRNAseq)[["fraction"]][rownames(amplicon), colnames(amplicon)]  <- as.matrix(SummarizedExperiment::assays(amplicon)$fraction)
   #SummarizedExperiment::assays(scRNAseq)[["coverage"]][rownames(amplicon), colnames(amplicon)]  <- as.matrix(SummarizedExperiment::assays(amplicon)$coverage)
 
-  se <- SummarizedExperiment::SummarizedExperiment(assays = list(consensus = as(consensus, "dgCMatrix"), fraction = as(fraction, "dgCMatrix"), coverage = as(reads, "dgCMatrix"), alts = as(alts, "dgCMatrix"), refs = as(refs, "dgCMatrix")),
+  se <- SummarizedExperiment::SummarizedExperiment(assays = list(consensus = methods::as(consensus, "dgCMatrix"), fraction = methods::as(fraction, "dgCMatrix"), coverage = methods::as(reads, "dgCMatrix"), alts = methods::as(alts, "dgCMatrix"), refs = methods::as(refs, "dgCMatrix")),
                                                    colData = new_meta_data, rowData = new_row_data)
   return(se)
 }

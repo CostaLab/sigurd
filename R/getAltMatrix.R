@@ -2,10 +2,9 @@
 #'@description
 #'We get the alt values from the MAEGATK results.
 #'Source: https://github.com/petervangalen/MAESTER-2021
-#'@import SummarizedExperiment
+#'@importFrom SummarizedExperiment assays rowRanges
 #'@param SE_object SummarizedExperiment object.
 #'@param letter The base you want to use. Character.
-#'@param ref_allele The reference alleles.
 #'@param chromosome_prefix The chromosome prefix used.
 #'@export
 getAltMatrix <- function(SE_object, letter, chromosome_prefix = "chrM"){

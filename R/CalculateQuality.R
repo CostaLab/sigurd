@@ -1,8 +1,11 @@
 #'CalculateQuality
 #'@description
 #'We calculate the quality per variant.
-#'@import MatrixGenerics SummarizedExperiment
+# #'@import MatrixGenerics
+#'@importFrom SummarizedExperiment assays
+#'@importFrom Matrix rowSums
 #'@param SE SummarizedExperiment object.
+#'@param variants The variants you want to get the quality for.
 #'@param chromosome_prefix List of matrices for the alternative reads.
 #'@export
 CalculateQuality <- function(SE, variants, chromosome_prefix = "chrM"){
@@ -22,7 +25,7 @@ CalculateQuality <- function(SE, variants, chromosome_prefix = "chrM"){
     rownames(qualities_fwrev) <- variants_use_names
     fwrev <- fwrev > 0
     qualities_fwrev <- qualities_fwrev * fwrev
-    qualities <- apply(qualities_fwrev, 1, sum) / rowSums(fwrev > 0)
+    qualities <- apply(qualities_fwrev, 1, sum) / Matrix::rowSums(fwrev > 0)
     qualities[qualities == 0] <- NA
     return(qualities)
   })

@@ -1,8 +1,10 @@
 #'ggsci_pal
 #'@description
 #'Function to return colours from a ggsci palette.
-#'@import assertthat ggsci glue
+#'@import ggsci 
+#'@importFrom glue glue
 #'@param option Your colour palette of choice.
+#'@param ... Further options passed to the palette function.
 #'@details
 #'The function returns a colour palette from ggsci.
 #'Options are:

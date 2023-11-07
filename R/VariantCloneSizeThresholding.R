@@ -2,7 +2,7 @@
 #'@description
 #'We get variants of interest using a clone size thresholding.
 #'Source: https://github.com/petervangalen/MAESTER-2021
-#'@import Matrix SummarizedExperiment tidyverse
+#'@importFrom SummarizedExperiment assays 
 #'@param se SummarizedExperiment object.
 #'@param min_coverage Minimum coverage a variant needs to have.
 #'@param fraction_negative_cells The fraction of negative cells needed. 
@@ -25,9 +25,9 @@ VariantCloneSizeThresholding <- function(se, min_coverage = 2, fraction_negative
   vars <- cbind(vars, n0, VAF_threshold)
   
   if(verbose) print("Thresholding using the clone size approach.")
-  voi_ch <- subset(vars, mean_cov > min_coverage & 
-                   n0 > ceiling(fraction_negative_cells * ncol(se)) &
-                   VAF_threshold > min_clone_size)
+  voi_ch <- subset(vars, vars$mean_cov > min_coverage & 
+                   vars$n0 > ceiling(fraction_negative_cells * ncol(se)) &
+                   vars$VAF_threshold > min_clone_size)
   voi_ch <- rownames(voi_ch)
   return(voi_ch)
 }

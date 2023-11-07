@@ -2,7 +2,7 @@
 #'
 #'@description
 #'We perform the correlation of SNVs and calculate the P values.
-#'@import stats
+#'@importFrom stats cor.test
 #'@param variant_values The fraction values you are analysing. A vector.
 #'@param other_mutation All other variants you have. A vector of variant names.
 #'@param all_variants_list List of fraction values for all the variants you want to compare your variant with.

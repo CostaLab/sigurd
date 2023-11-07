@@ -1,5 +1,8 @@
 #'We get the variant information per cell.
-#'@import dplyr SummarizedExperiment tibble tidyverse
+# #'@import dplyr SummarizedExperiment tibble tidyverse
+#'@importFrom SummarizedExperiment assays
+#'@importFrom dplyr left_join %>%
+#'@importFrom tibble tibble as_tibble
 #'@param se SummarizedExperiment object.
 #'@param voi_ch Variants of interest.
 #'@param verbose Should the function be verbose? Default = FALSE

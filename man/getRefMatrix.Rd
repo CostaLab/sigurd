@@ -12,8 +12,6 @@ getRefMatrix(SE_object, letter, chromosome_prefix = "chrM")
 \item{letter}{The base you are analysing. You get a matrix that shows which cells have how many reference reads for this letter.}
 
 \item{chromosome_prefix}{The chromosome prefix used.}
-
-\item{ref_allele}{The reference alleles.}
 }
 \description{
 We get the reference values from the MAEGATK result.

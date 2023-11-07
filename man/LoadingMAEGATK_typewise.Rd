@@ -26,11 +26,21 @@ LoadingMAEGATK_typewise(
 
 \item{chromosome_prefix}{The prefix you want use. Default: "chrM"}
 
+\item{min_cells}{The minimum number of cells with coverage for a variant. Variants with coverage in less than this amount of cells are removed. Default = 2}
+
+\item{barcodes_path}{Path to the barcodes file tsv. Default = NULL}
+
 \item{verbose}{Should the function be verbose? Default = TRUE}
 }
 \description{
 We load the MAEGATK output and transform it to be compatible with the VarTrix output.
 The input file is a specifically formated csv file with all the necessary information to run the analysis.
 Note that the source column in the input file needs to be one of the following: vartrix, mgaetk, mgatk.
-This is hard coded and case insensitive.
+If you want to only load a single sample without the use of an input file, you have to set the following variables.
+\enumerate{
+  \item samples_path
+  \item barcodes_path
+  \item patient
+  \item samples_file = NULL
+}
 }

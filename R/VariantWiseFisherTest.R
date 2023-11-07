@@ -2,9 +2,7 @@
 #'@description
 #'We perform the Fisher test to determine which variants are associated.
 #'This function calls CalculateFisherTestPValue to perform the actual testing.
-#'Packages I want to remove.
-#'SummarizedExperiment
-#'@import Matrix parallel
+#'@importFrom parallel mclapply
 #'@param variants_list List of fraction values.
 #'@param n_cores Number of cores you want to use. Numeric.
 #'@param p_value_adjustment Method for P value adjustment. See p.adjust for details.
@@ -40,5 +38,6 @@ VariantWiseFisherTest <- function(variants_list, n_cores = 1, p_value_adjustment
 
   if(verbose) print(paste0("Adjusting P values using ", p_value_adjustment, "."))
   results_total$P_adj <- p.adjust(results_total$P, method = p_value_adjustment)
+  rownames(results_total) <- NULL
   return(results_total)
 }
