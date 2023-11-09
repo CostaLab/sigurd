@@ -4,7 +4,8 @@
 #'If you use top_cells and top_VAF, you have to only supply one quantil value (quantiles = 0.9, thresholds = 0).
 #'This function is adapted from the Peter van Galen.
 #'Source: https://github.com/petervangalen/MAESTER-2021
-#'@importFrom SummarizedExperiment assays colData rowData 
+#'@importFrom SummarizedExperiment assays colData rowData
+#'@importFrom stats quantile
 #'@param SE SummarizedExperiment object.
 #'@param min_coverage Minimum coverage needed.
 #'@param quantiles The lower and upper quantile you want to use. 
@@ -40,7 +41,7 @@ VariantQuantileThresholding <- function(SE, min_coverage = 2, quantiles = c(0.1,
     mean_af_group_check <- mean_af_group1 > (group_factor * mean_af_group2)
 
     if(verbose) print("Get the quantiles of the VAFs of each variant.")
-    quantiles <- lapply(quantiles, function(x) apply(SummarizedExperiment::assays(SE)[["fraction"]], 1, quantile, x, na.rm = TRUE))
+    quantiles <- lapply(quantiles, function(x) apply(SummarizedExperiment::assays(SE)[["fraction"]], 1, stats::quantile, x, na.rm = TRUE))
     if(!is.null(min_quality)){
       vars <- data.frame(Mean_AF = mean_af, Mean_Cov = mean_cov, VariantQuality = SummarizedExperiment::rowData(SE)$VariantQuality, Quantile1 = quantiles[[1]], Quantile2 = quantiles[[2]])
       vars <- vars[is.na(vars$VariantQuality), ]

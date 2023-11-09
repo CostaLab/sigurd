@@ -4,6 +4,7 @@
 # #'@import MatrixGenerics
 #'@importFrom SummarizedExperiment assays
 #'@importFrom Matrix rowSums
+#'@importFrom utils tail
 #'@param SE SummarizedExperiment object.
 #'@param variants The variants you want to get the quality for.
 #'@param chromosome_prefix List of matrices for the alternative reads.
@@ -14,7 +15,7 @@ CalculateQuality <- function(SE, variants, chromosome_prefix = "chrM"){
     fwrev <- cbind(SummarizedExperiment::assays(SE)[[paste0(x, "_counts_fw")]], SummarizedExperiment::assays(SE)[[paste0(x, "_counts_rev")]])
     qualities_fwrev <- cbind(SummarizedExperiment::assays(SE)[[paste0(x, "_qual_fw")]], SummarizedExperiment::assays(SE)[[paste0(x, "_qual_rev")]])
     variants_use <- strsplit(variants, "")
-    variants_use <- sapply(variants_use, tail, n = 1)
+    variants_use <- sapply(variants_use, utils::tail, n = 1)
     variants_use <- variants_use == x
     variants_use_names <- variants[variants_use]
     variants_use <- as.numeric(gsub("_.*", "", variants_use_names))

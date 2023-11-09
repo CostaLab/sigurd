@@ -4,8 +4,10 @@
 #'Packages I want to remove. I cannot see where they are used.
 #'ggplot2 parallel rcompanion tidyr
 #'@importFrom circlize colorRamp2
-#'@importFrom ComplexHeatmap columnAnnotation rowAnnotation Heatmap
+#'@importFrom ComplexHeatmap columnAnnotation rowAnnotation Heatmap draw
 #'@importFrom grid gpar
+#'@importFrom stats na.omit
+#'@importFrom grDevices png dev.off
 #'@param correlation_results Data.frame with the correlation results.
 #'@param output_path Path to the output folder.
 #'@param patient The patient for this heatmap.
@@ -30,7 +32,7 @@ VariantCorrelationHeatmap <- function(correlation_results, output_path = NULL, p
   
   
   if(verbose) print("Getting the maximum P value.")
-  pvalue_max <- as.numeric(na.omit(correlation_results$P_adj_logged))
+  pvalue_max <- as.numeric(stats::na.omit(correlation_results$P_adj_logged))
   if(length(pvalue_max) > 1){
     pvalue_max <- pvalue_max[pvalue_max != Inf]
     if(length(pvalue_max) >= 1){
@@ -85,9 +87,9 @@ VariantCorrelationHeatmap <- function(correlation_results, output_path = NULL, p
     
     if(!is.null(output_path)){
       if(verbose) print("Saving the png.")
-      png(paste0(output_path, "Correlation_Pvalue_", patient, ".png"), width = width_use, height = height_use, units = "px", type = "cairo", antialias = "none")
-      draw(p1, padding = unit(padding_use, "mm"))
-      dev.off()
+      grDevices::png(paste0(output_path, "Correlation_Pvalue_", patient, ".png"), width = width_use, height = height_use, units = "px", type = "cairo", antialias = "none")
+      ComplexHeatmap::draw(p1, padding = unit(padding_use, "mm"))
+      grDevices::dev.off()
     } else{
       return(p1)
     }

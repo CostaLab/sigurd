@@ -5,6 +5,7 @@
 #'@importFrom ComplexHeatmap columnAnnotation rowAnnotation Heatmap
 #'@importFrom circlize colorRamp2
 #'@importFrom grid gpar
+#'@importFrom stats na.omit
 #'@param fisher_results Data.frame with the correlation results.
 #'@param patient The patient for this heatmap.
 #'@param min_alt_cells Minimum number of mutated cells needed, otherwise an association will not be plotted.
@@ -24,7 +25,7 @@ VariantFisherTestHeatmap <- function(fisher_results, patient, min_alt_cells = 5,
 
 
   if(verbose) print("Getting the maximum P value.")
-  pvalue_max <- as.numeric(na.omit(fisher_results$P_adj_logged))
+  pvalue_max <- as.numeric(stats::na.omit(fisher_results$P_adj_logged))
   if(length(pvalue_max) > 1){
     pvalue_max <- pvalue_max[pvalue_max != Inf]
     if(length(pvalue_max) >= 1){

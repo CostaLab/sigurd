@@ -4,6 +4,7 @@
 #'We replace the values from an scRNAseq experiment with values we have from an amplicon experiment.
 #'@importFrom S4Vectors merge
 #'@importFrom SummarizedExperiment colData rowData assays SummarizedExperiment
+#'@importFrom stats na.omit
 #'@param scRNAseq The SummarizedExperiment object containing the scRNAseq data. 
 #'@param amplicon The SummarizedExperiment object containing the amplicon data.
 #'@param verbose Should the function be verbose? Default = TRUE
@@ -18,7 +19,7 @@ AmpliconSupplementing <- function(scRNAseq, amplicon, verbose = TRUE){
   new_meta_data$AverageCoverage                           <- new_meta_data$AverageCoveragescRNAseq
   amplicon_value                                          <- new_meta_data$AverageCoverageAmplicon
   names(amplicon_value)                                   <- colnames(amplicon)
-  amplicon_value                                          <- na.omit(amplicon_value)
+  amplicon_value                                          <- stats::na.omit(amplicon_value)
   new_meta_data[names(amplicon_value), "AverageCoverage"] <- amplicon_value
 
   new_row_data <- merge(SummarizedExperiment::rowData(scRNAseq), SummarizedExperiment::rowData(amplicon), by = "VariantName", all.x = TRUE, all.y = TRUE,
@@ -30,7 +31,7 @@ AmpliconSupplementing <- function(scRNAseq, amplicon, verbose = TRUE){
     new_row_data$VariantQuality                           <- new_row_data$VariantQualityscRNAseq
     amplicon_value                                        <- SummarizedExperiment::rowData(amplicon)$VariantQuality
     names(amplicon_value)                                 <- rownames(amplicon)
-    amplicon_value                                        <- na.omit(amplicon_value)
+    amplicon_value                                        <- stats::na.omit(amplicon_value)
     new_row_data[names(amplicon_value), "VariantQuality"] <- amplicon_value
   }
 
@@ -38,14 +39,14 @@ AmpliconSupplementing <- function(scRNAseq, amplicon, verbose = TRUE){
     new_row_data$Concordance                           <- new_row_data$ConcordancescRNAseq
     amplicon_value                                     <- SummarizedExperiment::rowData(amplicon)$Concordance
     names(amplicon_value)                              <- rownames(amplicon)
-    amplicon_value                                     <- na.omit(amplicon_value)
+    amplicon_value                                     <- stats::na.omit(amplicon_value)
     new_row_data[names(amplicon_value), "Concordance"] <- amplicon_value
   }
 
   new_row_data$Depth                           <- new_row_data$DepthscRNAseq
   amplicon_value                               <- SummarizedExperiment::rowData(amplicon)$Depth
   names(amplicon_value)                        <- rownames(amplicon)
-  amplicon_value                               <- na.omit(amplicon_value)
+  amplicon_value                               <- stats::na.omit(amplicon_value)
   new_row_data[names(amplicon_value), "Depth"] <- amplicon_value
 
   if(verbose) print("We get all cells and variants.")
