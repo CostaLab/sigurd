@@ -12,8 +12,6 @@ getAltMatrix(SE_object, letter, chromosome_prefix = "chrM")
 \item{letter}{The base you want to use. Character.}
 
 \item{chromosome_prefix}{The chromosome prefix used.}
-
-\item{ref_allele}{The reference alleles.}
 }
 \description{
 We get the alt values from the MAEGATK results.

@@ -2,11 +2,12 @@
 #'@description
 #'Calculate the variant burden per cell.
 #'We simply sum up the MAF values per cell.
-#'@import Matrix SummarizedExperiment
+#'@importFrom SummarizedExperiment assays colData
+#'@importFrom Matrix colSums
 #'@param se SummarizedExperiment object
 #'@export
 VariantBurden <- function(se){
-  burden <- colSums(assays(se)[["fraction"]])
-  colData(se)[,"Burden"] <- burden
+  burden <- Matrix::colSums(SummarizedExperiment::assays(se)[["fraction"]])
+  SummarizedExperiment::colData(se)[,"Burden"] <- burden
   return(se)
 }

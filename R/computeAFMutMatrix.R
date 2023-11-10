@@ -6,49 +6,22 @@
 #'See: https://gatk.broadinstitute.org/hc/en-us/articles/360035532252-Allele-Depth-AD-is-lower-than-expected
 #'and https://github.com/caleblareau/mgatk/issues/1
 #'We simply set these values to 1, since that is the actual information we have in this case.
-#'This issue can be solved on the MAEGATK/GATK side.
-#'@import SummarizedExperiment
+#'@importFrom SummarizedExperiment assays rowRanges
 #'@param SE SummarizedExperiment object.
+#'@param chromosome_prefix The prefix of the chromosome.
 #'@export
 computeAFMutMatrix <- function(SE, chromosome_prefix = "chrM"){
-  cov <- assays(SE)[["coverage"]] + 0.000001
-  ref_allele <- as.character(rowRanges(SE)$refAllele)
+  cov <- SummarizedExperiment::assays(SE)[["coverage"]] + 0.000001
+  ref_allele <- as.character(SummarizedExperiment::rowRanges(SE)$refAllele)
 
-  getMutMatrix <- function(letter){
-    names_rows <- paste0(chromosome_prefix, "_", 1:nrow(cov), "_", toupper(ref_allele), "_", letter)
-    names_rows <- names_rows[toupper(ref_allele) != letter]
-    mat_fow <- assays(SE)[[paste0(letter, "_counts_fw")]]
-    mat_rev <- assays(SE)[[paste0(letter, "_counts_rev")]]
-    mat <- mat_fow + mat_rev
-    mat <- mat[toupper(ref_allele) != letter,]
-    cov_use <- cov[toupper(ref_allele) != letter,]
-    mat <- mat / cov_use
-    gc()
-    # We can get AF values greater than 1, which is due to uninformative reads.
-    # See: https://gatk.broadinstitute.org/hc/en-us/articles/360035532252-Allele-Depth-AD-is-lower-than-expected
-    # and https://github.com/caleblareau/mgatk/issues/1
-    # We simply set these values to 1, since that is the actual information we have in this case.
-    # This issue can be solved on the MAEGATK/GATK side.
-    mat[mat > 1] <- 1
-    rownames(mat) <- names_rows
-    #mat <- as(mat, "dgCMatrix")
-    mat <- as(mat, "CsparseMatrix")
-    return(mat)
-  }
-
-  A_matrix <- getMutMatrix("A")
-  #A_matrix <- as.matrix(A_matrix)
+  A_matrix <- getMutMatrix(SE = SE, cov = cov, letter = "A", ref_allele = ref_allele, chromosome_prefix = chromosome_prefix)
   gc()
-  C_matrix <- getMutMatrix("C")
-  #C_matrix <- as.matrix(C_matrix)
+  C_matrix <- getMutMatrix(SE = SE, cov = cov, letter = "C", ref_allele = ref_allele, chromosome_prefix = chromosome_prefix)
   gc()
-  G_matrix <- getMutMatrix("G")
-  #G_matrix <- as.matrix(G_matrix)
+  G_matrix <- getMutMatrix(SE = SE, cov = cov, letter = "G", ref_allele = ref_allele, chromosome_prefix = chromosome_prefix)
   gc()
-  T_matrix <- getMutMatrix("T")
-  #T_matrix <- as.matrix(T_matrix)
+  T_matrix <- getMutMatrix(SE = SE, cov = cov, letter = "T", ref_allele = ref_allele, chromosome_prefix = chromosome_prefix)
   gc()
   result <- rbind(A_matrix, C_matrix, G_matrix, T_matrix)
-#  result <- as.matrix(result)
   return(result)
 }

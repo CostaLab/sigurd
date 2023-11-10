@@ -11,12 +11,12 @@ suppressPackageStartupMessages(library(optparse))
 
 print("Variables.")
 option_list = list(
-  make_option("--molecule_info", type = "character", default = "", help = "The molecule info input file.", metavar = "character"),
-  make_option("--barcodes_path", type = "character", default = "", help = "The barcodes.", metavar = "character"),
-  make_option("--output", type = "character", default = "", help = "The output path.", metavar = "character"),
-  make_option("--sample", type = "character", default = "", help = "The sample used.", metavar = "character"),
+  make_option("--molecule_info",     type = "character", default = "", help = "The molecule info input file.",            metavar = "character"),
+  make_option("--barcodes_path",     type = "character", default = "", help = "The barcodes.",                            metavar = "character"),
+  make_option("--output",            type = "character", default = "", help = "The output path.",                         metavar = "character"),
+  make_option("--sample",            type = "character", default = "", help = "The sample used.",                         metavar = "character"),
   make_option("--min_reads_per_umi", type = "character", default = 10, help = "The minimum number of reads a UMI needs.", metavar = "numeric"),
-  make_option("--umi_length", type = "character", default = 12, help = "The length of a UMI.", metavar = "numeric")
+  make_option("--umi_length",        type = "character", default = 12, help = "The length of a UMI.",                     metavar = "numeric")
 )
 opt_parser <- OptionParser(option_list = option_list)
 opt <- parse_args(opt_parser)

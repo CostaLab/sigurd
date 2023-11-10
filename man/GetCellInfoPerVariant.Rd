@@ -4,12 +4,14 @@
 \alias{GetCellInfoPerVariant}
 \title{We get the variant information per cell.}
 \usage{
-GetCellInfoPerVariant(se, voi_ch)
+GetCellInfoPerVariant(se, voi_ch, verbose = FALSE)
 }
 \arguments{
 \item{se}{SummarizedExperiment object.}
 
 \item{voi_ch}{Variants of interest.}
+
+\item{verbose}{Should the function be verbose? Default = FALSE}
 }
 \description{
 We get the variant information per cell.

@@ -2,7 +2,9 @@
 #'@description
 #'We add the genotyping information for a set of variants to a Seurat object.
 #'The function returns a matrix with the values from the specified assay.
-#'@import SummarizedExperiment Seurat
+#'@importFrom SummarizedExperiment assays
+#'@importFrom Matrix t
+#'@importFrom Seurat AddMetaData
 #'@param SE SummarizedExperiment object.
 #'@param seurat_object The Seurat object.
 #'@param information The assay with the desired information. Default: consensus
@@ -28,7 +30,7 @@ SetVariantInfo <- function(SE, seurat_object, information = "consensus", variant
   if(!assay_check){
     stop("The assay you wants is not present in the object.")
   }
-  res <- t(assays(SE)[[information]][variants, , drop = FALSE])
+  res <- t(SummarizedExperiment::assays(SE)[[information]][variants, , drop = FALSE])
   # We check if all the cells are actually in the Seurat object.
   # If not, we only add the information for the ones present. 
   # We execute an error function if there are zero cells present.

@@ -4,7 +4,7 @@
 \alias{save_object}
 \title{save_object}
 \usage{
-save_object(object, file_name, file_format = NULL)
+save_object(object, file_name, file_format = "zstd")
 }
 \arguments{
 \item{object}{The R object to be save.}

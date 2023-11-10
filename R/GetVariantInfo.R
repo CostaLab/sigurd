@@ -2,7 +2,7 @@
 #'@description
 #'We get the genotyping information for a set of variants.
 #'The function returns a matrix with the values from the specified assay.
-#'@import SummarizedExperiment
+#'@importFrom SummarizedExperiment assays
 #'@param SE SummarizedExperiment object.
 #'@param information The assay with the desired information. Default: consensus
 #'@param variants A vector of variants.
@@ -24,11 +24,11 @@ GetVariantInfo <- function(SE, information = "consensus", variants = NULL, cells
     stop(paste0("Only ", variants_check, " of ", length(variants), " are in the SE object."))
   }
   # We check if the requested assay is actually present.
-  assay_check <- information %in% names(assays(SE))
+  assay_check <- information %in% names(SummarizedExperiment::assays(SE))
   if(!assay_check){
     stop("The assay you wants is not present in the object.")
   }
-  res <- assays(SE)[[information]][variants, , drop = FALSE]
+  res <- SummarizedExperiment::assays(SE)[[information]][variants, , drop = FALSE]
   # We subset the result to only include the cells of interest.
   # We check if the cells vector is not NULL.
   if(!is.null(cells)){

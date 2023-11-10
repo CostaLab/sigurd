@@ -1,7 +1,7 @@
 #'combine_sparseMatrix
 #'@description
 #'We combine two sparse matrices
-#'@import SummarizedExperiment BiocGenerics Matrix
+#'@importFrom Matrix sparseMatrix
 #'@param matrix_1 Your first sparse matrix.
 #'@param matrix_2 Your second matrix.
 #'@export
@@ -41,8 +41,8 @@ combine_SparseMatrix <- function(matrix_1, matrix_2){
   positions_2[,"j"] <- new_cols[positions_2[,"j"]]
   
   positions_combined <- rbind(positions_1, positions_2)
-  result <- sparseMatrix(i = positions_combined[,"i"], j = positions_combined[,"j"], x = positions_combined[,"x"], 
-                         dimnames = list(variants_unique, cells_unique), dims = c(length(variants_unique), length(cells_unique)))
+  result <- Matrix::sparseMatrix(i = positions_combined[,"i"], j = positions_combined[,"j"], x = positions_combined[,"x"], 
+                                 dimnames = list(variants_unique, cells_unique), dims = c(length(variants_unique), length(cells_unique)))
 }
 
 

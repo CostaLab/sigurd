@@ -2,7 +2,7 @@
 #'
 #'@description
 #'We perform the Fisher Test of SNVs and calculate the P values.
-#'@import stats
+#'@importFrom stats fisher.test
 #'@param variant_values The fraction values you are analysing. A vector.
 #'@param other_mutation All other variants you have. A vector of variant names.
 #'@param all_variants_list List of fraction values for all the variants you want to compare your variant with.
@@ -39,7 +39,7 @@ CalculateFisherTestPValue <- function(variant_values, other_mutation, all_varian
       count_matrix[2,1] <- sum(variant_values == 1 & other_variant_values == 0)
       count_matrix[1,2] <- sum(variant_values == 0 & other_variant_values == 1)
       count_matrix[2,2] <- sum(variant_values == 0 & other_variant_values == 0)
-      result <- fisher.test(x = count_matrix)
+      result <- stats::fisher.test(x = count_matrix)
       result <- c(result$p.value, result$estimate, count_matrix[1,1], count_matrix[2,1], count_matrix[1,2], count_matrix[2,2])
     } else{
       #print("We do not have more than 2 cells for the somatic variant.")

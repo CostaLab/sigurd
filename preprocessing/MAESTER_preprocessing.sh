@@ -16,7 +16,7 @@ BASE_QUALITY=30
 MIN_BARCODE_READS=3
 
 sample_use="SampleID"
-cells_use="/Path/To/Your/CellRanger/barcodes.tsv" # Not necessary, but I recommend it.
+cells_use="/Path/To/Your/CellRanger/barcodes.tsv" # Not necessary, but it recommended.
 bams_use="/Path/To/Your/CellRanger/possorted_genome_bam.bam"
 mkdir -p $OUTPUT/$sample_use
 cd ${OUTPUT}${sample_use}
@@ -35,7 +35,7 @@ maegatk bcall \
        --base-qual $BASE_QUALITY \
        --mito-genome $BWA_INDEX
 
-# I automatically remove the temporary files.
+# This automatically removes the temporary files.
 # This is not necessary, but once overthing works reliably it removes clutter.
 # rm -r .snakemake
 # rm -r logs

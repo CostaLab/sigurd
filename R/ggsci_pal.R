@@ -1,8 +1,10 @@
 #'ggsci_pal
 #'@description
 #'Function to return colours from a ggsci palette.
-#'@import assertthat ggsci glue
+#'@import ggsci 
+#'@importFrom glue glue
 #'@param option Your colour palette of choice.
+#'@param ... Further options passed to the palette function.
 #'@details
 #'The function returns a colour palette from ggsci.
 #'Options are:
@@ -14,8 +16,7 @@
 #'ucscgb: 26
 #'@export
 ggsci_pal <- function(option, ...){
-  func_name = glue("pal_{option}")
-  func_call = glue('{func_name}(...)')
-  assertthat::assert_that(func_name %in% ls("package:ggsci"))
+  func_name = glue::glue("pal_{option}")
+  func_call = glue::glue('{func_name}(...)')
   return(eval(parse(text=func_call)))
 }

@@ -6,5 +6,6 @@
 #'@export
 combine_NAMES <- function(x, y) {
   shared_names <- intersect(x, y)
-  c(x, setdiff(y, shared_names))
+  combined_names <- c(x, setdiff(y, shared_names))
+  return(combined_names)
 }

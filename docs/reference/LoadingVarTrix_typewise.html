@@ -22,7 +22,7 @@ This is hard coded and case insensitive."><!-- mathjax --><script src="https://c
     
     <a class="navbar-brand me-2" href="../index.html">sigurd</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.15</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.30</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -36,7 +36,7 @@ This is hard coded and case insensitive."><!-- mathjax --><script src="https://c
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/SiGURD.html">SiGURD vignette</a>
+    <a class="dropdown-item" href="../articles/SiGURD.html">SiGURD</a>
   </div>
 </li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
@@ -73,10 +73,10 @@ This is hard coded and case insensitive.</p>
 <span>  snp_path <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">vcf_path</span>,</span>
 <span>  <span class="va">patient</span>,</span>
-<span>  sample <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  type_use <span class="op">=</span> <span class="st">"scRNAseq_Somatic"</span>,</span>
 <span>  min_reads <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  min_cells <span class="op">=</span> <span class="fl">2</span></span>
+<span>  min_cells <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -88,6 +88,10 @@ This is hard coded and case insensitive.</p>
 
 <dt>samples_path</dt>
 <dd><p>Path to the input folder. Must include a barcodes file.</p></dd>
+
+
+<dt>barcodes_path</dt>
+<dd><p>The path to the cell barcodes tsv. Default = NULL</p></dd>
 
 
 <dt>snp_path</dt>
@@ -112,6 +116,10 @@ This is hard coded and case insensitive.</p>
 
 <dt>min_cells</dt>
 <dd><p>The minimum number of cells for a variant. Otherwise, we will remove a variant. Default = 2.</p></dd>
+
+
+<dt>verbose</dt>
+<dd><p>Should the function be verbose? Default = TRUE</p></dd>
 
 </dl></div>
 

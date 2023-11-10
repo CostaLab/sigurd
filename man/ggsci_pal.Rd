@@ -8,6 +8,8 @@ ggsci_pal(option, ...)
 }
 \arguments{
 \item{option}{Your colour palette of choice.}
+
+\item{...}{Further options passed to the palette function.}
 }
 \description{
 Function to return colours from a ggsci palette.

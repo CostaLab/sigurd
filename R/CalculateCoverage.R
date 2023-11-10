@@ -1,13 +1,14 @@
 #'CalculateCoverage
 #'@description
 #'We calculate the coverage information per variant from the MAEGATK results.
-#'@import MatrixGenerics SummarizedExperiment
+# #'@import MatrixGenerics
+#'@importFrom SummarizedExperiment rowRanges assays
 #'@param SE SummarizedExperiment object.
 #'@param chromosome_prefix List of matrices for the alternative reads.
 #'@export
 CalculateCoverage <- function(SE, chromosome_prefix = "chrM"){
-  ref_allele <- as.character(rowRanges(SE)$refAllele)
-  coverage <- assays(SE)[["coverage"]]
+  ref_allele <- as.character(SummarizedExperiment::rowRanges(SE)$refAllele)
+  coverage <- SummarizedExperiment::assays(SE)[["coverage"]]
   rownames(coverage) <- paste0(chromosome_prefix, "_", 1:nrow(coverage), "_", ref_allele, "_A")
   coverage_A <- coverage[ref_allele != "A",]
 

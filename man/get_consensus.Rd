@@ -7,14 +7,15 @@
 get_consensus(alt_base, ref_base, input_matrix, chromosome_prefix = "chrM")
 }
 \arguments{
+\item{alt_base}{The alternative base.}
+
 \item{ref_base}{The reference base.}
 
 \item{input_matrix}{Input matrix with the present reads numerically encoded.}
 
 \item{chromosome_prefix}{The chromosome name used as a prefix.}
-
-\item{letter}{The alternative base.}
 }
 \description{
 We get the consensus information for a specific matrix.
+I want to remove some packages if they are not needed. See below which package apperantly wasn't needed.
 }

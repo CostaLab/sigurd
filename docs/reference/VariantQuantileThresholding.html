@@ -16,7 +16,7 @@ Source: https://github.com/petervangalen/MAESTER-2021"><!-- mathjax --><script s
     
     <a class="navbar-brand me-2" href="../index.html">sigurd</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.15</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.30</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -30,7 +30,7 @@ Source: https://github.com/petervangalen/MAESTER-2021"><!-- mathjax --><script s
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/SiGURD.html">SiGURD vignette</a>
+    <a class="dropdown-item" href="../articles/SiGURD.html">SiGURD</a>
   </div>
 </li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
@@ -64,7 +64,13 @@ Source: https://github.com/petervangalen/MAESTER-2021</p>
 <span>  thresholds <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.1</span>, <span class="fl">0.9</span><span class="op">)</span>,</span>
 <span>  top_cells <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  top_VAF <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  min_quality <span class="op">=</span> <span class="fl">30</span></span>
+<span>  min_quality <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  mean_allele_frequency <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  group_of_interest <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  group1 <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  group2 <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  group_factor <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -96,6 +102,30 @@ Source: https://github.com/petervangalen/MAESTER-2021</p>
 
 <dt>min_quality</dt>
 <dd><p>The minimum quality you want for the Variants of Interest. Can be ignored by setting it to NULL.</p></dd>
+
+
+<dt>mean_allele_frequency</dt>
+<dd><p>The minimum mean allele frequency. Default = 0</p></dd>
+
+
+<dt>group_of_interest</dt>
+<dd><p>The column data that divides the cells.</p></dd>
+
+
+<dt>group1</dt>
+<dd><p>The first group of interest.</p></dd>
+
+
+<dt>group2</dt>
+<dd><p>The second group of interest.</p></dd>
+
+
+<dt>group_factor</dt>
+<dd><p>How much higher has the mean allele frequency to be in group 1 when compared to group 2?</p></dd>
+
+
+<dt>verbose</dt>
+<dd><p>Should the function be verbose? Default = TRUE</p></dd>
 
 </dl></div>
 
