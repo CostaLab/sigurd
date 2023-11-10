@@ -1,19 +1,23 @@
 #'LoadingVCF_typewise
 #'@description
-#'We load a cellwise pileup result from a VCF file.
-#'If you want to only load a single sample without the use of an input file, you have to set the following variables.
+#' We load a cellwise pileup result from a VCF file.
+#' If you want to only load a single sample without the use of an input file, you have to set the following variables.
 #' \enumerate{
 #'   \item samples_path
 #'   \item barcodes_path
 #'   \item patient
 #'   \item samples_file = NULL
 #' }
+#'
+#' It has happened that reads with an N allele were aligned. This can cause problems since these variants are typically not in variants lists.
+#' We can remove all of these variants by setting remove_N_alternative to TRUE (the default).
+#' Set this option to FALSE, if you really want to retain these variants.
 #'@importFrom GenomeInfoDb seqnames
 #'@importFrom BiocGenerics start
 #'@importFrom utils read.table read.csv
 #'@importFrom VariantAnnotation readVcf info readGeno ref alt
 #'@importFrom SummarizedExperiment SummarizedExperiment
-#'@importFrom Matrix rowSums colSums
+#'@importFrom Matrix rowSums colSums rowMeans colMeans
 #'@param samples_path Path to the input folder. Must include a barcodes file.
 #'@param samples_file Path to the csv file with the samples to be loaded.
 #'@param vcf_path Path to the VCF file with the variants.
@@ -22,9 +26,10 @@
 #'@param min_reads The minimum number of reads we want. Otherwise we treat this as a NoCall. Default = NULL.
 #'@param min_cells The minimum number of cells for a variant. Otherwise, we will remove a variant. Default = 2.
 #'@param barcodes_path Path to the cell barcodes tsv. Default = NULL
+#'@param remove_N_alternative Remove all variants that have N as an alternative, see Description. Default = TRUE
 #'@param verbose Should the function be verbose? Default = TRUE
 #'@export
-LoadingVCF_typewise <- function(samples_file, samples_path = NULL, barcodes_path = NULL, vcf_path, patient, type_use = "scRNAseq_Somatic", min_reads = NULL, min_cells = 2, verbose = TRUE){
+LoadingVCF_typewise <- function(samples_file, samples_path = NULL, barcodes_path = NULL, vcf_path, patient, type_use = "scRNAseq_Somatic", min_reads = NULL, min_cells = 2, remove_N_alternative = TRUE, verbose = TRUE){
   if(all(!is.null(samples_path), !is.null(barcodes_path))){
     if(verbose) print(paste0("Loading the data for sample ", patient, "."))
     samples_file <- data.frame(patient = patient, sample = patient, input_path = samples_path, cells = barcodes_path)
@@ -95,6 +100,21 @@ LoadingVCF_typewise <- function(samples_file, samples_path = NULL, barcodes_path
   rm(consensus_to_add, alts_to_add, depth_to_add)
 
 
+  # We can get the N allele as an alternative allele. This happened in a visium data set.
+  # We remove all variants with the N allele as alternative.
+  if(remove_N_alternative){
+    ref_matrix_total_n     <- substr(rownames(ref_matrix_total), start = nchar(rownames(ref_matrix_total)), stop = nchar(rownames(ref_matrix_total)))
+    ref_matrix_total_n     <- ref_matrix_total_n != "N"
+    ref_matrix_total       <- ref_matrix_total[ref_matrix_total_n,]
+    reads_matrix_total     <- reads_matrix_total[ref_matrix_total_n,]
+    coverage_matrix_total  <- coverage_matrix_total[ref_matrix_total_n,]
+    consensus_matrix_total <- consensus_matrix_total[ref_matrix_total_n,]
+    rm(ref_matrix_total_n)
+  } else{
+    print("We keep all variants with an N as alternative allele. Please ensure that these variants are in your variant VCF file.")
+  }
+
+
   if(verbose) print("We generate more accessible names.")
   if(all(c("GENE", "AA", "CDS") %in% colnames(vcf_info))){
     new_names <- paste0(vcf_info$GENE, "_", vcf_info$AA, "_", vcf_info$CDS)
@@ -104,6 +124,7 @@ LoadingVCF_typewise <- function(samples_file, samples_path = NULL, barcodes_path
     new_names <- rownames(vcf_info)
     new_names <- gsub(":|\\/|\\?", "_", new_names)
     names(new_names) <-	make.names(paste0(as.character(rep(GenomeInfoDb::seqnames(vcf)@values, GenomeInfoDb::seqnames(vcf)@lengths)), ".", BiocGenerics::start(vcf), "_", as.character(VariantAnnotation::ref(vcf)), ".", as.character(unlist(VariantAnnotation::alt(vcf)))))
+    # new_names <- new_names[names(new_names) %in% rownames(ref_matrix_total)]
     new_names <- new_names[rownames(ref_matrix_total)]
   }
 
@@ -210,8 +231,8 @@ LoadingVCF_typewise <- function(samples_file, samples_path = NULL, barcodes_path
     if(verbose) print("We generate a SummarizedExperiment object containing the fraction and the consensus matrices.")
     # We want an assay for the Consensus information and for the fraction.
     # As meta data we add a data frame showing the cell id, the associated patient and the sample.
-    coverage_depth_per_cell <- colMeans(reads_total)
-    coverage_depth_per_variant <- rowMeans(reads_total)
+    coverage_depth_per_cell <- Matrix::colMeans(reads_total)
+    coverage_depth_per_variant <- Matrix::rowMeans(reads_total)
     meta_data <- data.frame(Cell = colnames(consensus_matrix_total), Type = type_use, AverageCoverage = coverage_depth_per_cell)
     rownames(meta_data) <- meta_data$Cell
     meta_row <- data.frame(VariantName = rownames(consensus_matrix_total), Depth = coverage_depth_per_variant)

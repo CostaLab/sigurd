@@ -13,6 +13,7 @@ LoadingVCF_typewise(
   type_use = "scRNAseq_Somatic",
   min_reads = NULL,
   min_cells = 2,
+  remove_N_alternative = TRUE,
   verbose = TRUE
 )
 }
@@ -33,6 +34,8 @@ LoadingVCF_typewise(
 
 \item{min_cells}{The minimum number of cells for a variant. Otherwise, we will remove a variant. Default = 2.}
 
+\item{remove_N_alternative}{Remove all variants that have N as an alternative, see Description. Default = TRUE}
+
 \item{verbose}{Should the function be verbose? Default = TRUE}
 }
 \description{
@@ -44,4 +47,8 @@ If you want to only load a single sample without the use of an input file, you h
   \item patient
   \item samples_file = NULL
 }
+
+It has happened that reads with an N allele were aligned. This can cause problems since these variants are typically not in variants lists.
+We can remove all of these variants by setting remove_N_alternative to TRUE (the default).
+Set this option to FALSE, if you really want to retain these variants.
 }
