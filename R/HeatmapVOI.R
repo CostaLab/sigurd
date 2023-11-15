@@ -6,6 +6,7 @@
 #'@importFrom grid gpar unit
 #'@importFrom circlize colorRamp2
 #'@importFrom scales hue_pal
+#'@importFrom Matrix colSums
 #'@param SE SummarizedExperiment object.
 #'@param voi Variants Of Interest.
 #'@param annotation_trait Cell Annotation at the bottom of the heat map.
@@ -24,7 +25,7 @@ HeatmapVoi <- function(SE, voi, annotation_trait = NULL, column_title = NULL, re
   }
   # We remove cells that are negative for all variants.
   if(remove_empty_cells){
-    cell_check <- colSums(fraction > 0) > 0
+    cell_check <- Matrix::colSums(fraction > 0) > 0
     fraction <- fraction[,cell_check, drop = FALSE]
   }
   if(!is.null(annotation_trait)){

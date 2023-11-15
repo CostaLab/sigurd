@@ -16,6 +16,7 @@
 #'@importFrom Matrix summary
 #'@importFrom SummarizedExperiment assays
 #'@importFrom utils read.table
+#'@importFrom Matrix rowSums colSums
 #'@param se SummarizedExperiment object.
 #'@param blacklisted_barcodes_path Barcodes you want to remove. Path to a file with one column without header.
 #'@param fraction_threshold Variants with an VAF below this threshold are set to 0. Numeric. Default = NULL.
@@ -126,18 +127,18 @@ Filtering <- function(se, blacklisted_barcodes_path = NULL, fraction_threshold =
 
   if(verbose) print("We remove all the variants that are always NoCall.")
   consensus_test <- SummarizedExperiment::assays(se)$consensus > 0
-  keep_variants <- rowSums(consensus_test) > 0
+  keep_variants <- Matrix::rowSums(consensus_test) > 0
   se <- se[keep_variants,]
 
   if(verbose) print(paste0("We remove variants, that are not at least detected in ", min_cells_per_variant, " cells."))
-  keep_variants <- rowSums(SummarizedExperiment::assays(se)$consensus >= 1)
+  keep_variants <- Matrix::rowSums(SummarizedExperiment::assays(se)$consensus >= 1)
   keep_variants <- keep_variants >= min_cells_per_variant
   se <- se[keep_variants,]
 
 
   if(verbose) print(paste0("We remove all cells that are not >= 1 (Ref) for at least ", min_variants_per_cell, " variant."))
   consensus_test <- SummarizedExperiment::assays(se)$consensus >= 1
-  keep_cells <- colSums(consensus_test) > min_variants_per_cell
+  keep_cells <- Matrix::colSums(consensus_test) > min_variants_per_cell
   se <- se[,keep_cells]
   return(se)
 }

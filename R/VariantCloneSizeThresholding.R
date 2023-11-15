@@ -2,7 +2,8 @@
 #'@description
 #'We get variants of interest using a clone size thresholding.
 #'Source: https://github.com/petervangalen/MAESTER-2021
-#'@importFrom SummarizedExperiment assays 
+#'@importFrom SummarizedExperiment assays
+#'@importFrom Matrix rowMeans
 #'@param se SummarizedExperiment object.
 #'@param min_coverage Minimum coverage a variant needs to have.
 #'@param fraction_negative_cells The fraction of negative cells needed. 
@@ -12,8 +13,8 @@
 #'@export
 VariantCloneSizeThresholding <- function(se, min_coverage = 2, fraction_negative_cells = 0.9, min_clone_size = 10, vaf_threshold = 0.5, verbose = TRUE){
   if(verbose) print("Get the mean allele frequency and coverage.")
-  mean_af <- rowMeans(SummarizedExperiment::assays(se)[["fraction"]], na.rm = TRUE)
-  mean_cov <- rowMeans(SummarizedExperiment::assays(se)[["coverage"]], na.rm = TRUE)
+  mean_af <- Matrix::rowMeans(SummarizedExperiment::assays(se)[["fraction"]], na.rm = TRUE)
+  mean_cov <- Matrix::rowMeans(SummarizedExperiment::assays(se)[["coverage"]], na.rm = TRUE)
 
   if(verbose) print("Collect all information in a tibble")
   vars <- do.call(cbind, c(list(mean_af), list(mean_cov)))

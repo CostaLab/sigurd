@@ -15,7 +15,7 @@
 #'@importFrom GenomeInfoDb seqnames
 #'@importFrom BiocGenerics start
 #'@importFrom utils read.table read.csv
-#'@importFrom VariantAnnotation readVcf info readGeno ref alt
+#'@importFrom VariantAnnotation readVcf geno info ref alt ScanVcfParam
 #'@importFrom SummarizedExperiment SummarizedExperiment
 #'@importFrom Matrix rowSums colSums rowMeans colMeans
 #'@param samples_path Path to the input folder. Must include a barcodes file.
@@ -76,22 +76,27 @@ LoadingVCF_typewise <- function(samples_file, samples_path = NULL, barcodes_path
 
     # We load the VCF file.
     # vcf_data <- paste0(input_folder_use, sample_use, "/cellSNP.cells.sorted.vcf.gz")
-    vcf_data <- paste0(input_folder_use)
-    depth_to_add                      <- VariantAnnotation::readGeno(vcf_data, "DP")
+    #depth_to_add                      <- VariantAnnotation::readGeno(input_folder_use, "DP")
+    depth_to_add                      <- VariantAnnotation::readVcf(file = input_folder_use, param = ScanVcfParam(geno = "DP"))
+    depth_to_add                      <- VariantAnnotation::geno(depth_to_add)$DP
     depth_to_add[is.na(depth_to_add)] <- 0
     rownames(depth_to_add)            <- make.names(rownames(depth_to_add))
     colnames(depth_to_add)            <- paste0(sample_use, "_", colnames(depth_to_add))
     depth_to_add                      <- methods::as(depth_to_add, "sparseMatrix")
     reads_matrix_total                <- cbind(reads_matrix_total, depth_to_add)
 
-    alts_to_add                       <- VariantAnnotation::readGeno(vcf_data, "AD")
+    #alts_to_add                       <- VariantAnnotation::readGeno(input_folder_use, "AD")
+    alts_to_add                       <- VariantAnnotation::readVcf(file = input_folder_use, param = ScanVcfParam(geno = "AD"))
+    alts_to_add                       <- VariantAnnotation::geno(alts_to_add)$AD
     alts_to_add[is.na(alts_to_add)]   <- 0
     rownames(alts_to_add)             <- make.names(rownames(alts_to_add))
     colnames(alts_to_add)             <- paste0(sample_use, "_", colnames(alts_to_add))
     alts_to_add                       <- methods::as(alts_to_add, "sparseMatrix")
     coverage_matrix_total             <- cbind(coverage_matrix_total, alts_to_add)
 
-    consensus_to_add                  <- VariantAnnotation::readGeno(vcf_data, "GT")
+    #consensus_to_add                  <- VariantAnnotation::readGeno(input_folder_use, "GT")
+    consensus_to_add                  <- VariantAnnotation::readVcf(file = input_folder_use, param = ScanVcfParam(geno = "GT"))
+    consensus_to_add                  <- VariantAnnotation::geno(consensus_to_add)$GT
     consensus_to_add                  <- matrix(sapply(consensus_to_add, char_to_numeric), nrow = nrow(consensus_to_add), dimnames = list(make.names(rownames(consensus_to_add)), paste0(sample_use, "_", colnames(consensus_to_add))))
     consensus_to_add                  <- methods::as(consensus_to_add, "sparseMatrix")
     consensus_matrix_total            <- cbind(consensus_matrix_total, consensus_to_add)

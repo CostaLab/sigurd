@@ -12,6 +12,7 @@
 #' }
 #'@importFrom utils read.csv read.table
 #'@importFrom SummarizedExperiment SummarizedExperiment
+#'@importFrom Matrix rowSums colSums
 #'@param samples_path Path to the input folder.
 #'@param samples_file Path to the csv file with the samples to be loaded.
 #'@param type_use The type of input. Has to be one of: scRNAseq_MT, Amplicon_MT. Only used if samples_path is not NULL.
@@ -111,7 +112,7 @@ LoadingMAEGATK_typewise <- function(samples_file, samples_path = NULL, patient, 
 
   if(verbose) print("We perform some filtering to reduce the memory needed.")
   if(verbose) print(paste0("We remove variants, which are not covered in at least ", min_cells, " cells ."))
-  keep_variants   <- rowSums(consensus >= 1)
+  keep_variants   <- Matrix::rowSums(consensus >= 1)
   keep_variants   <- keep_variants >= min_cells
   consensus       <- consensus[keep_variants, , drop = FALSE]
   coverage        <- coverage[keep_variants, ,  drop = FALSE]
@@ -124,7 +125,7 @@ LoadingMAEGATK_typewise <- function(samples_file, samples_path = NULL, patient, 
 
   if(verbose) print("We remove cells that are always NoCall.")
   consensus_test <- consensus > 0
-  keep_cells <- colSums(consensus_test) > 0
+  keep_cells <- Matrix::colSums(consensus_test) > 0
   consensus  <- consensus[, keep_cells, drop = FALSE]
   coverage   <- coverage[,  keep_cells, drop = FALSE]
   fraction   <- fraction[,  keep_cells, drop = FALSE]

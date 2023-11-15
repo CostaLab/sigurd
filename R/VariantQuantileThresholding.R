@@ -6,6 +6,7 @@
 #'Source: https://github.com/petervangalen/MAESTER-2021
 #'@importFrom SummarizedExperiment assays colData rowData
 #'@importFrom stats quantile
+#'@importFrom Matrix rowMeans rowSums
 #'@param SE SummarizedExperiment object.
 #'@param min_coverage Minimum coverage needed.
 #'@param quantiles The lower and upper quantile you want to use. 
@@ -23,8 +24,8 @@
 VariantQuantileThresholding <- function(SE, min_coverage = 2, quantiles = c(0.1, 0.9), thresholds = c(0.1, 0.9), top_cells = NULL, top_VAF = NULL, min_quality = NULL, mean_allele_frequency = 0,
                                         group_of_interest = NULL, group1 = NULL, group2 = NULL, group_factor = NULL, verbose = TRUE){
   if(verbose) print("Get the mean allele frequency and coverage.")
-  mean_af <- rowMeans(SummarizedExperiment::assays(SE)[["fraction"]], na.rm = TRUE)
-  mean_cov <- rowMeans(SummarizedExperiment::assays(SE)[["coverage"]], na.rm = TRUE)
+  mean_af  <- Matrix::rowMeans(SummarizedExperiment::assays(SE)[["fraction"]], na.rm = TRUE)
+  mean_cov <- Matrix::rowMeans(SummarizedExperiment::assays(SE)[["coverage"]], na.rm = TRUE)
   if(all(is.null(min_quality), is.numeric(min_quality))) stop("Error: Your minimum quality is not either NULL or a numeric.")
   if(all(is.null(mean_allele_frequency), is.numeric(mean_allele_frequency))) stop("Error: Your mean allele frequency is not either NULL or a numeric.")
   
@@ -36,8 +37,8 @@ VariantQuantileThresholding <- function(SE, min_coverage = 2, quantiles = c(0.1,
     cells_group1 <- cells_group1[cells_group1[, group_of_interest] == group1, , drop = FALSE]
     cells_group2 <- SummarizedExperiment::colData(SE)[, group_of_interest, drop = FALSE]
     cells_group2 <- cells_group2[cells_group2[, group_of_interest] == group2, , drop = FALSE]
-    mean_af_group1 <- rowMeans(SummarizedExperiment::assays(SE)[["fraction"]][, rownames(cells_group1)], na.rm = TRUE)
-    mean_af_group2 <- rowMeans(SummarizedExperiment::assays(SE)[["fraction"]][, rownames(cells_group2)], na.rm = TRUE)
+    mean_af_group1 <- Matrix::rowMeans(SummarizedExperiment::assays(SE)[["fraction"]][, rownames(cells_group1)], na.rm = TRUE)
+    mean_af_group2 <- Matrix::rowMeans(SummarizedExperiment::assays(SE)[["fraction"]][, rownames(cells_group2)], na.rm = TRUE)
     mean_af_group_check <- mean_af_group1 > (group_factor * mean_af_group2)
 
     if(verbose) print("Get the quantiles of the VAFs of each variant.")
@@ -81,7 +82,7 @@ VariantQuantileThresholding <- function(SE, min_coverage = 2, quantiles = c(0.1,
     quantiles <- quantiles[[1]]
     top_cells_values <- SummarizedExperiment::assays(SE)[["fraction"]]
     top_cells_values <- top_cells_values > top_VAF
-    top_cells_values <- rowSums(top_cells_values)
+    top_cells_values <- Matrix::rowSums(top_cells_values)
     if(!is.null(min_quality)){
       vars <- data.frame(Mean_AF = mean_af, Mean_Cov = mean_cov, Quality = SummarizedExperiment::rowData(SE)$VariantQuality, Quantile = quantiles, TopCells = top_cells_values)
       vars <- vars[is.na(vars$VariantQuality), ]

@@ -10,7 +10,7 @@
 #'@importFrom utils read.csv read.table
 #'@importFrom VariantAnnotation readVcf info
 #'@importFrom SummarizedExperiment SummarizedExperiment
-#'@importFrom Matrix readMM
+#'@importFrom Matrix readMM colSums rowSums colMeans rowMeans
 #'@param samples_path Path to the input folder. Must include a barcodes file.
 #'@param samples_file Path to the csv file with the samples to be loaded.
 #'@param vcf_path Path to the VCF file with the variants.
@@ -144,7 +144,7 @@ LoadingVarTrix_typewise <- function(samples_file, samples_path = NULL, barcodes_
 
 
   if(verbose) print(paste0("We remove variants, that are not detected in at least ", min_cells, " cells."))
-  keep_variants <- rowSums(consensus_matrix_total >= 1)
+  keep_variants <- Matrix::rowSums(consensus_matrix_total >= 1)
   keep_variants <- keep_variants >= min_cells
   # If we only have one cell or one variant, we loose the matrix.
   #cell_ids <- colnames(consensus_matrix_total)
@@ -168,7 +168,7 @@ LoadingVarTrix_typewise <- function(samples_file, samples_path = NULL, barcodes_
 
   if(verbose) print("We remove cells that are always NoCall.")
   consensus_test <- consensus_matrix_total > 0
-  keep_cells <- colSums(consensus_test) > 0
+  keep_cells <- Matrix::colSums(consensus_test) > 0
   # If we only have one cell or one variant, we loose the matrix.
   #cell_ids <- names(keep_cells[keep_cells])
   #variant_names <- rownames(consensus_matrix_total)
@@ -216,8 +216,8 @@ LoadingVarTrix_typewise <- function(samples_file, samples_path = NULL, barcodes_
     if(verbose) print("We generate a SummarizedExperiment object containing the fraction and the consensus matrices.")
     # We want an assay for the Consensus information and for the fraction.
     # As meta data we add a data frame showing the cell id, the associated patient and the sample.
-    coverage_depth_per_cell <- colMeans(reads_total)
-    coverage_depth_per_variant <- rowMeans(reads_total)
+    coverage_depth_per_cell <- Matrix::colMeans(reads_total)
+    coverage_depth_per_variant <- Matrix::rowMeans(reads_total)
     meta_data <- data.frame(Cell = colnames(consensus_matrix_total), Type = type_use, AverageCoverage = coverage_depth_per_cell)
     rownames(meta_data) <- meta_data$Cell
     meta_row <- data.frame(VariantName = rownames(consensus_matrix_total), Depth = coverage_depth_per_variant)
