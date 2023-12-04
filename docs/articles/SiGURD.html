@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">sigurd</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.30</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.33</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -79,7 +79,7 @@ Aachen University, Aachen, 52074 Germany<br><div class="d-none name"><code>SiGUR
 <span><span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressPackageStartupMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va"><a href="https://bioconductor.org/packages/SummarizedExperiment" class="external-link">SummarizedExperiment</a></span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressPackageStartupMessages</a></span><span class="op">(</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va">VariantAnnotation</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><strong>R version</strong>: R version 4.1.2 (2021-11-01)</p>
-<p><strong>Package version</strong>: 0.2.30</p>
+<p><strong>Package version</strong>: 0.2.33</p>
 <div class="section level2">
 <h2 id="your-input-file-">Your input file.<a class="anchor" aria-label="anchor" href="#your-input-file-"></a>
 </h2>
@@ -298,16 +298,7 @@ variants. - Amplicon_MT: amplicon data analysed for MT variants.</p>
 <span><span class="co">## [1] "We remove cells that are always NoCall."</span></span>
 <span><span class="co">## [1] "We add the information to the merged matrices."</span></span></code></pre>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">samples_file</span> <span class="op">=</span> <span class="va">sample_path</span></span>
-<span><span class="va">patient</span> <span class="op">=</span> <span class="st">"Sample1"</span></span>
-<span><span class="va">type_use</span> <span class="op">=</span> <span class="st">"scRNAseq_MT"</span></span>
-<span><span class="va">samples_path</span> <span class="op">=</span> <span class="cn">NULL</span></span>
-<span><span class="va">chromosome_prefix</span> <span class="op">=</span> <span class="st">"chrM"</span></span>
-<span><span class="va">min_cells</span> <span class="op">=</span> <span class="fl">2</span></span>
-<span><span class="va">barcodes_path</span> <span class="op">=</span> <span class="cn">NULL</span></span>
-<span><span class="va">verbose</span> <span class="op">=</span> <span class="cn">TRUE</span></span>
-<span></span>
-<span><span class="va">Sample1_combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/CombineSEobjects.html">CombineSEobjects</a></span><span class="op">(</span>se_somatic <span class="op">=</span> <span class="va">Sample1_scRNAseq_Somatic</span>, se_MT <span class="op">=</span> <span class="va">Sample1_scRNAseq_MT</span>, suffixes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"_somatic"</span>, <span class="st">"_MT"</span><span class="op">)</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">Sample1_combined</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/CombineSEobjects.html">CombineSEobjects</a></span><span class="op">(</span>se_somatic <span class="op">=</span> <span class="va">Sample1_scRNAseq_Somatic</span>, se_MT <span class="op">=</span> <span class="va">Sample1_scRNAseq_MT</span>, suffixes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"_somatic"</span>, <span class="st">"_MT"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">se_somatic</span> <span class="op">=</span> <span class="va">Sample1_scRNAseq_Somatic</span></span>
 <span><span class="va">se_MT</span> <span class="op">=</span> <span class="va">Sample1_scRNAseq_MT</span></span>
 <span><span class="va">suffixes</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"_somatic"</span>, <span class="st">"_MT"</span><span class="op">)</span></span>

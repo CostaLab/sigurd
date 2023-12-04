@@ -48,7 +48,7 @@ CombineSEobjects <- function(se_somatic, se_MT, suffixes = c("_somatic", "_MT"))
 
 
   assays_combined <- lapply(assay_names_somatic, function(x){
-    result <- combine_SparseMatrix(SummarizedExperiment::assays(se_somatic)[[x]], SummarizedExperiment::assays(se_MT)[[x]])
+    result <- combine_SparseMatrix(matrix_1 = SummarizedExperiment::assays(se_somatic)[[x]], matrix_2 = SummarizedExperiment::assays(se_MT)[[x]])
   })
   names(assays_combined) <- assay_names_somatic
 

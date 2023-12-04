@@ -51,7 +51,6 @@ test_that("Testing LoadingMAEGATK_typewise.R", {
                                                                  coverage = coverage),
                                                    rowRanges = rowRanges)
   # saveRDS(se, paste0(getwd(), "/test_data/LoadingMAEGATK_typewise_Test_Data.rds"))
-  # se <- readRDS(paste0(getwd(), "/test_data/LoadingMAEGATK_typewise_Test_Data.rds"))
   barcodes <- data.frame(paste0("Cell_", 1:4))
   # write.table(barcodes, paste0(getwd(), "/test_data/LoadingMAEGATK_typewise_Test_Barcodes.tsv"), sep = "\t", quote = FALSE, col.names = FALSE, row.names = FALSE)
   test <- sigurd::LoadingMAEGATK_typewise(samples_file = NULL, samples_path = paste0(getwd(), "/test_data/LoadingMAEGATK_typewise_Test_Data.rds"), patient = "Test", type_use = "scRNAseq_MT",

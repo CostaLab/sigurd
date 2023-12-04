@@ -22,7 +22,7 @@ LoadingMAEGATK_typewise(
 
 \item{patient}{The patient you want to load.}
 
-\item{type_use}{The type of input. Has to be one of: scRNAseq_MT, Amplicon_MT. Only used if samples_path is not NULL.}
+\item{type_use}{The type of input. Only rows that have the specified type will be loaded.}
 
 \item{chromosome_prefix}{The prefix you want use. Default: "chrM"}
 

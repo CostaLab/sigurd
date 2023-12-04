@@ -30,7 +30,7 @@ LoadingVarTrix_typewise(
 
 \item{patient}{The patient you want to load.}
 
-\item{type_use}{The type of input. Has to be one of: scRNAseq_Somatic, Amplicon_Somatic, scRNAseq_MT, Amplicon_MT.}
+\item{type_use}{The type of input. Only rows that have the specified type will be loaded.}
 
 \item{min_reads}{The minimum number of reads we want. Otherwise we treat this as a NoCall. Default = NULL.}
 

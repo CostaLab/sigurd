@@ -15,7 +15,7 @@
 #'@importFrom Matrix rowSums colSums
 #'@param samples_path Path to the input folder.
 #'@param samples_file Path to the csv file with the samples to be loaded.
-#'@param type_use The type of input. Has to be one of: scRNAseq_MT, Amplicon_MT. Only used if samples_path is not NULL.
+#'@param type_use The type of input. Only rows that have the specified type will be loaded.
 #'@param patient The patient you want to load.
 #'@param chromosome_prefix The prefix you want use. Default: "chrM"
 #'@param min_cells The minimum number of cells with coverage for a variant. Variants with coverage in less than this amount of cells are removed. Default = 2
@@ -157,7 +157,7 @@ LoadingMAEGATK_typewise <- function(samples_file, samples_path = NULL, patient, 
     meta_data_row                     <- data.frame(VariantName = rownames(consensus), Concordance = concordance, VariantQuality = variant_quality, Depth = coverage_depth_per_variant)
     rownames(meta_data_row)           <- meta_data_row$VariantName
 
-    se_output <- SummarizedExperiment::SummarizedExperiment(assays = list(consensus = consensus, fraction = fraction, coverage = coverage, alts = reads_alt, refs = reads_ref),
+    se_output <- SummarizedExperiment::SummarizedExperiment(assays = list(consensus = as(consensus, "CsparseMatrix"), fraction = as(fraction, "CsparseMatrix"), coverage = as(coverage, "CsparseMatrix"), alts = as(reads_alt, "CsparseMatrix"), refs = as(reads_ref, "CsparseMatrix")),
                                                             colData = meta_data_col, rowData = meta_data_row)
     return(se_output)
   }

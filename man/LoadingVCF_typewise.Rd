@@ -7,7 +7,6 @@
 LoadingVCF_typewise(
   samples_file,
   samples_path = NULL,
-  barcodes_path = NULL,
   vcf_path,
   patient,
   type_use = "scRNAseq_Somatic",
@@ -20,15 +19,13 @@ LoadingVCF_typewise(
 \arguments{
 \item{samples_file}{Path to the csv file with the samples to be loaded.}
 
-\item{samples_path}{Path to the input folder. Must include a barcodes file.}
-
-\item{barcodes_path}{Path to the cell barcodes tsv. Default = NULL}
+\item{samples_path}{Path to the input folder.}
 
 \item{vcf_path}{Path to the VCF file with the variants.}
 
 \item{patient}{The patient you want to load.}
 
-\item{type_use}{The type of input. Has to be one of: scRNAseq_Somatic, Amplicon_Somatic, scRNAseq_MT, Amplicon_MT.}
+\item{type_use}{The type of input. Only rows that have the specified type will be loaded.}
 
 \item{min_reads}{The minimum number of reads we want. Otherwise we treat this as a NoCall. Default = NULL.}
 
@@ -43,7 +40,6 @@ We load a cellwise pileup result from a VCF file.
 If you want to only load a single sample without the use of an input file, you have to set the following variables.
 \enumerate{
   \item samples_path
-  \item barcodes_path
   \item patient
   \item samples_file = NULL
 }

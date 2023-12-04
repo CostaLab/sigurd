@@ -4,7 +4,6 @@
 #' If you want to only load a single sample without the use of an input file, you have to set the following variables.
 #' \enumerate{
 #'   \item samples_path
-#'   \item barcodes_path
 #'   \item patient
 #'   \item samples_file = NULL
 #' }
@@ -18,21 +17,20 @@
 #'@importFrom VariantAnnotation readVcf geno info ref alt ScanVcfParam
 #'@importFrom SummarizedExperiment SummarizedExperiment
 #'@importFrom Matrix rowSums colSums rowMeans colMeans
-#'@param samples_path Path to the input folder. Must include a barcodes file.
+#'@param samples_path Path to the input folder.
 #'@param samples_file Path to the csv file with the samples to be loaded.
 #'@param vcf_path Path to the VCF file with the variants.
 #'@param patient The patient you want to load.
-#'@param type_use The type of input. Has to be one of: scRNAseq_Somatic, Amplicon_Somatic, scRNAseq_MT, Amplicon_MT.
+#'@param type_use The type of input. Only rows that have the specified type will be loaded.
 #'@param min_reads The minimum number of reads we want. Otherwise we treat this as a NoCall. Default = NULL.
 #'@param min_cells The minimum number of cells for a variant. Otherwise, we will remove a variant. Default = 2.
-#'@param barcodes_path Path to the cell barcodes tsv. Default = NULL
 #'@param remove_N_alternative Remove all variants that have N as an alternative, see Description. Default = TRUE
 #'@param verbose Should the function be verbose? Default = TRUE
 #'@export
-LoadingVCF_typewise <- function(samples_file, samples_path = NULL, barcodes_path = NULL, vcf_path, patient, type_use = "scRNAseq_Somatic", min_reads = NULL, min_cells = 2, remove_N_alternative = TRUE, verbose = TRUE){
-  if(all(!is.null(samples_path), !is.null(barcodes_path))){
+LoadingVCF_typewise <- function(samples_file, samples_path = NULL, vcf_path, patient, type_use = "scRNAseq_Somatic", min_reads = NULL, min_cells = 2, remove_N_alternative = TRUE, verbose = TRUE){
+  if(!is.null(samples_path)){
     if(verbose) print(paste0("Loading the data for sample ", patient, "."))
-    samples_file <- data.frame(patient = patient, sample = patient, input_path = samples_path, cells = barcodes_path)
+    samples_file <- data.frame(patient = patient, sample = patient, input_path = samples_path)
     samples <- samples_file$sample
   } else{
     if(verbose) print(paste0("Loading the data for patient ", patient, "."))
@@ -51,11 +49,6 @@ LoadingVCF_typewise <- function(samples_file, samples_path = NULL, barcodes_path
   }
 
 
-  if(verbose) print("We read in the cell barcodes output by CellRanger as a list.")
-  barcodes <- lapply(samples_file$cells, utils::read.table)
-  names(barcodes) <- samples
-
-
   if(verbose) print("We read in the vcf file.")
   vcf      <- VariantAnnotation::readVcf(vcf_path)
   vcf_info <- VariantAnnotation::info(vcf)
@@ -71,34 +64,31 @@ LoadingVCF_typewise <- function(samples_file, samples_path = NULL, barcodes_path
     input_folder_use <- samples_file$input_path[i]
     sample_use <- samples_file$sample[i]
 
-    # The cell barcodes and variants.
-    cellbarcodes_use <- barcodes[[sample_use]]
-
     # We load the VCF file.
     # vcf_data <- paste0(input_folder_use, sample_use, "/cellSNP.cells.sorted.vcf.gz")
     #depth_to_add                      <- VariantAnnotation::readGeno(input_folder_use, "DP")
-    depth_to_add                      <- VariantAnnotation::readVcf(file = input_folder_use, param = ScanVcfParam(geno = "DP"))
+    depth_to_add                      <- VariantAnnotation::readVcf(file = input_folder_use, param = VariantAnnotation::ScanVcfParam(geno = "DP"))
     depth_to_add                      <- VariantAnnotation::geno(depth_to_add)$DP
     depth_to_add[is.na(depth_to_add)] <- 0
     rownames(depth_to_add)            <- make.names(rownames(depth_to_add))
     colnames(depth_to_add)            <- paste0(sample_use, "_", colnames(depth_to_add))
-    depth_to_add                      <- methods::as(depth_to_add, "sparseMatrix")
+    depth_to_add                      <- methods::as(depth_to_add, "CsparseMatrix")
     reads_matrix_total                <- cbind(reads_matrix_total, depth_to_add)
 
     #alts_to_add                       <- VariantAnnotation::readGeno(input_folder_use, "AD")
-    alts_to_add                       <- VariantAnnotation::readVcf(file = input_folder_use, param = ScanVcfParam(geno = "AD"))
+    alts_to_add                       <- VariantAnnotation::readVcf(file = input_folder_use, param = VariantAnnotation::ScanVcfParam(geno = "AD"))
     alts_to_add                       <- VariantAnnotation::geno(alts_to_add)$AD
     alts_to_add[is.na(alts_to_add)]   <- 0
     rownames(alts_to_add)             <- make.names(rownames(alts_to_add))
     colnames(alts_to_add)             <- paste0(sample_use, "_", colnames(alts_to_add))
-    alts_to_add                       <- methods::as(alts_to_add, "sparseMatrix")
+    alts_to_add                       <- methods::as(alts_to_add, "CsparseMatrix")
     coverage_matrix_total             <- cbind(coverage_matrix_total, alts_to_add)
 
     #consensus_to_add                  <- VariantAnnotation::readGeno(input_folder_use, "GT")
-    consensus_to_add                  <- VariantAnnotation::readVcf(file = input_folder_use, param = ScanVcfParam(geno = "GT"))
+    consensus_to_add                  <- VariantAnnotation::readVcf(file = input_folder_use, param = VariantAnnotation::ScanVcfParam(geno = "GT"))
     consensus_to_add                  <- VariantAnnotation::geno(consensus_to_add)$GT
     consensus_to_add                  <- matrix(sapply(consensus_to_add, char_to_numeric), nrow = nrow(consensus_to_add), dimnames = list(make.names(rownames(consensus_to_add)), paste0(sample_use, "_", colnames(consensus_to_add))))
-    consensus_to_add                  <- methods::as(consensus_to_add, "sparseMatrix")
+    consensus_to_add                  <- methods::as(consensus_to_add, "CsparseMatrix")
     consensus_matrix_total            <- cbind(consensus_matrix_total, consensus_to_add)
   }
   ref_matrix_total <- reads_matrix_total - coverage_matrix_total
@@ -169,21 +159,9 @@ LoadingVCF_typewise <- function(samples_file, samples_path = NULL, barcodes_path
   # If we only have one cell or one variant, we loose the matrix.
   cell_ids <- colnames(consensus_matrix_total)
   variant_names <- names(keep_variants[keep_variants])
-  consensus_matrix_total <- consensus_matrix_total[keep_variants, ]
-  consensus_matrix_total <- matrix(consensus_matrix_total, nrow = length(variant_names), ncol = length(cell_ids))
-  colnames(consensus_matrix_total) <- cell_ids
-  rownames(consensus_matrix_total) <- variant_names
-  consensus_matrix_total <- methods::as(consensus_matrix_total, "dgCMatrix")
-  coverage_matrix_total <- coverage_matrix_total[keep_variants, ]
-  coverage_matrix_total <- matrix(coverage_matrix_total, nrow = length(variant_names), ncol = length(cell_ids))
-  colnames(coverage_matrix_total) <- cell_ids
-  rownames(coverage_matrix_total) <- variant_names
-  coverage_matrix_total <- methods::as(coverage_matrix_total, "dgCMatrix")
-  ref_matrix_total <- ref_matrix_total[keep_variants, ]
-  ref_matrix_total <- matrix(ref_matrix_total, nrow = length(variant_names), ncol = length(cell_ids))
-  colnames(ref_matrix_total) <- cell_ids
-  rownames(ref_matrix_total) <- variant_names
-  ref_matrix_total <- methods::as(ref_matrix_total, "dgCMatrix")
+  consensus_matrix_total <- consensus_matrix_total[keep_variants, , drop = FALSE]
+  coverage_matrix_total <- coverage_matrix_total[keep_variants, , drop = FALSE]
+  ref_matrix_total <- ref_matrix_total[keep_variants, , drop = FALSE]
 
 
   if(verbose) print("We remove cells that are always NoCall.")
@@ -192,38 +170,23 @@ LoadingVCF_typewise <- function(samples_file, samples_path = NULL, barcodes_path
   # If we only have one cell or one variant, we loose the matrix.
   cell_ids <- names(keep_cells[keep_cells])
   variant_names <- rownames(consensus_matrix_total)
-  consensus_matrix_total <- consensus_matrix_total[, keep_cells]
-  consensus_matrix_total <- matrix(consensus_matrix_total, nrow = length(variant_names), ncol = length(cell_ids))
-  colnames(consensus_matrix_total) <- cell_ids
-  rownames(consensus_matrix_total) <- variant_names
-  consensus_matrix_total <- methods::as(consensus_matrix_total, "dgCMatrix")
-  coverage_matrix_total <- coverage_matrix_total[, keep_cells]
-  coverage_matrix_total <- matrix(coverage_matrix_total, nrow = length(variant_names), ncol = length(cell_ids))
-  colnames(coverage_matrix_total) <- cell_ids
-  rownames(coverage_matrix_total) <- variant_names
-  coverage_matrix_total <- methods::as(coverage_matrix_total, "dgCMatrix")
-  ref_matrix_total <- ref_matrix_total[, keep_cells]
-  ref_matrix_total <- matrix(ref_matrix_total, nrow = length(variant_names), ncol = length(cell_ids))
-  colnames(ref_matrix_total) <- cell_ids
-  rownames(ref_matrix_total) <- variant_names
-  ref_matrix_total <- methods::as(ref_matrix_total, "dgCMatrix")
+  consensus_matrix_total <- consensus_matrix_total[, keep_cells, drop = FALSE]
+  coverage_matrix_total <- coverage_matrix_total[, keep_cells, drop = FALSE]
+  ref_matrix_total <- ref_matrix_total[, keep_cells, drop = FALSE]
 
 
   if(verbose) print(paste0(type_use, " Variants: ", nrow(consensus_matrix_total)))
   if(verbose) print(paste0(type_use, " Cells: ", ncol(consensus_matrix_total)))
 
   rm(consensus_test, keep_variants, keep_cells)
-  gc()
+  gc(verbose = FALSE)
 
 
   if(verbose) print("We transform the sparse matrices to matrices, so we can calculate the fraction.")
-  coverage_matrix_total                 <- as.matrix(coverage_matrix_total)
-  ref_matrix_total                      <- as.matrix(ref_matrix_total)
-  consensus_matrix_total                <- as.matrix(consensus_matrix_total)
   reads_total                           <- coverage_matrix_total + ref_matrix_total
   fraction_total                        <- coverage_matrix_total / reads_total
   fraction_total[is.na(fraction_total)] <- 0
-  gc()
+  gc(verbose = FALSE)
 
 
   # We check if the matrices are empty (0 cells, 0 variants). Then we simply return NULL.
@@ -242,10 +205,7 @@ LoadingVCF_typewise <- function(samples_file, samples_path = NULL, barcodes_path
     rownames(meta_data) <- meta_data$Cell
     meta_row <- data.frame(VariantName = rownames(consensus_matrix_total), Depth = coverage_depth_per_variant)
     rownames(meta_row) <- meta_row$VariantName
-    #se_merged <- SummarizedExperiment::SummarizedExperiment(assays = list(consensus = methods::as(consensus_matrix_total, "dgCMatrix"), fraction = methods::as(fraction_total, "dgCMatrix"), coverage = methods::as(reads_total, "dgCMatrix")),
-    #                                                        colData = meta_data)
-    se_merged <- SummarizedExperiment::SummarizedExperiment(assays = list(consensus = methods::as(consensus_matrix_total, "CsparseMatrix"), fraction = methods::as(fraction_total, "CsparseMatrix"), coverage = methods::as(reads_total, "CsparseMatrix"),
-                                                            alts = methods::as(coverage_matrix_total, "CsparseMatrix"), refs = methods::as(ref_matrix_total, "CsparseMatrix")),
+    se_merged <- SummarizedExperiment::SummarizedExperiment(assays = list(consensus = consensus_matrix_total, fraction = fraction_total, coverage = reads_total, alts = coverage_matrix_total, refs = ref_matrix_total),
                                                             colData = meta_data, rowData = meta_row)
     return(se_merged)
   }
