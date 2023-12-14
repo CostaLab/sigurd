@@ -82,9 +82,6 @@ Sample1_scRNAseq_Somatic <- LoadingVarTrix_typewise(samples_file = sample_path, 
 Sample1_scRNAseq_MT <- LoadingMAEGATK_typewise(samples_file = sample_path, patient = "Sample1", type_use = "scRNAseq_MT")
 
 Sample1_combined <- CombineSEobjects(se_somatic = Sample1_scRNAseq_Somatic, se_MT = Sample1_scRNAseq_MT, suffixes = c("_somatic", "_MT"))
-se_somatic = Sample1_scRNAseq_Somatic
-se_MT = Sample1_scRNAseq_MT
-suffixes = c("_somatic", "_MT")
 
 rm(Sample1_scRNAseq_Somatic, Sample1_scRNAseq_MT)
 Sample1_combined <- Filtering(Sample1_combined, min_cells_per_variant = 2, fraction_threshold = 0.05)

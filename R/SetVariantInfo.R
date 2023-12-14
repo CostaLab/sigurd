@@ -1,7 +1,7 @@
-#'GetVariantInfo
+#'SetVariantInfo
 #'@description
 #'We add the genotyping information for a set of variants to a Seurat object.
-#'The function returns a matrix with the values from the specified assay.
+#'The function returns a Seurat object with the values from the specified assay added as meta data.
 #'@importFrom SummarizedExperiment assays
 #'@importFrom Matrix t
 #'@importFrom Seurat AddMetaData

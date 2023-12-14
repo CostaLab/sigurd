@@ -2,7 +2,7 @@
 % Please edit documentation in R/SetVariantInfo.R
 \name{SetVariantInfo}
 \alias{SetVariantInfo}
-\title{GetVariantInfo}
+\title{SetVariantInfo}
 \usage{
 SetVariantInfo(SE, seurat_object, information = "consensus", variants = NULL)
 }
@@ -17,5 +17,5 @@ SetVariantInfo(SE, seurat_object, information = "consensus", variants = NULL)
 }
 \description{
 We add the genotyping information for a set of variants to a Seurat object.
-The function returns a matrix with the values from the specified assay.
+The function returns a Seurat object with the values from the specified assay added as meta data.
 }

@@ -14,8 +14,8 @@ CombineSEobjects <- function(se_somatic, se_MT, suffixes = c("_somatic", "_MT"))
   if(!all(assay_names_somatic == assay_names_MT)){
     stop("Your assays are not equally named or ordered.")
   }
-  features <- combine_NAMES(names(se_somatic), names(se_MT))
-  cells <- combine_NAMES(colnames(se_somatic), colnames(se_MT))
+  features <- sigurd::combine_NAMES(rownames(se_somatic), rownames(se_MT))
+  cells    <- sigurd::combine_NAMES(colnames(se_somatic), colnames(se_MT))
 
   meta_data_somatic <- SummarizedExperiment::colData(se_somatic)
   meta_data_MT      <- SummarizedExperiment::colData(se_MT)
