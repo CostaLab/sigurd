@@ -13,6 +13,7 @@ LoadingVCF_typewise(
   min_reads = NULL,
   min_cells = 2,
   remove_N_alternative = TRUE,
+  cellbarcode_length = 18,
   verbose = TRUE
 )
 }
@@ -33,6 +34,8 @@ LoadingVCF_typewise(
 
 \item{remove_N_alternative}{Remove all variants that have N as an alternative, see Description. Default = TRUE}
 
+\item{cellbarcode_length}{The length of the cell barcode. This should be the length of the actual barcode plus two for the suffix (-1). Default = 18}
+
 \item{verbose}{Should the function be verbose? Default = TRUE}
 }
 \description{
@@ -43,6 +46,7 @@ If you want to only load a single sample without the use of an input file, you h
   \item patient
   \item samples_file = NULL
 }
+Note that the source column in the input file needs to be vcf for this function. This is case insensitive.
 
 It has happened that reads with an N allele were aligned. This can cause problems since these variants are typically not in variants lists.
 We can remove all of these variants by setting remove_N_alternative to TRUE (the default).

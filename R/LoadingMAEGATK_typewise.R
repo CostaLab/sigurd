@@ -2,7 +2,7 @@
 #'@description
 #'We load the MAEGATK output and transform it to be compatible with the VarTrix output.
 #'The input file is a specifically formated csv file with all the necessary information to run the analysis.
-#'Note that the source column in the input file needs to be one of the following: vartrix, mgaetk, mgatk.
+#'Note that the source column in the input file needs to be mgaetk or mgatk for this function. This is case insensitive.
 #'If you want to only load a single sample without the use of an input file, you have to set the following variables.
 #' \enumerate{
 #'   \item samples_path
@@ -20,10 +20,11 @@
 #'@param chromosome_prefix The prefix you want use. Default: "chrM"
 #'@param min_cells The minimum number of cells with coverage for a variant. Variants with coverage in less than this amount of cells are removed. Default = 2
 #'@param barcodes_path Path to the barcodes file tsv. Default = NULL
+#'@param cellbarcode_length The length of the cell barcode. This should be the length of the actual barcode plus two for the suffix (-1). Default = 18
 #'@param verbose Should the function be verbose? Default = TRUE
 #'@export
 LoadingMAEGATK_typewise <- function(samples_file, samples_path = NULL, patient, type_use = "scRNAseq_MT", chromosome_prefix = "chrM",
-                                    min_cells = 2, barcodes_path = NULL, verbose = TRUE){
+                                    min_cells = 2, barcodes_path = NULL, cellbarcode_length = 18, verbose = TRUE){
   if(all(!is.null(samples_path), !is.null(barcodes_path))){
     if(verbose) print(paste0("Loading the data for patient ", patient, "."))
     samples <- patient
@@ -152,7 +153,7 @@ LoadingMAEGATK_typewise <- function(samples_file, samples_path = NULL, patient, 
     rownames(coverage_depth_per_cell) <- variant_names
     coverage_depth_per_variant        <- rowMeans(coverage)
     coverage_depth_per_cell           <- colMeans(coverage_depth_per_cell)
-    meta_data_col                     <- data.frame(Cell = colnames(consensus), AverageCoverage = coverage_depth_per_cell)
+    meta_data_col                     <- data.frame(Cell = colnames(consensus), Patient = patient, Sample = substr(x = colnames(consensus), start = 1, stop = nchar(colnames(consensus))-(cellbarcode_length+1)), AverageCoverage = coverage_depth_per_cell)
     rownames(meta_data_col)           <- meta_data_col$Cell
     meta_data_row                     <- data.frame(VariantName = rownames(consensus), Concordance = concordance, VariantQuality = variant_quality, Depth = coverage_depth_per_variant)
     rownames(meta_data_row)           <- meta_data_row$VariantName

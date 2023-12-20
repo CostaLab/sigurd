@@ -7,6 +7,7 @@
 #'   \item patient
 #'   \item samples_file = NULL
 #' }
+#' Note that the source column in the input file needs to be vcf for this function. This is case insensitive.
 #'
 #' It has happened that reads with an N allele were aligned. This can cause problems since these variants are typically not in variants lists.
 #' We can remove all of these variants by setting remove_N_alternative to TRUE (the default).
@@ -25,9 +26,10 @@
 #'@param min_reads The minimum number of reads we want. Otherwise we treat this as a NoCall. Default = NULL.
 #'@param min_cells The minimum number of cells for a variant. Otherwise, we will remove a variant. Default = 2.
 #'@param remove_N_alternative Remove all variants that have N as an alternative, see Description. Default = TRUE
+#'@param cellbarcode_length The length of the cell barcode. This should be the length of the actual barcode plus two for the suffix (-1). Default = 18
 #'@param verbose Should the function be verbose? Default = TRUE
 #'@export
-LoadingVCF_typewise <- function(samples_file, samples_path = NULL, vcf_path, patient, type_use = "scRNAseq_Somatic", min_reads = NULL, min_cells = 2, remove_N_alternative = TRUE, verbose = TRUE){
+LoadingVCF_typewise <- function(samples_file, samples_path = NULL, vcf_path, patient, type_use = "scRNAseq_Somatic", min_reads = NULL, min_cells = 2, remove_N_alternative = TRUE, cellbarcode_length = 18, verbose = TRUE){
   if(!is.null(samples_path)){
     if(verbose) print(paste0("Loading the data for sample ", patient, "."))
     samples_file <- data.frame(patient = patient, sample = patient, input_path = samples_path)
@@ -201,7 +203,7 @@ LoadingVCF_typewise <- function(samples_file, samples_path = NULL, vcf_path, pat
     # As meta data we add a data frame showing the cell id, the associated patient and the sample.
     coverage_depth_per_cell <- Matrix::colMeans(reads_total)
     coverage_depth_per_variant <- Matrix::rowMeans(reads_total)
-    meta_data <- data.frame(Cell = colnames(consensus_matrix_total), Type = type_use, AverageCoverage = coverage_depth_per_cell)
+    meta_data <- data.frame(Cell = colnames(consensus_matrix_total), Patient = patient, Sample = substr(x = colnames(consensus_matrix_total), start = 1, stop = nchar(colnames(consensus_matrix_total))-(cellbarcode_length+1)), Type = type_use, AverageCoverage = coverage_depth_per_cell)
     rownames(meta_data) <- meta_data$Cell
     meta_row <- data.frame(VariantName = rownames(consensus_matrix_total), Depth = coverage_depth_per_variant)
     rownames(meta_row) <- meta_row$VariantName

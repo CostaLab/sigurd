@@ -3,6 +3,7 @@
 #'We combine two SummarizedExperiment objects.
 # #'@import BiocGenerics
 #'@importFrom SummarizedExperiment assays colData rowData SummarizedExperiment
+#'@importFrom S4Vectors DataFrame
 #'@param se_somatic SummarizedExperiment object for the somatic variants.
 #'@param se_MT SummarizedExperiment object for the MT variants.
 #'@param suffixes The suffixes you want to add to the meta data.frame.
@@ -14,6 +15,12 @@ CombineSEobjects <- function(se_somatic, se_MT, suffixes = c("_somatic", "_MT"))
   if(!all(assay_names_somatic == assay_names_MT)){
     stop("Your assays are not equally named or ordered.")
   }
+  patients_somatic <- unique(se_somatic$Patient)
+  if(length(patients_somatic) > 1) stop("The se_somatic object has more than 1 patient.")
+  patients_MT <- unique(se_MT$Patient)
+  if(length(patients_MT) > 1) stop("The se_MT object has more than 1 patient.")
+  if(patients_somatic != patients_MT) stop("The objects are not from the same patient.")
+
   features <- sigurd::combine_NAMES(rownames(se_somatic), rownames(se_MT))
   cells    <- sigurd::combine_NAMES(colnames(se_somatic), colnames(se_MT))
 
@@ -21,6 +28,11 @@ CombineSEobjects <- function(se_somatic, se_MT, suffixes = c("_somatic", "_MT"))
   meta_data_MT      <- SummarizedExperiment::colData(se_MT)
   meta_data <- merge(meta_data_somatic, meta_data_MT, by = "Cell", all = TRUE, suffixes = suffixes)
   meta_data <- meta_data[match(cells, meta_data$Cell),]
+  patient_values <- meta_data[, paste0("Patient", suffixes)]
+  patient_values <- ifelse(is.na(patient_values[,1]), patient_values[,2], patient_values[,1])
+  sample_values <- meta_data[, paste0("Sample", suffixes)]
+  sample_values <- ifelse(is.na(sample_values[,1]), sample_values[,2], sample_values[,1])
+  meta_data <- S4Vectors::DataFrame(Cell = meta_data$Cell, Patient = patient_values, Sample = sample_values, meta_data[,-1])
 
   meta_row_somatic <- SummarizedExperiment::rowData(se_somatic)
   meta_row_MT      <- SummarizedExperiment::rowData(se_MT)

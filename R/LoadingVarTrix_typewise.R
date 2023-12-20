@@ -4,8 +4,8 @@
 #'we might need extreme amounts of memory. To solve this issue, I will load each type separately.
 #'In a following function (AmpliconSupplementing), we can add the amplicon information to the
 #'scRNAseq information.
-#'The input file is a specifically formated csv file with all the necessary information to run the analysis.
-#'Note that the source column in the input file needs to be one of the following: vartrix, mgaetk, mgatk.
+#'The input file is a specifically formatted csv file with all the necessary information to run the analysis.
+#'Note that the source column in the input file needs to be vartrix for this function.
 #'This is hard coded and case insensitive.
 #'@importFrom utils read.csv read.table
 #'@importFrom VariantAnnotation readVcf info
@@ -20,9 +20,10 @@
 #'@param min_reads The minimum number of reads we want. Otherwise we treat this as a NoCall. Default = NULL.
 #'@param min_cells The minimum number of cells for a variant. Otherwise, we will remove a variant. Default = 2.
 #'@param barcodes_path The path to the cell barcodes tsv. Default = NULL
+#'@param cellbarcode_length The length of the cell barcode. This should be the length of the actual barcode plus two for the suffix (-1). Default = 18
 #'@param verbose Should the function be verbose? Default = TRUE
 #'@export
-LoadingVarTrix_typewise <- function(samples_file, samples_path = NULL, barcodes_path = NULL, snp_path = NULL, vcf_path, patient, type_use = "scRNAseq_Somatic", min_reads = NULL, min_cells = 2, verbose = TRUE){
+LoadingVarTrix_typewise <- function(samples_file, samples_path = NULL, barcodes_path = NULL, snp_path = NULL, vcf_path, patient, type_use = "scRNAseq_Somatic", min_reads = NULL, min_cells = 2, cellbarcode_length = 18, verbose = TRUE){
   if(all(!is.null(samples_path), !is.null(barcodes_path), !is.null(snp_path))){
     if(verbose) print(paste0("Loading the data for sample ", patient, "."))
     samples_file <- data.frame(patient = patient, sample = patient, input_path = samples_path, cells = barcodes_path)
@@ -178,8 +179,8 @@ LoadingVarTrix_typewise <- function(samples_file, samples_path = NULL, barcodes_
   # We check if the matrices are empty (0 cells, 0 variants). Then we simply return NULL.
   dim_test <- dim(reads_total)
   if(any(dim_test == 0)){
-    if(verbose) print(paste0("The filtering left ", dim_test[1], " variants and ", dim_test[2], "cells."))
-    if(verbose) print("Returning NULL.")
+    print(paste0("The filtering left ", dim_test[1], " variants and ", dim_test[2], "cells."))
+    print("Returning NULL.")
     return(NULL)
   } else {
     if(verbose) print("We generate a SummarizedExperiment object containing the fraction and the consensus matrices.")
@@ -187,7 +188,7 @@ LoadingVarTrix_typewise <- function(samples_file, samples_path = NULL, barcodes_
     # As meta data we add a data frame showing the cell id, the associated patient and the sample.
     coverage_depth_per_cell <- Matrix::colMeans(reads_total)
     coverage_depth_per_variant <- Matrix::rowMeans(reads_total)
-    meta_data <- data.frame(Cell = colnames(consensus_matrix_total), Type = type_use, AverageCoverage = coverage_depth_per_cell)
+    meta_data <- data.frame(Cell = colnames(consensus_matrix_total), Patient = patient, Sample = substr(x = colnames(consensus_matrix_total), start = 1, stop = nchar(colnames(consensus_matrix_total))-(cellbarcode_length+1)), Type = type_use, AverageCoverage = coverage_depth_per_cell)
     rownames(meta_data) <- meta_data$Cell
     meta_row <- data.frame(VariantName = rownames(consensus_matrix_total), Depth = coverage_depth_per_variant)
     rownames(meta_row) <- meta_row$VariantName

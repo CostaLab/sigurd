@@ -12,6 +12,7 @@ LoadingMAEGATK_typewise(
   chromosome_prefix = "chrM",
   min_cells = 2,
   barcodes_path = NULL,
+  cellbarcode_length = 18,
   verbose = TRUE
 )
 }
@@ -30,12 +31,14 @@ LoadingMAEGATK_typewise(
 
 \item{barcodes_path}{Path to the barcodes file tsv. Default = NULL}
 
+\item{cellbarcode_length}{The length of the cell barcode. This should be the length of the actual barcode plus two for the suffix (-1). Default = 18}
+
 \item{verbose}{Should the function be verbose? Default = TRUE}
 }
 \description{
 We load the MAEGATK output and transform it to be compatible with the VarTrix output.
 The input file is a specifically formated csv file with all the necessary information to run the analysis.
-Note that the source column in the input file needs to be one of the following: vartrix, mgaetk, mgatk.
+Note that the source column in the input file needs to be mgaetk or mgatk for this function. This is case insensitive.
 If you want to only load a single sample without the use of an input file, you have to set the following variables.
 \enumerate{
   \item samples_path
