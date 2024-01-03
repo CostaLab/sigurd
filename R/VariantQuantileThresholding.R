@@ -16,7 +16,7 @@
 #'@param top_VAF The VAF for the top cells.
 #'@param mean_allele_frequency The minimum mean allele frequency. Default = 0
 #'@param group_of_interest The column data that divides the cells.
-#'@param group1 The first group of interest.
+#'@param group1 The first group of interest. If set, the quantiles are only calculated for this group.
 #'@param group2 The second group of interest.
 #'@param group_factor How much higher has the mean allele frequency to be in group 1 when compared to group 2?
 #'@param verbose Should the function be verbose? Default = TRUE
@@ -42,15 +42,16 @@ VariantQuantileThresholding <- function(SE, min_coverage = 2, quantiles = c(0.1,
     mean_af_group_check <- mean_af_group1 > (group_factor * mean_af_group2)
 
     if(verbose) print("Get the quantiles of the VAFs of each variant.")
-    quantiles <- lapply(quantiles, function(x) apply(SummarizedExperiment::assays(SE)[["fraction"]], 1, stats::quantile, x, na.rm = TRUE))
+    quantiles_group1 <- lapply(quantiles, function(x) apply(SummarizedExperiment::assays(SE)[["fraction"]][, rownames(cells_group1)], 1, stats::quantile, x, na.rm = TRUE))
     if(!is.null(min_quality)){
-      vars <- data.frame(Mean_AF = mean_af, Mean_Cov = mean_cov, VariantQuality = SummarizedExperiment::rowData(SE)$VariantQuality, Quantile1 = quantiles[[1]], Quantile2 = quantiles[[2]])
-      vars <- vars[is.na(vars$VariantQuality), ]
+      vars <- data.frame(Mean_AF = mean_af, Mean_Cov = mean_cov, VariantQuality = SummarizedExperiment::rowData(SE)$VariantQuality, Quantile1 = quantiles_group1[[1]], Quantile2 = quantiles_group1[[2]])
+      vars <- vars[!is.na(vars$VariantQuality), ]
       vars <- subset(vars, vars$VariantQuality > min_quality)
     } else{
-      vars <- data.frame(Mean_AF = mean_af, Mean_Cov = mean_cov, Quantile1 = quantiles[[1]], Quantile2 = quantiles[[2]])
+      vars <- data.frame(Mean_AF = mean_af, Mean_Cov = mean_cov, Quantile1 = quantiles_group1[[1]], Quantile2 = quantiles_group1[[2]])
     }
-    vars <- vars[mean_af_group_check,]
+    mean_af_group_check <- mean_af_group_check[rownames(vars)]
+    vars <- vars[mean_af_group_check, , drop = FALSE]
 
     if(verbose) print("Thresholding using the quantile approach.")
     if(length(quantiles)  != 2) stop("Your quantiles are not of length 2.")
@@ -64,7 +65,7 @@ VariantQuantileThresholding <- function(SE, min_coverage = 2, quantiles = c(0.1,
 
     if(!is.null(min_quality)){
       vars <- data.frame(Mean_AF = mean_af, Mean_Cov = mean_cov, VariantQuality = SummarizedExperiment::rowData(SE)$VariantQuality, Quantile1 = quantiles[[1]], Quantile2 = quantiles[[2]])
-      vars <- vars[is.na(vars$VariantQuality), ]
+      vars <- vars[!is.na(vars$VariantQuality), ]
       vars <- subset(vars, vars$VariantQuality > min_quality)
     } else{
       vars <- data.frame(Mean_AF = mean_af, Mean_Cov = mean_cov, Quantile1 = quantiles[[1]], Quantile2 = quantiles[[2]])
@@ -85,7 +86,7 @@ VariantQuantileThresholding <- function(SE, min_coverage = 2, quantiles = c(0.1,
     top_cells_values <- Matrix::rowSums(top_cells_values)
     if(!is.null(min_quality)){
       vars <- data.frame(Mean_AF = mean_af, Mean_Cov = mean_cov, Quality = SummarizedExperiment::rowData(SE)$VariantQuality, Quantile = quantiles, TopCells = top_cells_values)
-      vars <- vars[is.na(vars$VariantQuality), ]
+      vars <- vars[!is.na(vars$VariantQuality), ]
       vars <- subset(vars, vars$VariantQuality > min_quality)
     } else{
       vars <- data.frame(Mean_AF = mean_af, Mean_Cov = mean_cov, Quantile = quantiles, TopCells = top_cells_values)

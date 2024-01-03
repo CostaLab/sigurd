@@ -5,7 +5,7 @@
 \title{VariantCloneSizeThresholding}
 \usage{
 VariantCloneSizeThresholding(
-  se,
+  SE,
   min_coverage = 2,
   fraction_negative_cells = 0.9,
   min_clone_size = 10,
@@ -14,7 +14,7 @@ VariantCloneSizeThresholding(
 )
 }
 \arguments{
-\item{se}{SummarizedExperiment object.}
+\item{SE}{SummarizedExperiment object.}
 
 \item{min_coverage}{Minimum coverage a variant needs to have.}
 

@@ -62,7 +62,7 @@ LoadingMAEGATK_typewise <- function(samples_file, samples_path = NULL, patient, 
     }
 
     # We get the final output file for either mgatk or maegatk.
-    se_ls[[sample_use]]           <- load_object(input_file_use)
+    se_ls[[sample_use]]           <- sigurd::load_object(input_file_use)
     colnames(se_ls[[sample_use]]) <- paste0(sample_use, "_", colnames(se_ls[[sample_use]]))
     barcodes_use                  <- paste0(sample_use, "_", barcodes[[sample_use]][,1])
     barcodes_use                  <- barcodes_use[barcodes_use %in% colnames(se_ls[[sample_use]])]

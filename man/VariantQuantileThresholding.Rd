@@ -39,7 +39,7 @@ VariantQuantileThresholding(
 
 \item{group_of_interest}{The column data that divides the cells.}
 
-\item{group1}{The first group of interest.}
+\item{group1}{The first group of interest. If set, the quantiles are only calculated for this group.}
 
 \item{group2}{The second group of interest.}
 
