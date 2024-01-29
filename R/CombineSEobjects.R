@@ -2,7 +2,6 @@
 #'@description
 #'We combine two SummarizedExperiment objects. This is originally intended to add the mitochondrial genotyping information to the somatic genotyping information.
 #'The function can combine any two objects and it is not requried to be from two different genotyping results.
-# #'@import BiocGenerics
 #'@importFrom SummarizedExperiment assays colData rowData SummarizedExperiment
 #'@importFrom S4Vectors DataFrame
 #'@param se_1 SummarizedExperiment object 1.

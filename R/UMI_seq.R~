@@ -1,0 +1,89 @@
+#'UMIQC
+#'@description
+#'We load the molecule_info.h5 file from CellRanger and plot the molecules by rank.
+#'A molecule is defined as a combination of UMI and CB.
+#'The molecules are ranked by their number of replicates.
+#'@importFrom R.utils intToBin
+#'@importFrom VariantAnnotation readVcf info
+#'@importFrom SummarizedExperiment SummarizedExperiment
+#'@importFrom Matrix readMM colSums rowSums colMeans rowMeans
+#'@param samples_path Path to the input folder. Must include a barcodes file.
+#'@param samples_file Path to the csv file with the samples to be loaded.
+#'@param vcf_path Path to the VCF file with the variants.
+#'@param snp_path Path to the SNP file used for VarTrix (SNV.loci.txt). 
+#'@param patient The patient you want to load.
+#'@param type_use The type of input. Only rows that have the specified type will be loaded.
+#'@param min_reads The minimum number of reads we want. Otherwise we treat this as a NoCall. Default = NULL.
+#'@param min_cells The minimum number of cells for a variant. Otherwise, we will remove a variant. Default = 2.
+#'@param barcodes_path The path to the cell barcodes tsv. Default = NULL
+#'@param cellbarcode_length The length of the cell barcode. This should be the length of the actual barcode plus two for the suffix (-1). Default = 18
+#'@param verbose Should the function be verbose? Default = TRUE
+#'@export
+LoadingVarTrix_typewise <- function(samples_file, umi_length = 12, min_reads = 100){
+  print("Custom function.")
+  UMI_seq <- function(number, umi_length) {
+    # Binary string needs to be zero-padded to ensure consistent length.
+    string_length <- umi_length * 2
+    binary_number <- R.utils::intToBin(number)
+    if(nchar(binary_number) < string_length){
+      zeros_for_padding <- string_length - nchar(binary_number)
+      zeros_for_padding <- paste0(rep(0, zeros_for_padding), collapse = "")
+      binary_number <- paste0(zeros_for_padding, binary_number)
+    }
+    # Split binary_str into chunks of 2
+    nuc_list <- substring(binary_number, seq(1, nchar(binary_number), by = 2), seq(2, nchar(binary_number), by = 2))
+    UMI_seq <- ""
+    for (i in nuc_list) {
+      if (i == "00") {
+        UMI_seq <- paste0(UMI_seq, "A")
+      } else if (i == "01") {
+        UMI_seq <- paste0(UMI_seq, "C")
+      } else if (i == "10") {
+        UMI_seq <- paste0(UMI_seq, "G")
+      } else {
+        UMI_seq <- paste0(UMI_seq, "T")
+      }
+    }
+    return(UMI_seq)
+  }
+  print("We load the molecule_info.h5 file per sample.")
+  molecule_info_ls <- lapply(samples_df[,3], function(x){
+    molecule_info <- read10xMolInfo(x)
+    molecule_info <- molecule_info$data
+    molecule_info$cell <- paste0(molecule_info$cell, "-1")
+    #molecule_info$umi <- unlist(lapply(molecule_info$umi, UMI_seq, umi_length = umi_length))
+    return(molecule_info)
+  })
+  names(molecule_info_ls) <- samples_df[,2]
+  
+  
+  print("We generate the plot data.frame.")
+  plot_df <- lapply(molecule_info_ls, function(x){
+    x <- data.frame(molecule = paste0(x$cell, "_", x$umi), reads = x$reads)
+    x <- x[base::order(x$reads, decreasing = TRUE),]
+    x$ranks <- 1:nrow(x)
+    return(x)
+  })
+  names(plot_df) <- samples_df[,2]
+  
+  
+  print("We plot the ranks.")
+  number_of_molecules_and_cells_df <- data.frame(Sample = names(plot_df), Molecules = NA, Cells = NA)
+  for(i in 1:length(plot_df)){
+    df_use <- plot_df[[i]]
+    sample_use <- names(plot_df)[i]
+    number_of_molecules_above_threshold <- sum(df_use$reads > min_reads)
+    number_of_cells_above_threshold <- subset(df_use, reads > min_reads)$molecule
+    number_of_cells_above_threshold <- length(unique(gsub("_.*", "", number_of_cells_above_threshold)))
+    number_of_molecules_and_cells_df[i,2:3] <- c(number_of_molecules_above_threshold, number_of_cells_above_threshold)
+    p <- ggplot(df_use, aes(x = ranks, y = reads)) +
+      geom_point(color = "blue") + scale_x_log10() + scale_y_log10() +
+      geom_hline(yintercept = min_reads, col = "red", linewidth = 2) +
+      ylab("Number of Reads") + xlab("Rank of Molecule") +
+      ggtitle(paste0(sample_use, "\nCells: ", number_of_cells_above_threshold, ", Molecules: ", number_of_molecules_above_threshold))
+    ggsave(paste0(output_path, sample_use, "_MinReads", min_reads, ".png"), p, width = 4, height = 4, units = "in", dpi = 1200)
+  }
+  write.table(number_of_molecules_and_cells_df, paste0(output_path, "Numbers_MinReads_", min_reads, ".csv"), sep = ",", col.names = TRUE, row.names = FALSE, quote = FALSE)
+  
+}
+
