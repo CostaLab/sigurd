@@ -114,7 +114,7 @@ Filtering <- function(se, blacklisted_barcodes_path = NULL, fraction_threshold =
       # We then also set the coverage matrix to 0.
       if(reject_value == "NoCall"){
         refs_matrix[ij] <- 0
-	coverage_matrix[ij] <- 0
+        coverage_matrix[ij] <- 0
       }
       SummarizedExperiment::assays(se)$consensus <- consensus_matrix
       SummarizedExperiment::assays(se)$fraction <- fraction_matrix
@@ -138,7 +138,7 @@ Filtering <- function(se, blacklisted_barcodes_path = NULL, fraction_threshold =
 
   if(verbose) print(paste0("We remove all cells that are not >= 1 (Ref) for at least ", min_variants_per_cell, " variant."))
   consensus_test <- SummarizedExperiment::assays(se)$consensus >= 1
-  keep_cells <- Matrix::colSums(consensus_test) > min_variants_per_cell
+  keep_cells <- Matrix::colSums(consensus_test) >= min_variants_per_cell
   se <- se[,keep_cells]
   return(se)
 }

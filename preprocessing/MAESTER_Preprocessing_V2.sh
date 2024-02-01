@@ -113,6 +113,3 @@ if [ $CLEAN_UP = "Yes" ]; then
   rm "${OUTPUT_FOLDER_PATH}${SAMPLE}/Aligned.sortedByCoord.out.bam"
   rm "${OUTPUT_FOLDER_PATH}${SAMPLE}/Aligned.sortedByCoord.out.10x.bam"
 fi
-
-
-
