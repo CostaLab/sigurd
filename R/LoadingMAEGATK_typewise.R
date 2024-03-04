@@ -36,8 +36,8 @@ LoadingMAEGATK_typewise <- function(samples_file, samples_path = NULL, patient, 
 
     if(verbose) print("We subset to the patient of interest.")
     samples_file <- samples_file[grep("maegatk|mgatk", samples_file$source, ignore.case = TRUE),]
-    samples_file <- samples_file[grep(patient, samples_file$patient),]
-    samples_file <- samples_file[grep(type_use, samples_file$type),]
+    samples_file <- subset(samples_file, patient == patient)
+    samples_file <- subset(samples_file, type == type_use)
 
     if(verbose) print("We get the different samples.")
     samples <- samples_file$sample
