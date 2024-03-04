@@ -15,7 +15,6 @@ Enrichment_FisherTest <- function(se = NULL, variant = NULL, use_nocall = FALSE,
   if(is.null(se)) stop("You did not set an input object.")
   if(is.null(variant)) stop("You did not set a variant.")
   if(is.null(trait)) stop("You did not set a trait.")
-  if(is.null(prefix)) stop("You did not set a prefix for your output files.")
   if(!is.logical(use_nocall)) stop("use_nocall has to be TRUE or FALSE.")
 
   # Testing if the consensus assay is in the SE object.
