@@ -106,6 +106,9 @@ Filtering <- function(se, blacklisted_barcodes_path = NULL, fraction_threshold =
       ij <- as.matrix(position_matrix[, 1:2])
       consensus_matrix[ij] <- reject_value_numeric
       fraction_matrix[ij] <- 0
+      # We check if the positions to be changed have ref reads. If not, we set them to NoCall.
+      refs_check <- refs_matrix[ij] == 0
+      consensus_matrix[ij][refs_check] <- 0
       # Since we remove the Alt reads in either case (NoCall or Reference), we remove the Alts from the Coverage.
       coverage_matrix[ij] <- coverage_matrix[ij] - alts_matrix[ij]
       # We now set the alts matrix to 0.
