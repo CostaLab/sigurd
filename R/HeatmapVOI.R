@@ -29,7 +29,7 @@ HeatmapVoi <- function(SE, voi, annotation_trait = NULL, column_title = NULL, re
     fraction <- fraction[,cell_check, drop = FALSE]
   }
   if(!is.null(annotation_trait)){
-    colours_use <- scales::hue_pal(length(unique(SummarizedExperiment::colData(SE)[,annotation_trait])))
+    colours_use <- scales::hue_pal()(length(unique(SummarizedExperiment::colData(SE)[,annotation_trait])))
     names(colours_use) <- unique(SummarizedExperiment::colData(SE)[,annotation_trait])
     ha <- ComplexHeatmap::columnAnnotation(annotation_trait = SummarizedExperiment::colData(SE)[,annotation_trait],
                                            col = list(annotation_trait = colours_use))
