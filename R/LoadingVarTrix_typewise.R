@@ -16,6 +16,7 @@
 #'@param vcf_path Path to the VCF file with the variants.
 #'@param snp_path Path to the SNP file used for VarTrix (SNV.loci.txt). 
 #'@param patient The patient you want to load.
+#'@param patient_column The column that contains the patient information. Use merge, if all samples should be merged.
 #'@param type_use The type of input. Only rows that have the specified type will be loaded.
 #'@param min_reads The minimum number of reads we want. Otherwise we treat this as a NoCall. Default = NULL.
 #'@param min_cells The minimum number of cells for a variant. Otherwise, we will remove a variant. Default = 2.
@@ -23,19 +24,22 @@
 #'@param cellbarcode_length The length of the cell barcode. This should be the length of the actual barcode plus two for the suffix (-1). Default = 18
 #'@param verbose Should the function be verbose? Default = TRUE
 #'@export
-LoadingVarTrix_typewise <- function(samples_file, samples_path = NULL, barcodes_path = NULL, snp_path = NULL, vcf_path, patient, type_use = "scRNAseq_Somatic", min_reads = NULL, min_cells = 2, cellbarcode_length = 18, verbose = TRUE){
+LoadingVarTrix_typewise <- function(samples_file, samples_path = NULL, barcodes_path = NULL, snp_path = NULL, vcf_path, patient, patient_column = "patient", type_use = "scRNAseq_Somatic", min_reads = NULL, min_cells = 2, cellbarcode_length = 18, verbose = TRUE){
   if(all(!is.null(samples_path), !is.null(barcodes_path), !is.null(snp_path))){
     if(verbose) print(paste0("Loading the data for sample ", patient, "."))
     samples_file <- data.frame(patient = patient, sample = patient, input_path = samples_path, cells = barcodes_path)
     samples <- samples_file$sample
   } else{
     if(verbose) print(paste0("Loading the data for patient ", patient, "."))
-    if(verbose) print("We read in the samples file.")
+    if(verbose) print("We read in the  central input file.")
     samples_file <- utils::read.csv(samples_file, stringsAsFactors = FALSE)
+    if(!patient_column %in% colnames(samples_file) & patient_column != "merge"){
+      stop(paste0("Error: the column ", patient_column, " is not in your central input file."))
+    }
 
-    if(verbose) print("We subset to the patient of interest.")
+    if(verbose) print("We subset to the relevant files.")
     samples_file <- samples_file[grep("vartrix", samples_file$source, ignore.case = TRUE),]
-    samples_file <- samples_file[samples_file$patient == patient,]
+    if(patient_column != "merge") samples_file <- samples_file[samples_file[,patient_column] == patient,]
     samples_file <- samples_file[samples_file$type == type_use,]
 
     if(verbose) print("We get the different samples.")

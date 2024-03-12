@@ -17,6 +17,7 @@ VariantQuantileThresholding(
   group1 = NULL,
   group2 = NULL,
   group_factor = NULL,
+  remove_nocall = TRUE,
   verbose = TRUE
 )
 }
@@ -44,6 +45,8 @@ VariantQuantileThresholding(
 \item{group2}{The second group of interest.}
 
 \item{group_factor}{How much higher has the mean allele frequency to be in group 1 when compared to group 2?}
+
+\item{remove_nocall}{Should NoCall cells (consensus = 0) be disregarded during the analysis?}
 
 \item{verbose}{Should the function be verbose? Default = TRUE}
 }

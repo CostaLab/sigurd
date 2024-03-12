@@ -19,6 +19,7 @@
 #'@param group1 The first group of interest. If set, the quantiles are only calculated for this group.
 #'@param group2 The second group of interest.
 #'@param group_factor How much higher has the mean allele frequency to be in group 1 when compared to group 2?
+#'@param remove_nocall Should NoCall cells (consensus = 0) be disregarded during the analysis?
 #'@param verbose Should the function be verbose? Default = TRUE
 #'@export
 VariantQuantileThresholding <- function(SE, min_coverage = 2, quantiles = c(0.1, 0.9), thresholds = c(0.1, 0.9), top_cells = NULL, top_VAF = NULL, min_quality = NULL, mean_allele_frequency = 0,

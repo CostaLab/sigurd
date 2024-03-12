@@ -16,7 +16,7 @@ Source: https://github.com/petervangalen/MAESTER-2021"><!-- mathjax --><script s
     
     <a class="navbar-brand me-2" href="../index.html">sigurd</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.39</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.42</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -70,6 +70,7 @@ Source: https://github.com/petervangalen/MAESTER-2021</p>
 <span>  group1 <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  group2 <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  group_factor <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  remove_nocall <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -122,6 +123,10 @@ Source: https://github.com/petervangalen/MAESTER-2021</p>
 
 <dt>group_factor</dt>
 <dd><p>How much higher has the mean allele frequency to be in group 1 when compared to group 2?</p></dd>
+
+
+<dt>remove_nocall</dt>
+<dd><p>Should NoCall cells (consensus = 0) be disregarded during the analysis?</p></dd>
 
 
 <dt>verbose</dt>

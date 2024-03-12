@@ -17,13 +17,14 @@
 #'@param samples_file Path to the csv file with the samples to be loaded.
 #'@param type_use The type of input. Only rows that have the specified type will be loaded.
 #'@param patient The patient you want to load.
+#'@param patient_column The column that contains the patient information. Use merge, if all samples should be merged.
 #'@param chromosome_prefix The prefix you want use. Default: "chrM"
 #'@param min_cells The minimum number of cells with coverage for a variant. Variants with coverage in less than this amount of cells are removed. Default = 2
 #'@param barcodes_path Path to the barcodes file tsv. Default = NULL
 #'@param cellbarcode_length The length of the cell barcode. This should be the length of the actual barcode plus two for the suffix (-1). Default = 18
 #'@param verbose Should the function be verbose? Default = TRUE
 #'@export
-LoadingMAEGATK_typewise <- function(samples_file, samples_path = NULL, patient, type_use = "scRNAseq_MT", chromosome_prefix = "chrM",
+LoadingMAEGATK_typewise <- function(samples_file, samples_path = NULL, patient, patient_column = "patient", type_use = "scRNAseq_MT", chromosome_prefix = "chrM",
                                     min_cells = 2, barcodes_path = NULL, cellbarcode_length = 18, verbose = TRUE){
   if(all(!is.null(samples_path), !is.null(barcodes_path))){
     if(verbose) print(paste0("Loading the data for patient ", patient, "."))
@@ -31,12 +32,15 @@ LoadingMAEGATK_typewise <- function(samples_file, samples_path = NULL, patient, 
     samples_file <- data.frame(patient = patient, sample = samples, input_path = samples_path, cells = barcodes_path)
   } else{
     if(verbose) print(paste0("Loading the data for patient ", patient, "."))
-    if(verbose) print("We read in the samples file.")
+    if(verbose) print("We read in the central input file.")
     samples_file <- utils::read.csv(samples_file)
+    if(!patient_column %in% colnames(samples_file) & patient_column != "merge"){
+      stop(paste0("Error: the column ", patient_column, " is not in your central input file."))
+    }
 
-    if(verbose) print("We subset to the patient of interest.")
+    if(verbose) print("We subset to the relevant files.")
     samples_file <- samples_file[grep("maegatk|mgatk", samples_file$source, ignore.case = TRUE),]
-    samples_file <- samples_file[samples_file$patient == patient,]
+    if(patient_column != "merge") samples_file <- samples_file[samples_file[,patient_column] == patient,]
     samples_file <- samples_file[samples_file$type == type_use,]
 
     if(verbose) print("We get the different samples.")

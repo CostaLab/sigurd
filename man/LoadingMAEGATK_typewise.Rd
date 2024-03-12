@@ -8,6 +8,7 @@ LoadingMAEGATK_typewise(
   samples_file,
   samples_path = NULL,
   patient,
+  patient_column = "patient",
   type_use = "scRNAseq_MT",
   chromosome_prefix = "chrM",
   min_cells = 2,
@@ -22,6 +23,8 @@ LoadingMAEGATK_typewise(
 \item{samples_path}{Path to the input folder.}
 
 \item{patient}{The patient you want to load.}
+
+\item{patient_column}{The column that contains the patient information. Use merge, if all samples should be merged.}
 
 \item{type_use}{The type of input. Only rows that have the specified type will be loaded.}
 

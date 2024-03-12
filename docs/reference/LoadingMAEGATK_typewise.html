@@ -28,7 +28,7 @@ samples_file = NULL
     
     <a class="navbar-brand me-2" href="../index.html">sigurd</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.39</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.42</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -76,6 +76,7 @@ If you want to only load a single sample without the use of an input file, you h
 <span>  <span class="va">samples_file</span>,</span>
 <span>  samples_path <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">patient</span>,</span>
+<span>  patient_column <span class="op">=</span> <span class="st">"patient"</span>,</span>
 <span>  type_use <span class="op">=</span> <span class="st">"scRNAseq_MT"</span>,</span>
 <span>  chromosome_prefix <span class="op">=</span> <span class="st">"chrM"</span>,</span>
 <span>  min_cells <span class="op">=</span> <span class="fl">2</span>,</span>
@@ -97,6 +98,10 @@ If you want to only load a single sample without the use of an input file, you h
 
 <dt>patient</dt>
 <dd><p>The patient you want to load.</p></dd>
+
+
+<dt>patient_column</dt>
+<dd><p>The column that contains the patient information. Use merge, if all samples should be merged.</p></dd>
 
 
 <dt>type_use</dt>
