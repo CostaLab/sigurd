@@ -1,5 +1,5 @@
 # The Assemble_fastq.R file from MAESTER.
-# Peter van Galen, 200110
+# Originally written by Peter van Galen, 200110
 # Goal: append cell barcode and unique molecular identifier, _CB_UMI, from Read 1 to each Read 2 identifier
 
 
@@ -75,10 +75,10 @@ for(f1 in R1.ch) {
 
   # Load file in 1E7 read increments
   message("file ", match(f1, R1.ch), "/", length(R1.ch), ": ", basename(f1), " ", appendLF = FALSE)
-  strm1 <- ShortRead::FastqStreamer(f1, n=1E7)  # 1M reads by default
+  strm1 <- ShortRead::FastqStreamer(f1, n=1E7) # 1M reads by default
   strm2 <- ShortRead::FastqStreamer(f2, n=1E7)
 
-  # For every 10 million reads...  
+  # For every 10 million reads do the following.
   repeat{
     message("*", appendLF = FALSE)
     fq1 <- ShortRead::yield(strm1)
@@ -86,7 +86,7 @@ for(f1 in R1.ch) {
     if(length(fq1) == 0 | length(fq2) == 0) break
 
     # Match to expected cell barcodes
-    fq1.m <- ifelse(is.element(as.vector(XVector::subseq(ShortRead::sread(fq1), 1, CB_Length)), cells.ch), yes = T, no = F)
+    fq1.m <- ifelse(is.element(as.vector(XVector::subseq(ShortRead::sread(fq1), 1, CB_Length)), cells.ch), yes = TRUE, no = FALSE)
 
     # Filter unmatched reads from the ShortRead objects
     fq1.f <- fq1[fq1.m]
@@ -115,5 +115,4 @@ for(f1 in R1.ch) {
   invisible(gc())
 }
 
-sessionInfo()
 message("\nFinished!")

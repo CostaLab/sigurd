@@ -30,6 +30,9 @@ done
 # We load the VCF file into R and subset it.
 Rscript SubsetVCF_From_CosmicCodingMuts.R \
 	--input_file ${result_path}/CosmicSubset.vcf \
-	--output_file ${result_path}/CosmicSubset_filtered.vcf
+	--output_file ${result_path}/CosmicSubset.vcf \
+	--output_file_UCSC ${result_path}/CosmicSubset_UCSC.vcf \
+	--sample_count 10 \
+	--remove_alternative_transcripts TRUE
 
 

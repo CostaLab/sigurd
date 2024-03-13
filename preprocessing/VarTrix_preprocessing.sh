@@ -17,8 +17,8 @@ MAPQ=30
 # Input files
 # The reference fasta file.
 # Choose one of the following.
-REFERENCE_FASTA="~/gene_annotation/refdata-gex-GRCh38-2020-A/fasta/genome_numericMT.fa"
-REFERENCE_FASTA="~/bwa_index/genome_MT/genome_MT.fa"
+REFERENCE_FASTA="/Path/To/Your/gene_annotation/refdata-gex-GRCh38-2020-A/fasta/genome_numericMT.fa"
+REFERENCE_FASTA="/Path/To/Your/bwa_index/genome_MT/genome_MT.fa"
 
 # These are your positions of interest.
 # These files are provided as example data.

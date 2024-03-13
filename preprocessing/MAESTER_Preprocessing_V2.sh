@@ -84,8 +84,8 @@ samtools view -h $INPUT | awk 'BEGIN{FS="\t"; OFS="\t"} {
 samtools index -@ ${NCORES} "${OUTPUT_FOLDER_PATH}${SAMPLE}/Aligned.sortedByCoord.out.10x.bam"
 
 
-echo "We subset the BAM file to only include mitochondrial reads."
-samtools view -@ ${NCORES} -b -o "${OUTPUT_FOLDER_PATH}${SAMPLE}/Aligned.sortedByCoord.out.10x.MT.bam" \
+echo "We subset the BAM file to only include mitochondrial reads and remove unmapped reads."
+samtools view -@ ${NCORES} -b -F 4 -o "${OUTPUT_FOLDER_PATH}${SAMPLE}/Aligned.sortedByCoord.out.10x.MT.bam" \
 	 "${OUTPUT_FOLDER_PATH}${SAMPLE}/Aligned.sortedByCoord.out.10x.bam" "${MT_NAME}"
 samtools index -@ 16 "${OUTPUT_FOLDER_PATH}${SAMPLE}/Aligned.sortedByCoord.out.10x.MT.bam"
 
