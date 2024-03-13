@@ -4,37 +4,42 @@
 #'we might need extreme amounts of memory. To solve this issue, I will load each type separately.
 #'In a following function (AmpliconSupplementing), we can add the amplicon information to the
 #'scRNAseq information.
-#'The input file is a specifically formated csv file with all the necessary information to run the analysis.
-#'Note that the source column in the input file needs to be one of the following: vartrix, mgaetk, mgatk.
+#'The input file is a specifically formatted csv file with all the necessary information to run the analysis.
+#'Note that the source column in the input file needs to be vartrix for this function.
 #'This is hard coded and case insensitive.
 #'@importFrom utils read.csv read.table
 #'@importFrom VariantAnnotation readVcf info
 #'@importFrom SummarizedExperiment SummarizedExperiment
-#'@importFrom Matrix readMM
+#'@importFrom Matrix readMM colSums rowSums colMeans rowMeans
 #'@param samples_path Path to the input folder. Must include a barcodes file.
 #'@param samples_file Path to the csv file with the samples to be loaded.
 #'@param vcf_path Path to the VCF file with the variants.
 #'@param snp_path Path to the SNP file used for VarTrix (SNV.loci.txt). 
 #'@param patient The patient you want to load.
-#'@param type_use The type of input. Has to be one of: scRNAseq_Somatic, Amplicon_Somatic, scRNAseq_MT, Amplicon_MT.
+#'@param patient_column The column that contains the patient information. Use merge, if all samples should be merged.
+#'@param type_use The type of input. Only rows that have the specified type will be loaded.
 #'@param min_reads The minimum number of reads we want. Otherwise we treat this as a NoCall. Default = NULL.
 #'@param min_cells The minimum number of cells for a variant. Otherwise, we will remove a variant. Default = 2.
 #'@param barcodes_path The path to the cell barcodes tsv. Default = NULL
+#'@param cellbarcode_length The length of the cell barcode. This should be the length of the actual barcode plus two for the suffix (-1). Default = 18
 #'@param verbose Should the function be verbose? Default = TRUE
 #'@export
-LoadingVarTrix_typewise <- function(samples_file, samples_path = NULL, barcodes_path = NULL, snp_path = NULL, vcf_path, patient, type_use = "scRNAseq_Somatic", min_reads = NULL, min_cells = 2, verbose = TRUE){
+LoadingVarTrix_typewise <- function(samples_file, samples_path = NULL, barcodes_path = NULL, snp_path = NULL, vcf_path, patient, patient_column = "patient", type_use = "scRNAseq_Somatic", min_reads = NULL, min_cells = 2, cellbarcode_length = 18, verbose = TRUE){
   if(all(!is.null(samples_path), !is.null(barcodes_path), !is.null(snp_path))){
     if(verbose) print(paste0("Loading the data for sample ", patient, "."))
     samples_file <- data.frame(patient = patient, sample = patient, input_path = samples_path, cells = barcodes_path)
     samples <- samples_file$sample
   } else{
     if(verbose) print(paste0("Loading the data for patient ", patient, "."))
-    if(verbose) print("We read in the samples file.")
+    if(verbose) print("We read in the  central input file.")
     samples_file <- utils::read.csv(samples_file, stringsAsFactors = FALSE)
+    if(!patient_column %in% colnames(samples_file) & patient_column != "merge"){
+      stop(paste0("Error: the column ", patient_column, " is not in your central input file."))
+    }
 
-    if(verbose) print("We subset to the patient of interest.")
+    if(verbose) print("We subset to the relevant files.")
     samples_file <- samples_file[grep("vartrix", samples_file$source, ignore.case = TRUE),]
-    samples_file <- samples_file[samples_file$patient == patient,]
+    if(patient_column != "merge") samples_file <- samples_file[samples_file[,patient_column] == patient,]
     samples_file <- samples_file[samples_file$type == type_use,]
 
     if(verbose) print("We get the different samples.")
@@ -144,49 +149,21 @@ LoadingVarTrix_typewise <- function(samples_file, samples_path = NULL, barcodes_
 
 
   if(verbose) print(paste0("We remove variants, that are not detected in at least ", min_cells, " cells."))
-  keep_variants <- rowSums(consensus_matrix_total >= 1)
+  keep_variants <- Matrix::rowSums(consensus_matrix_total >= 1)
   keep_variants <- keep_variants >= min_cells
   # If we only have one cell or one variant, we loose the matrix.
-  #cell_ids <- colnames(consensus_matrix_total)
-  #variant_names <- names(keep_variants[keep_variants])
   consensus_matrix_total <- consensus_matrix_total[keep_variants, , drop = FALSE]
-  #consensus_matrix_total <- matrix(consensus_matrix_total, nrow = length(variant_names), ncol = length(cell_ids))
-  #colnames(consensus_matrix_total) <- cell_ids
-  #rownames(consensus_matrix_total) <- variant_names
-  #consensus_matrix_total <- methods::as(consensus_matrix_total, "dgCMatrix")
   coverage_matrix_total <- coverage_matrix_total[keep_variants, , drop = FALSE]
-  #coverage_matrix_total <- matrix(coverage_matrix_total, nrow = length(variant_names), ncol = length(cell_ids))
-  #colnames(coverage_matrix_total) <- cell_ids
-  #rownames(coverage_matrix_total) <- variant_names
-  #coverage_matrix_total <- methods::as(coverage_matrix_total, "dgCMatrix")
   ref_matrix_total <- ref_matrix_total[keep_variants, , drop = FALSE]
-  #ref_matrix_total <- matrix(ref_matrix_total, nrow = length(variant_names), ncol = length(cell_ids))
-  #colnames(ref_matrix_total) <- cell_ids
-  #rownames(ref_matrix_total) <- variant_names
-  #ref_matrix_total <- methods::as(ref_matrix_total, "dgCMatrix")
 
 
   if(verbose) print("We remove cells that are always NoCall.")
   consensus_test <- consensus_matrix_total > 0
-  keep_cells <- colSums(consensus_test) > 0
+  keep_cells <- Matrix::colSums(consensus_test) > 0
   # If we only have one cell or one variant, we loose the matrix.
-  #cell_ids <- names(keep_cells[keep_cells])
-  #variant_names <- rownames(consensus_matrix_total)
   consensus_matrix_total <- consensus_matrix_total[, keep_cells, drop = FALSE]
-  #consensus_matrix_total <- matrix(consensus_matrix_total, nrow = length(variant_names), ncol = length(cell_ids))
-  #colnames(consensus_matrix_total) <- cell_ids
-  #rownames(consensus_matrix_total) <- variant_names
-  #consensus_matrix_total <- methods::as(consensus_matrix_total, "dgCMatrix")
   coverage_matrix_total <- coverage_matrix_total[, keep_cells, drop = FALSE]
-  #coverage_matrix_total <- matrix(coverage_matrix_total, nrow = length(variant_names), ncol = length(cell_ids))
-  #colnames(coverage_matrix_total) <- cell_ids
-  #rownames(coverage_matrix_total) <- variant_names
-  #coverage_matrix_total <- methods::as(coverage_matrix_total, "dgCMatrix")
   ref_matrix_total <- ref_matrix_total[, keep_cells, drop = FALSE]
-  #ref_matrix_total <- matrix(ref_matrix_total, nrow = length(variant_names), ncol = length(cell_ids))
-  #colnames(ref_matrix_total) <- cell_ids
-  #rownames(ref_matrix_total) <- variant_names
-  #ref_matrix_total <- methods::as(ref_matrix_total, "dgCMatrix")
 
 
   if(verbose) print(paste0(type_use, " Variants: ", nrow(consensus_matrix_total)))
@@ -197,9 +174,6 @@ LoadingVarTrix_typewise <- function(samples_file, samples_path = NULL, barcodes_
 
 
   if(verbose) print("We transform the sparse matrices to matrices, so we can calculate the fraction.")
-  coverage_matrix_total                 <- as.matrix(coverage_matrix_total)
-  ref_matrix_total                      <- as.matrix(ref_matrix_total)
-  consensus_matrix_total                <- as.matrix(consensus_matrix_total)
   reads_total                           <- coverage_matrix_total + ref_matrix_total
   fraction_total                        <- coverage_matrix_total / reads_total
   fraction_total[is.na(fraction_total)] <- 0
@@ -209,21 +183,20 @@ LoadingVarTrix_typewise <- function(samples_file, samples_path = NULL, barcodes_
   # We check if the matrices are empty (0 cells, 0 variants). Then we simply return NULL.
   dim_test <- dim(reads_total)
   if(any(dim_test == 0)){
-    if(verbose) print(paste0("The filtering left ", dim_test[1], " variants and ", dim_test[2], "cells."))
-    if(verbose) print("Returning NULL.")
+    print(paste0("The filtering left ", dim_test[1], " variants and ", dim_test[2], "cells."))
+    print("Returning NULL.")
     return(NULL)
   } else {
     if(verbose) print("We generate a SummarizedExperiment object containing the fraction and the consensus matrices.")
     # We want an assay for the Consensus information and for the fraction.
     # As meta data we add a data frame showing the cell id, the associated patient and the sample.
-    coverage_depth_per_cell <- colMeans(reads_total)
-    coverage_depth_per_variant <- rowMeans(reads_total)
-    meta_data <- data.frame(Cell = colnames(consensus_matrix_total), Type = type_use, AverageCoverage = coverage_depth_per_cell)
+    coverage_depth_per_cell <- Matrix::colMeans(reads_total)
+    coverage_depth_per_variant <- Matrix::rowMeans(reads_total)
+    meta_data <- data.frame(Cell = colnames(consensus_matrix_total), Patient = patient, Sample = substr(x = colnames(consensus_matrix_total), start = 1, stop = nchar(colnames(consensus_matrix_total))-(cellbarcode_length+1)), Type = type_use, AverageCoverage = coverage_depth_per_cell)
     rownames(meta_data) <- meta_data$Cell
     meta_row <- data.frame(VariantName = rownames(consensus_matrix_total), Depth = coverage_depth_per_variant)
     rownames(meta_row) <- meta_row$VariantName
-    se_merged <- SummarizedExperiment::SummarizedExperiment(assays = list(consensus = methods::as(consensus_matrix_total, "CsparseMatrix"), fraction = methods::as(fraction_total, "CsparseMatrix"), coverage = methods::as(reads_total, "CsparseMatrix"),
-                                                                          alts = methods::as(coverage_matrix_total, "CsparseMatrix"), refs = methods::as(ref_matrix_total, "CsparseMatrix")),
+    se_merged <- SummarizedExperiment::SummarizedExperiment(assays = list(consensus = as(consensus_matrix_total, "CsparseMatrix"), fraction = as(fraction_total, "CsparseMatrix"), coverage = as(reads_total, "CsparseMatrix"), alts = as(coverage_matrix_total, "CsparseMatrix"), refs = as(ref_matrix_total, "CsparseMatrix")),
                                                             colData = meta_data, rowData = meta_row)
     return(se_merged)
   }

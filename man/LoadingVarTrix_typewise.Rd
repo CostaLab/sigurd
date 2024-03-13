@@ -11,9 +11,11 @@ LoadingVarTrix_typewise(
   snp_path = NULL,
   vcf_path,
   patient,
+  patient_column = "patient",
   type_use = "scRNAseq_Somatic",
   min_reads = NULL,
   min_cells = 2,
+  cellbarcode_length = 18,
   verbose = TRUE
 )
 }
@@ -30,11 +32,15 @@ LoadingVarTrix_typewise(
 
 \item{patient}{The patient you want to load.}
 
-\item{type_use}{The type of input. Has to be one of: scRNAseq_Somatic, Amplicon_Somatic, scRNAseq_MT, Amplicon_MT.}
+\item{patient_column}{The column that contains the patient information. Use merge, if all samples should be merged.}
+
+\item{type_use}{The type of input. Only rows that have the specified type will be loaded.}
 
 \item{min_reads}{The minimum number of reads we want. Otherwise we treat this as a NoCall. Default = NULL.}
 
 \item{min_cells}{The minimum number of cells for a variant. Otherwise, we will remove a variant. Default = 2.}
+
+\item{cellbarcode_length}{The length of the cell barcode. This should be the length of the actual barcode plus two for the suffix (-1). Default = 18}
 
 \item{verbose}{Should the function be verbose? Default = TRUE}
 }
@@ -43,7 +49,7 @@ When we load all the different types of results (scRNAseq/amplicon and MT/amplic
 we might need extreme amounts of memory. To solve this issue, I will load each type separately.
 In a following function (AmpliconSupplementing), we can add the amplicon information to the
 scRNAseq information.
-The input file is a specifically formated csv file with all the necessary information to run the analysis.
-Note that the source column in the input file needs to be one of the following: vartrix, mgaetk, mgatk.
+The input file is a specifically formatted csv file with all the necessary information to run the analysis.
+Note that the source column in the input file needs to be vartrix for this function.
 This is hard coded and case insensitive.
 }

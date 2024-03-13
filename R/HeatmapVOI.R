@@ -6,6 +6,7 @@
 #'@importFrom grid gpar unit
 #'@importFrom circlize colorRamp2
 #'@importFrom scales hue_pal
+#'@importFrom Matrix colSums
 #'@param SE SummarizedExperiment object.
 #'@param voi Variants Of Interest.
 #'@param annotation_trait Cell Annotation at the bottom of the heat map.
@@ -24,11 +25,12 @@ HeatmapVoi <- function(SE, voi, annotation_trait = NULL, column_title = NULL, re
   }
   # We remove cells that are negative for all variants.
   if(remove_empty_cells){
-    cell_check <- colSums(fraction > 0) > 0
+    cell_check <- Matrix::colSums(fraction > 0) > 0
     fraction <- fraction[,cell_check, drop = FALSE]
+    SE <- SE[,cell_check]
   }
   if(!is.null(annotation_trait)){
-    colours_use <- scales::hue_pal(length(unique(SummarizedExperiment::colData(SE)[,annotation_trait])))
+    colours_use <- scales::hue_pal()(length(unique(SummarizedExperiment::colData(SE)[,annotation_trait])))
     names(colours_use) <- unique(SummarizedExperiment::colData(SE)[,annotation_trait])
     ha <- ComplexHeatmap::columnAnnotation(annotation_trait = SummarizedExperiment::colData(SE)[,annotation_trait],
                                            col = list(annotation_trait = colours_use))
@@ -49,7 +51,7 @@ HeatmapVoi <- function(SE, voi, annotation_trait = NULL, column_title = NULL, re
                                                                     c("#FCFCFC","#FFEDB0","#FFDF5F","#FEC510","#FA8E24","#F14C2B","#DA2828","#BE2222","#A31D1D")),
                                          show_row_names = T, show_column_names = F, cluster_columns = T, clustering_method_columns = "complete", cluster_rows = F, name = "VAF",
                                          heatmap_legend_param = list(border = "#000000", grid_height = grid::unit(10, "mm")),
-                                         bottom_annotation = ha, border = T, use_raster = T,
+                                         bottom_annotation = ha, border = T, use_raster = F,
                                          column_title = column_title,
                                          row_title = "Variants")
   return(heatmap_voi)

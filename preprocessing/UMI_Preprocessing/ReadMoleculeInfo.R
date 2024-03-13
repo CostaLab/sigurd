@@ -7,6 +7,7 @@ print("Libraries.")
 suppressPackageStartupMessages(library(DropletUtils))
 suppressPackageStartupMessages(library(R.utils))
 suppressPackageStartupMessages(library(optparse))
+suppressPackageStartupMessages(library(sigurd))
 
 
 print("Variables.")

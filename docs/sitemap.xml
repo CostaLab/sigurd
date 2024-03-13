@@ -58,6 +58,9 @@
     <loc>/reference/CombineSEobjects_big.html</loc>
   </url>
   <url>
+    <loc>/reference/Enrichment_FisherTest.html</loc>
+  </url>
+  <url>
     <loc>/reference/Filtering.html</loc>
   </url>
   <url>
@@ -101,6 +104,12 @@
   </url>
   <url>
     <loc>/reference/SetVariantInfo.html</loc>
+  </url>
+  <url>
+    <loc>/reference/UMIQC.html</loc>
+  </url>
+  <url>
+    <loc>/reference/UMI_seq.html</loc>
   </url>
   <url>
     <loc>/reference/VariantBurden.html</loc>

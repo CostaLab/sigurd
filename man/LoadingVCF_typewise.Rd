@@ -7,34 +7,34 @@
 LoadingVCF_typewise(
   samples_file,
   samples_path = NULL,
-  barcodes_path = NULL,
   vcf_path,
   patient,
   type_use = "scRNAseq_Somatic",
   min_reads = NULL,
   min_cells = 2,
   remove_N_alternative = TRUE,
+  cellbarcode_length = 18,
   verbose = TRUE
 )
 }
 \arguments{
 \item{samples_file}{Path to the csv file with the samples to be loaded.}
 
-\item{samples_path}{Path to the input folder. Must include a barcodes file.}
-
-\item{barcodes_path}{Path to the cell barcodes tsv. Default = NULL}
+\item{samples_path}{Path to the input folder.}
 
 \item{vcf_path}{Path to the VCF file with the variants.}
 
 \item{patient}{The patient you want to load.}
 
-\item{type_use}{The type of input. Has to be one of: scRNAseq_Somatic, Amplicon_Somatic, scRNAseq_MT, Amplicon_MT.}
+\item{type_use}{The type of input. Only rows that have the specified type will be loaded.}
 
 \item{min_reads}{The minimum number of reads we want. Otherwise we treat this as a NoCall. Default = NULL.}
 
 \item{min_cells}{The minimum number of cells for a variant. Otherwise, we will remove a variant. Default = 2.}
 
 \item{remove_N_alternative}{Remove all variants that have N as an alternative, see Description. Default = TRUE}
+
+\item{cellbarcode_length}{The length of the cell barcode. This should be the length of the actual barcode plus two for the suffix (-1). Default = 18}
 
 \item{verbose}{Should the function be verbose? Default = TRUE}
 }
@@ -43,10 +43,10 @@ We load a cellwise pileup result from a VCF file.
 If you want to only load a single sample without the use of an input file, you have to set the following variables.
 \enumerate{
   \item samples_path
-  \item barcodes_path
   \item patient
   \item samples_file = NULL
 }
+Note that the source column in the input file needs to be vcf for this function. This is case insensitive.
 
 It has happened that reads with an N allele were aligned. This can cause problems since these variants are typically not in variants lists.
 We can remove all of these variants by setting remove_N_alternative to TRUE (the default).
