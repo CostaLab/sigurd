@@ -44,7 +44,7 @@ CLEAN_UP="No"
 echo "We assemble the FASTQ file for sample ${SAMPLE}."
 mkdir -p ${OUTPUT}/${SAMPLE}
 cd ${OUTPUT}${SAMPLE}
-Rscript "000_AssembleFASTQ.R" \
+Rscript "AssembleFASTQ.R" \
   --Input_Folder_Path ${INPUT_FOLDER_FASTQ} \
   --Sample ${SAMPLE} \
   --Cell_Barcodes_Path ${CELL_BARCODES_PATH} \
@@ -106,7 +106,6 @@ maegatk bcall \
        --mito-genome ${BWA_INDEX}
 
 
-echo "We remove unneeded files."
 if [ ${CLEAN_UP} = "Yes" ]; then
   echo "Removing unneeded files."
   rm "${OUTPUT_FOLDER_PATH}${SAMPLE}/${SAMPLE}_trimmed.fastq.gz"
