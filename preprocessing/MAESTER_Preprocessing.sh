@@ -27,7 +27,7 @@ MEMORY_IN_GB=64
 MT_NAME="MT"
 BWA_INDEX="bwa_index/genome_MT/genome_MT.fa"
 # How many cores do you want to use?
-NCORES=7
+NCORES=1
 # How many barcodes should a cell have to be included?
 MIN_BARCODE_READS=3
 # How many reads should a UMI in a cell have to be included?
@@ -35,14 +35,14 @@ MIN_READS=3
 # What is the read quality threshold?
 BASE_QUALITY=30
 # What is the alignment quality threshold?
-ALIGNMENT_QUALITY=30
+MAPQ=30
 # Do you want to remvoe unneeded files after running the pipeline? Yes or No.
 CLEAN_UP="No"
 
 
 
 echo "We assemble the FASTQ file for sample ${SAMPLE}."
-mkdir -p $OUTPUT/${SAMPLE}
+mkdir -p ${OUTPUT}/${SAMPLE}
 cd ${OUTPUT}${SAMPLE}
 Rscript "000_AssembleFASTQ.R" \
   --Input_Folder_Path ${INPUT_FOLDER_FASTQ} \
@@ -73,7 +73,7 @@ samtools index -@ ${NCORES} "${OUTPUT_FOLDER_PATH}${SAMPLE}/Aligned.sortedByCoor
 
 
 echo "Converting ${OUTPUT_FOLDER_PATH}${SAMPLE}/Aligned.sortedByCoord.out.bam into ${OUTPUT_FOLDER_PATH}${SAMPLE}/Aligned.sortedByCoord.out.10x.bam"
-samtools view -h $INPUT | awk 'BEGIN{FS="\t"; OFS="\t"} {
+samtools view -h ${INPUT} | awk 'BEGIN{FS="\t"; OFS="\t"} {
 	if (substr($1,1,1) == "@") {
 		print $0
 	} else {
@@ -84,9 +84,9 @@ samtools view -h $INPUT | awk 'BEGIN{FS="\t"; OFS="\t"} {
 samtools index -@ ${NCORES} "${OUTPUT_FOLDER_PATH}${SAMPLE}/Aligned.sortedByCoord.out.10x.bam"
 
 
-echo "We subset the BAM file to only include mitochondrial reads and remove unmapped reads."
-samtools view -@ ${NCORES} -b -F 4 -o "${OUTPUT_FOLDER_PATH}${SAMPLE}/Aligned.sortedByCoord.out.10x.MT.bam" \
-	 "${OUTPUT_FOLDER_PATH}${SAMPLE}/Aligned.sortedByCoord.out.10x.bam" "${MT_NAME}"
+echo "We subset the BAM file to only include mitochondrial reads, remove unmapped reads and reads with a mapping quality below ${MAPQ}."
+samtools view -@ ${NCORES} -b -F 4 -q ${MAPQ} -o "${OUTPUT_FOLDER_PATH}${SAMPLE}/Aligned.sortedByCoord.out.10x.MT.bam" \
+	 "${OUTPUT_FOLDER_PATH}${SAMPLE}/Aligned.sortedByCoord.out.10x.bam" ${MT_NAME}
 samtools index -@ 16 "${OUTPUT_FOLDER_PATH}${SAMPLE}/Aligned.sortedByCoord.out.10x.MT.bam"
 
 
@@ -102,12 +102,12 @@ maegatk bcall \
        --input "${OUTPUT_FOLDER_PATH}${SAMPLE}/Aligned.sortedByCoord.out.10x.MT.bam" \
        --output ${OUTPUT} \
        --base-qual ${BASE_QUALITY} \
-       --alignment-quality ${ALIGNMENT_QUALITY} \
-       --mito-genome "/home/mg000001/MPN/MAESTER/bwa_index/genome_MT/genome_MT.fa"
+       --alignment-quality ${MAPQ} \
+       --mito-genome ${BWA_INDEX}
 
 
 echo "We remove unneeded files."
-if [ $CLEAN_UP = "Yes" ]; then
+if [ ${CLEAN_UP} = "Yes" ]; then
   echo "Removing unneeded files."
   rm "${OUTPUT_FOLDER_PATH}${SAMPLE}/${SAMPLE}_trimmed.fastq.gz"
   rm "${OUTPUT_FOLDER_PATH}${SAMPLE}/Aligned.sortedByCoord.out.bam"
