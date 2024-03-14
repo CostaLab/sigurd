@@ -5,19 +5,27 @@
 \title{UMIQC}
 \usage{
 UMIQC(
-  samples_file_path = NULL,
+  central_input_file = NULL,
   molecule_info_path = NULL,
+  subset_by_cbs = TRUE,
+  cellbarcodes_path = NULL,
   umi_length = 12,
   min_reads = 100,
   sep = ",",
   samples_column = "sample",
-  molecule_info_column = "molecule_info"
+  molecule_info_column = "molecule_info",
+  cellbarcode_column = "cells",
+  add_10x_suffix = "-1"
 )
 }
 \arguments{
-\item{samples_file_path}{Path to the csv file with the samples to be loaded.}
+\item{central_input_file}{Path to the csv file with the samples to be loaded.}
 
 \item{molecule_info_path}{Path to a single molecule_info file.}
+
+\item{subset_by_cbs}{Should the list of cell barcodes from the molecule_info.h5 file be subset to a list of approved cell barcodes? Default: TRUE}
+
+\item{cellbarcodes_path}{Path to a cell barcodes file. Not used if the central input file is used.}
 
 \item{umi_length}{The length of the UMI. Default = 12}
 
@@ -28,6 +36,10 @@ UMIQC(
 \item{samples_column}{The column for the samples in your samples_file. Default: "sample"}
 
 \item{molecule_info_column}{The column for the paths to the molecule_info files in your samples_file. Default: "molecule_info"}
+
+\item{cellbarcode_column}{The column for the paths to the cell barcodes files in your central input file. Default: "cells"}
+
+\item{add_10x_suffix}{Should a suffix be added to the cell barcodes? Default to the 10X standard: "-1"}
 }
 \description{
 We load the molecule_info.h5 file from CellRanger and plot the molecules by rank.
