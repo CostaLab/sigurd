@@ -15,8 +15,8 @@ option_list <- list(
   optparse::make_option("--cell_barcodes",        type = "character", default = "", help = "The cell barcodes.", metavar = "character"),
   optparse::make_option("--min_reads_per_umi",    type = "character", default = 10, help = "The minimum number of reads a UMI needs.", metavar = "numeric"),
   optparse::make_option("--umi_length",           type = "character", default = 12, help = "The length of a UMI.", metavar = "numeric"),
-  optparse::make_option("--samples_column",       type = "character", default = "", help = "The column of the individual samples in the central input file.", metavar = "character"),
-  optparse::make_option("--molecule_info_column", type = "character", default = "", help = "The column containing the path to the molecule_info.h5 file.", metavar = "character")
+  optparse::make_option("--samples_column",       type = "character", default = "sample", help = "The column of the individual samples in the central input file.", metavar = "character"),
+  optparse::make_option("--molecule_info_column", type = "character", default = "molecule_info", help = "The column containing the path to the molecule_info.h5 file.", metavar = "character")
 )
 opt_parser <- optparse::OptionParser(option_list = option_list)
 opt <- optparse::parse_args(opt_parser)
@@ -48,5 +48,5 @@ p <- ggplot2::ggplot(umi_qc_values[[2]], ggplot2::aes(x = ranks, y = reads)) +
   ggplot2::geom_point(color = "blue") + ggplot2::scale_x_log10() + ggplot2::scale_y_log10() +
   ggplot2::geom_hline(yintercept = min_reads_per_umi, col = "red", linewidth = 2) +
   ggplot2::ylab("Number of Reads") + ggplot2::xlab("Rank of Molecule") +
-  ggplot2::ggtitle(paste0(sample_use, "\nRetained Cells: ", nrow(cells_above_threshold), ", Retained Molecules: ", nrow(umi_qc_values[[2]]))
+  ggplot2::ggtitle(paste0(sample_use, "\nRetained Cells: ", nrow(cells_above_threshold), ", Retained Molecules: ", nrow(umi_qc_values[[2]])))
 ggplot2::ggsave(file.path(output, paste0(sample_use, "_MinReads", min_reads_per_umi, ".png")), p, width = 4, height = 4, units = "in", dpi = 60)
