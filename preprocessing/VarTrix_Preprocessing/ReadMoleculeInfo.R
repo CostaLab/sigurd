@@ -29,6 +29,7 @@ umi_length <- as.numeric(opt$umi_length)
 samples_column <- opt$samples_column
 molecule_info_column <- opt$molecule_info_column
 
+
 # We get the UMI QC values and save the overview and the molecule specific information.
 umi_qc_values <- sigurd::UMIQC(
   molecule_info_path = molecule_input_path,
@@ -44,9 +45,16 @@ cells_above_threshold <- data.frame(CBs = unique(umi_qc_values[[2]][,"cell"]))
 write.table(cells_above_threshold, file.path(output, paste0("CBs_", sample_use, "_Filtered.tsv")), sep = "\t", col.names = FALSE, row.names = FALSE, quote = FALSE)
 
 # We plot the ordered molecules and save the retained molecules for the subsetting of the BAM files.
-p <- ggplot2::ggplot(umi_qc_values[[2]], ggplot2::aes(x = ranks, y = reads)) +
+umi_qc_values_unfiltered <- sigurd::UMIQC(
+  molecule_info_path = molecule_input_path,
+  cellbarcodes_path = cell_barcodes,
+  umi_length = umi_length,
+  min_reads = 0,
+  samples_column = samples_column,
+  molecule_info_column = molecule_info_column)
+p <- ggplot2::ggplot(umi_qc_values_unfiltered[[2]], ggplot2::aes(x = ranks, y = reads)) +
   ggplot2::geom_point(color = "blue") + ggplot2::scale_x_log10() + ggplot2::scale_y_log10() +
   ggplot2::geom_hline(yintercept = min_reads_per_umi, col = "red", linewidth = 2) +
   ggplot2::ylab("Number of Reads") + ggplot2::xlab("Rank of Molecule") +
   ggplot2::ggtitle(paste0(sample_use, "\nRetained Cells: ", nrow(cells_above_threshold), ", Retained Molecules: ", nrow(umi_qc_values[[2]])))
-ggplot2::ggsave(file.path(output, paste0(sample_use, "_MinReads", min_reads_per_umi, ".png")), p, width = 4, height = 4, units = "in", dpi = 60)
+ggplot2::ggsave(file.path(output, paste0(sample_use, "_MinReads", min_reads_per_umi, ".png")), p, width = 6, height = 4, units = "in", dpi = 60)
