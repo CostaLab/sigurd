@@ -9,6 +9,7 @@ LoadingVCF_typewise(
   samples_path = NULL,
   vcf_path,
   patient,
+  patient_column = "patient",
   type_use = "scRNAseq_Somatic",
   min_reads = NULL,
   min_cells = 2,
@@ -25,6 +26,8 @@ LoadingVCF_typewise(
 \item{vcf_path}{Path to the VCF file with the variants.}
 
 \item{patient}{The patient you want to load.}
+
+\item{patient_column}{The column that contains the patient information. Use merge, if all samples should be merged.}
 
 \item{type_use}{The type of input. Only rows that have the specified type will be loaded.}
 
