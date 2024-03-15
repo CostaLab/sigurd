@@ -102,10 +102,10 @@ LoadingVCF_typewise <- function(samples_file, samples_path = NULL, vcf_path, pat
   if(remove_N_alternative){
     ref_matrix_total_n     <- substr(rownames(ref_matrix_total), start = nchar(rownames(ref_matrix_total)), stop = nchar(rownames(ref_matrix_total)))
     ref_matrix_total_n     <- ref_matrix_total_n != "N"
-    ref_matrix_total       <- ref_matrix_total[ref_matrix_total_n,]
-    reads_matrix_total     <- reads_matrix_total[ref_matrix_total_n,]
-    coverage_matrix_total  <- coverage_matrix_total[ref_matrix_total_n,]
-    consensus_matrix_total <- consensus_matrix_total[ref_matrix_total_n,]
+    ref_matrix_total       <- ref_matrix_total[ref_matrix_total_n, , drop = FALSE]
+    reads_matrix_total     <- reads_matrix_total[ref_matrix_total_n, , drop = FALSE]
+    coverage_matrix_total  <- coverage_matrix_total[ref_matrix_total_n, , drop = FALSE]
+    consensus_matrix_total <- consensus_matrix_total[ref_matrix_total_n, , drop = FALSE]
     rm(ref_matrix_total_n)
   } else{
     print("We keep all variants with an N as alternative allele. Please ensure that these variants are in your variant VCF file.")
