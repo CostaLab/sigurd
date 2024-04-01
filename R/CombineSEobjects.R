@@ -37,7 +37,7 @@ CombineSEobjects <- function(se_1, se_2, suffixes = c("_1", "_2")){
   # We generate a new DataFrame with a new Cell column, a Patient column showing the patient value for all cells and a Sample column for the sample value.
   # The cells that were only in one SE object now have a Patient value. We also remove the original Pati
   columns_to_keep <- colnames(meta_data)
-  columns_to_keep <- columns_to_keep[!columns_to_keep %in% c("Cell", "Patient_1", "Sample_1", "Patient_2", "Sample_2")]
+  columns_to_keep <- columns_to_keep[!columns_to_keep %in% c("Cell", paste0("Patient", suffixes[1]), paste0("Sample", suffixes[2]), paste0("Patient", suffixes[1]), paste0("Sample", suffixes[2]))]
   meta_data <- S4Vectors::DataFrame(Cell = meta_data$Cell, Patient = patient_values, Sample = sample_values, meta_data[,columns_to_keep])
 
   meta_row_1 <- SummarizedExperiment::rowData(se_1)

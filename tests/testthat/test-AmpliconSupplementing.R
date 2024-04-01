@@ -21,7 +21,7 @@ test_that("Testing AmpliconSupplementing.", {
                                           dimnames = list(paste0("Variant_", 1:4), paste0("Cell_", 1:4)))
   scrna_refs      <- Matrix::sparseMatrix(i = c(2,1,2,3,4,3,4,1), j = c(1,2,2,2,2,3,3,4), x = c(390,46,64,256,100,512,200,32),
                                           dimnames = list(paste0("Variant_", 1:4), paste0("Cell_", 1:4)))
-  scrna_coldata <- S4Vectors::DataFrame(Cell = paste0("Cell_", 1:4), Type = "scRNAseq_Somatic", AverageCoverage = Matrix::rowMeans(scrna_coverage))
+  scrna_coldata <- S4Vectors::DataFrame(Cell = paste0("Cell_", 1:4), Patient = "Patient1", Sample = "Sample1", Type = "scRNAseq_Somatic", AverageCoverage = Matrix::rowMeans(scrna_coverage))
   names(scrna_coldata$AverageCoverage) <- NULL
   scrna_rowdata <- S4Vectors::DataFrame(VariantName = paste0("Variant_", 1:4), Concordance = 0:3, Depth = Matrix::colMeans(scrna_coverage))
   names(scrna_rowdata$Depth) <- NULL
@@ -32,7 +32,6 @@ test_that("Testing AmpliconSupplementing.", {
                                              dimnames = list(paste0("Variant_", 1:4), paste0("Cell_", 1:4)))
   amplicon_fraction  <- Matrix::sparseMatrix(i = c(1,2,1,4,1,2,4,3,4), j = c(1,1,2,2,3,3,3,4,4), x = c(1,0.91,0.54,0.95,0.8,1,0.95,1,1),
                                              dimnames = list(paste0("Variant_", 1:4), paste0("Cell_", 1:4)))
-
   amplicon_coverage  <- Matrix::sparseMatrix(i = rep(1:4, each = 4), j = rep(1:4, 4), x = amplicon_data["coverage",],
                                              dimnames = list(paste0("Variant_", 1:4), paste0("Cell_", 1:4)))
   amplicon_coverage  <- Matrix::sparseMatrix(i = c(1,2,1,2,3,4,1,2,3,4,1,3,4), j = c(1,1,2,2,2,2,3,3,3,3,4,4,4), x = c(1000,1000,100,500,256,3000,500,128,512,8000,32,1024,8192),
@@ -42,7 +41,7 @@ test_that("Testing AmpliconSupplementing.", {
   amplicon_refs      <- Matrix::sparseMatrix(i = c(2,1,2,3,4,1,3,4,1), j = c(1,2,2,2,2,3,3,3,4), x = c(90,46,500,256,150,100,512,400,32),
                                              dimnames = list(paste0("Variant_", 1:4), paste0("Cell_", 1:4)))
 
-  amplicon_coldata <- S4Vectors::DataFrame(Cell = paste0("Cell_", 1:4), Type = "scRNAseq_Amplicon", AverageCoverage = Matrix::rowMeans(amplicon_coverage))
+  amplicon_coldata <- S4Vectors::DataFrame(Cell = paste0("Cell_", 1:4), Patient = "Patient1", Sample = "Sample1", Type = "scRNAseq_Amplicon", AverageCoverage = Matrix::rowMeans(amplicon_coverage))
   names(amplicon_coldata$AverageCoverage) <- NULL
   amplicon_rowdata <- S4Vectors::DataFrame(VariantName = paste0("Variant_", 1:4), Concordance = 3:0, VariantQuality = 1:4, Depth = Matrix::colMeans(amplicon_coverage))
   names(amplicon_rowdata$Depth) <- NULL
@@ -50,18 +49,18 @@ test_that("Testing AmpliconSupplementing.", {
                                                          colData = amplicon_coldata, rowData = amplicon_rowdata)
   # The objects for the test.
   test_result <- sigurd::AmpliconSupplementing(scRNAseq, amplicon, verbose = FALSE)
-  test_coldata <- S4Vectors::DataFrame(Cell = scrna_coldata$Cell, TypescRNAseq = scrna_coldata$Type, AverageCoveragescRNAseq = scrna_coldata$AverageCoverage,
+  test_coldata <- S4Vectors::DataFrame(Cell = scrna_coldata$Cell, Patient = "Patient1", Sample = "Sample1", SamplescRNAseq = "Sample1", TypescRNAseq = scrna_coldata$Type, AverageCoveragescRNAseq = scrna_coldata$AverageCoverage,
                                        TypeAmplicon = amplicon_coldata$Type, AverageCoverageAmplicon = amplicon_coldata$AverageCoverage, AverageCoverage = amplicon_coldata$AverageCoverage, 
                                        row.names = scrna_coldata$Cell)
   test_rowdata <- S4Vectors::DataFrame(VariantName = paste0("Variant_", 1:4), ConcordancescRNAseq = 0:3, DepthscRNAseq = c(250, 605, 1164, 2312), ConcordanceAmplicon = 3:0, VariantQuality = 1:4, DepthAmplicon = c(500, 964, 2285, 2312), Concordance = 3:0, Depth = c(500, 964, 2285, 2312),
                                        row.names = paste0("Variant_", 1:4))
 
-  expect_equal(names(assays(test_result)),  c("consensus", "fraction", "coverage", "alts", "refs"))
-  expect_equal(colData(test_result), test_coldata)
-  expect_equal(rowData(test_result), test_rowdata)
-  expect_equal(assays(test_result)[["consensus"]], amplicon_consensus)
-  expect_equal(assays(test_result)[["fraction"]], amplicon_fraction)
-  expect_equal(assays(test_result)[["coverage"]], amplicon_coverage)
-  expect_equal(assays(test_result)[["alts"]], amplicon_alts)
-  expect_equal(assays(test_result)[["refs"]], amplicon_refs)
+  testthat::expect_equal(names(assays(test_result)),  c("consensus", "fraction", "coverage", "alts", "refs"))
+  testthat::expect_equal(colData(test_result), test_coldata)
+  testthat::expect_equal(rowData(test_result), test_rowdata)
+  testthat::expect_equal(assays(test_result)[["consensus"]], amplicon_consensus)
+  testthat::expect_equal(assays(test_result)[["fraction"]], amplicon_fraction)
+  testthat::expect_equal(assays(test_result)[["coverage"]], amplicon_coverage)
+  testthat::expect_equal(assays(test_result)[["alts"]], amplicon_alts)
+  testthat::expect_equal(assays(test_result)[["refs"]], amplicon_refs)
 })

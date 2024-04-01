@@ -25,7 +25,7 @@ test_that("Testing CalculateAlleleFrequency.R", {
   expected_result3 <- matrix(c(0.989011, 0.0990099, 0.1098901, 0.3311258, 0, 0, 0, 0, 0, 0, 0, 0, 0.989011, 0.4950495, 0, 0, 0.6622517, 0, 0, 0, 0, 0, 0.4395604, 0.5405405, 0, 0, 0, 0, 0, 0, 0, 0, 0.4972376, 0.1098901,
                                0, 0.6106870, 0.4580153, 0.7692308, 0.2702703, 0.9090909, 0.7920792, 0.5524862, 0.5847953, 0.952381, 0, 0.5847953, 0, 0),
                              ncol = 4, nrow = 12, dimnames = list(variants, paste0("Cell_", 1:4)))
-  expect_equal(sigurd::CalculateAlleleFrequency(reference_reads = ref_reads, alternative_reads = alt_reads, pseudo_count = 0),  expected_result1, tolerance = 1e-6)
-  expect_equal(sigurd::CalculateAlleleFrequency(reference_reads = ref_reads, alternative_reads = alt_reads, pseudo_count = 0.000001),  expected_result2, tolerance = 1e-6)
-  expect_equal(sigurd::CalculateAlleleFrequency(reference_reads = ref_reads, alternative_reads = alt_reads, pseudo_count = 1),  expected_result3, tolerance = 1e-6)
+  testthat::expect_equal(sigurd::CalculateAlleleFrequency(reference_reads = ref_reads, alternative_reads = alt_reads, pseudo_count = 0),  expected_result1, tolerance = 1e-6)
+  testthat::expect_equal(sigurd::CalculateAlleleFrequency(reference_reads = ref_reads, alternative_reads = alt_reads, pseudo_count = 0.000001),  expected_result2, tolerance = 1e-6)
+  testthat::expect_equal(sigurd::CalculateAlleleFrequency(reference_reads = ref_reads, alternative_reads = alt_reads, pseudo_count = 1),  expected_result3, tolerance = 1e-6)
 })

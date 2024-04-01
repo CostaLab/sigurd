@@ -18,10 +18,18 @@ AmpliconSupplementing <- function(scRNAseq, amplicon, verbose = TRUE){
   # We add an AverageCoverage column to the new meta data.
   new_meta_data$AverageCoverage                           <- new_meta_data$AverageCoveragescRNAseq
   amplicon_value                                          <- new_meta_data$AverageCoverageAmplicon
-  names(amplicon_value)                                   <- colnames(amplicon)
+  names(amplicon_value)                                   <- rownames(new_meta_data)
   amplicon_value                                          <- stats::na.omit(amplicon_value)
   new_meta_data[names(amplicon_value), "AverageCoverage"] <- amplicon_value
-
+  # We add a Patient and Sample column to the new_meta_data.
+  patient_values <- new_meta_data[, paste0("Patient", c("scRNAseq", "Amplicon"))]
+  patient_values <- ifelse(is.na(patient_values[,1]), patient_values[,2], patient_values[,1])
+  sample_values <- new_meta_data[, paste0("Sample", c("scRNAseq", "Amplicon"))]
+  sample_values <- ifelse(is.na(sample_values[,1]), sample_values[,2], sample_values[,1])
+  columns_to_keep <- colnames(new_meta_data)
+  columns_to_keep <- columns_to_keep[!columns_to_keep %in% c("Cell", "PatientscRNAseq", "SamplecRNAseq", "PatientAmplicon", "SampleAmplicon")]
+  new_meta_data <- S4Vectors::DataFrame(Cell = new_meta_data$Cell, Patient = patient_values, Sample = sample_values, new_meta_data[,columns_to_keep], row.names = new_meta_data$Cell)
+  
   new_row_data <- merge(SummarizedExperiment::rowData(scRNAseq), SummarizedExperiment::rowData(amplicon), by = "VariantName", all.x = TRUE, all.y = TRUE,
                         suffixes = c("scRNAseq", "Amplicon"))
   rownames(new_row_data) <- new_row_data$VariantName
@@ -59,7 +67,6 @@ AmpliconSupplementing <- function(scRNAseq, amplicon, verbose = TRUE){
   consensus <- matrix(0, ncol = length(all_cells), nrow = length(all_variants))
   rownames(consensus) <- all_variants
   colnames(consensus) <- all_cells
-  #consensus <- Matrix::sparseMatrix(i = 1, j = 1, dims = c(length(all_variants), length(all_cells)), repr = "C")
   fraction <- consensus
   reads <- consensus
   alts <- consensus
@@ -78,11 +85,6 @@ AmpliconSupplementing <- function(scRNAseq, amplicon, verbose = TRUE){
   reads[rownames(amplicon), colnames(amplicon)]     <- as.matrix(SummarizedExperiment::assays(amplicon)$coverage)
   alts[rownames(amplicon), colnames(amplicon)]      <- as.matrix(SummarizedExperiment::assays(amplicon)$alts)
   refs[rownames(amplicon), colnames(amplicon)]      <- as.matrix(SummarizedExperiment::assays(amplicon)$refs)
-
-  #if(verbose) print("We add the the amplicon information.")
-  #SummarizedExperiment::assays(scRNAseq)[["consensus"]][rownames(amplicon), colnames(amplicon)] <- as.matrix(SummarizedExperiment::assays(amplicon)$consensus)
-  #SummarizedExperiment::assays(scRNAseq)[["fraction"]][rownames(amplicon), colnames(amplicon)]  <- as.matrix(SummarizedExperiment::assays(amplicon)$fraction)
-  #SummarizedExperiment::assays(scRNAseq)[["coverage"]][rownames(amplicon), colnames(amplicon)]  <- as.matrix(SummarizedExperiment::assays(amplicon)$coverage)
 
   se <- SummarizedExperiment::SummarizedExperiment(assays = list(consensus = methods::as(consensus, "dgCMatrix"), fraction = methods::as(fraction, "dgCMatrix"), coverage = methods::as(reads, "dgCMatrix"), alts = methods::as(alts, "dgCMatrix"), refs = methods::as(refs, "dgCMatrix")),
                                                    colData = new_meta_data, rowData = new_row_data)
