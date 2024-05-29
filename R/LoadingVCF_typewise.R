@@ -58,7 +58,7 @@ LoadingVCF_typewise <- function(samples_file, samples_path = NULL, vcf_path, pat
   vcf_info <- VariantAnnotation::info(vcf)
 
 
-  if(verbose) print("We load the VCF file.")
+  if(verbose) print("We load the samples VCF file.")
   reads_matrix_total <- c() # The total number of reads
   coverage_matrix_total <- c() # The alternative reads
   ref_matrix_total <- c() # The reference reads
