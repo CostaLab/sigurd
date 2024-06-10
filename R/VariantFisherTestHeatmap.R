@@ -63,7 +63,7 @@ VariantFisherTestHeatmap <- function(fisher_results, patient, min_alt_cells = 5,
   annotation_left <- ComplexHeatmap::rowAnnotation(Mutations = somatic_uniques,
                                                    show_legend = FALSE, show_annotation_name = FALSE)
   
-  if(verbose) print("Since we can have no results left after the subsetting, we check if the P value matrix has values.")
+  if(verbose) print("Since we might have no results left after the subsetting, we check if the P value matrix has values.")
   if(all(dim(p_values) > 0)){
     if(verbose) print("Generating the actual heat map.")
     p <- ComplexHeatmap::Heatmap(p_values, name = "-log10(P)",
@@ -73,6 +73,8 @@ VariantFisherTestHeatmap <- function(fisher_results, patient, min_alt_cells = 5,
                                  column_names_rot = 45, row_names_side = "left",
                                  column_names_gp = grid::gpar(hjust = 1),
                                  cluster_columns = FALSE, cluster_rows = FALSE, use_raster = FALSE, show_row_dend = FALSE, show_column_dend = FALSE)
+    return(p)
+  } else{
+    return(NULL)
   }
-  return(p)
 }
