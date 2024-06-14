@@ -3,10 +3,8 @@
 #'@description
 #'This function determines the clonal diversity. The clones are defined using the function ClonalDefinition. It is not required to use clones, but any column in the column data of the object can be used.
 #'
-#'@importFrom Matrix summary
-#'@importFrom SummarizedExperiment assays
-#'@importFrom utils read.table
-#'@importFrom Matrix rowSums colSums
+#'@importFrom SummarizedExperiment assays colData
+#'@importFrom vegan diversity
 #'@param se SummarizedExperiment object.
 #'@param cells Which cells should be used? NULL uses all cells.
 #'@param grouping The meta data	column used.

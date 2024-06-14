@@ -26,7 +26,7 @@ Set this option to FALSE, if you really want to retain these variants."><!-- mat
     
     <a class="navbar-brand me-2" href="../index.html">sigurd</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.42</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.51</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -76,6 +76,7 @@ Set this option to FALSE, if you really want to retain these variants.</p>
 <span>  samples_path <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">vcf_path</span>,</span>
 <span>  <span class="va">patient</span>,</span>
+<span>  patient_column <span class="op">=</span> <span class="st">"patient"</span>,</span>
 <span>  type_use <span class="op">=</span> <span class="st">"scRNAseq_Somatic"</span>,</span>
 <span>  min_reads <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  min_cells <span class="op">=</span> <span class="fl">2</span>,</span>
@@ -101,6 +102,10 @@ Set this option to FALSE, if you really want to retain these variants.</p>
 
 <dt>patient</dt>
 <dd><p>The patient you want to load.</p></dd>
+
+
+<dt>patient_column</dt>
+<dd><p>The column that contains the patient information. Use merge, if all samples should be merged.</p></dd>
 
 
 <dt>type_use</dt>
