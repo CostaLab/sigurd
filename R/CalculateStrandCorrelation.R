@@ -20,7 +20,8 @@ CalculateStrandCorrelation <- function(SE, chromosome_prefix = "chrM"){
   dt <- merge(data.table::data.table(summary(reads_A_fw)), 
               data.table::data.table(summary(reads_A_rev)), 
               by.x = c("i", "j"), by.y = c("i", "j"), 
-              all = TRUE)[x.x >0 | x.y >0]
+              all = TRUE)
+  dt <- dt[dt[,x.x] > 0 | dt[,x.y] > 0,]
   dt <- data.table::data.table(variant = variants_A[dt[[1]]],
                                cell_id = dt[[2]],
 		                           fw = dt[[3]], rev = dt[[4]])
@@ -34,14 +35,11 @@ CalculateStrandCorrelation <- function(SE, chromosome_prefix = "chrM"){
   rownames(reads_C_rev) <- paste0(chromosome_prefix, "_", 1:nrow(reads_C_rev), "_", ref_allele, "_C")
   reads_C_fw  <- reads_C_fw[ref_allele != "C",]
   reads_C_rev <- reads_C_rev[ref_allele != "C",]
-#  dt <- merge(data.table::data.table(summary(reads_C_fw)),
-#              data.table::data.table(summary(reads_C_rev)),
-#              by.x = c("i", "j"), by.y = c("i", "j"),
-#              all = TRUE)[x.x > 0 | x.y > 0]
   dt <- merge(data.table::data.table(summary(reads_C_fw)),
               data.table::data.table(summary(reads_C_rev)),
               by.x = c("i", "j"), by.y = c("i", "j"),
-              all = TRUE)[!!dplyr::sym("x.x") > 0 | !!dplyr::sym("x.y") > 0]
+              all = TRUE)
+  dt <- dt[dt[,x.x] > 0 | dt[,x.y] > 0,]
   dt <- data.table::data.table(variant = variants_C[dt[[1]]],
                                cell_id = dt[[2]],
                                fw = dt[[3]], rev = dt[[4]])
@@ -58,7 +56,8 @@ CalculateStrandCorrelation <- function(SE, chromosome_prefix = "chrM"){
   dt <- merge(data.table::data.table(summary(reads_G_fw)),
               data.table::data.table(summary(reads_G_rev)),
               by.x = c("i", "j"), by.y = c("i", "j"),
-              all = TRUE)[x.x >0 | x.y >0]
+              all = TRUE)
+  dt <- dt[dt[,x.x] > 0 | dt[,x.y] > 0,]
   dt <- data.table::data.table(variant = variants_G[dt[[1]]],
                                          cell_id = dt[[2]],
                                          fw = dt[[3]], rev = dt[[4]])
@@ -75,7 +74,8 @@ CalculateStrandCorrelation <- function(SE, chromosome_prefix = "chrM"){
   dt <- merge(data.table::data.table(summary(reads_T_fw)),
               data.table::data.table(summary(reads_T_rev)),
               by.x = c("i", "j"), by.y = c("i", "j"),
-              all = TRUE)[x.x >0 | x.y >0]
+              all = TRUE)
+  dt <- dt[dt[,x.x] > 0 | dt[,x.y] > 0,]
   dt <- data.table::data.table(variant = variants_T[dt[[1]]],
                                cell_id = dt[[2]],
                                fw = dt[[3]], rev = dt[[4]])

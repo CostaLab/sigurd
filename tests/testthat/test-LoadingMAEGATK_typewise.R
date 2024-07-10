@@ -30,7 +30,7 @@ test_that("Testing LoadingMAEGATK_typewise.R", {
   T_qual_fw    <- Matrix::sparseMatrix(i = rep(1:4, each = 4), j = rep(1:4,4), x = c(32,35,19,5,23,12,25,6,9,18,24,34,28,21,14,37), dims = c(4,4), dimnames = list(NULL, paste0("Cell_", 1:4)))
   T_counts_rev <- Matrix::sparseMatrix(i = rep(1:4, each = 4), j = rep(1:4,4), x = c(38, 42, 3, 2, 95, 7, 71, 45, 58, 33, 30, 51, 91, 8, 79, 81), dims = c(4,4), dimnames = list(NULL, paste0("Cell_", 1:4)))
   T_qual_rev   <- Matrix::sparseMatrix(i = rep(1:4, each = 4), j = rep(1:4,4), x = c(22,8,13,7,36,28,31,18,30,19,17,27,35,16,23,40), dims = c(4,4), dimnames = list(NULL, paste0("Cell_", 1:4)))
-  
+
   # We add the sparse matrices together to get the coverage.
   As <- as.matrix(A_counts_fw) + as.matrix(A_counts_rev)
   Cs <- as.matrix(C_counts_fw) + as.matrix(C_counts_rev)

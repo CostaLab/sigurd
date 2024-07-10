@@ -150,11 +150,6 @@ LoadingMAEGATK_typewise <- function(samples_file, samples_path = NULL, patient, 
     coverage_depth_per_cell           <- gsub("_._.$", "", coverage_depth_per_cell)
     coverage_depth_per_cell           <- !duplicated(coverage_depth_per_cell)
     coverage_depth_per_cell           <- coverage[coverage_depth_per_cell,]
-    cell_ids                          <- colnames(coverage_depth_per_cell)
-    variant_names                     <- rownames(coverage_depth_per_cell)
-    coverage_depth_per_cell           <- suppressWarnings(matrix(coverage, nrow = length(variant_names), ncol = length(cell_ids)))
-    colnames(coverage_depth_per_cell) <- cell_ids
-    rownames(coverage_depth_per_cell) <- variant_names
     coverage_depth_per_variant        <- rowMeans(coverage)
     coverage_depth_per_cell           <- colMeans(coverage_depth_per_cell)
     meta_data_col                     <- data.frame(Cell = colnames(consensus), Patient = patient, Sample = substr(x = colnames(consensus), start = 1, stop = nchar(colnames(consensus))-(cellbarcode_length+1)), AverageCoverage = coverage_depth_per_cell)

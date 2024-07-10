@@ -15,13 +15,14 @@ We employ a imputation approach that utilizes the correlation between mitochondr
 You can install sigurd using the following code. The vignette requires data that is currently not published, but is provided as a reference.
 
 ```{r}
+
 install.packages("devtools")
 devtools::install_github("https://github.com/CostaLab/sigurd.git", build_vignettes = FALSE)
 require(sigurd)
 
 ```
 
-# SiGURD 
+# SIGURD 
 
 We have provided a small example data set for SiGURD. It consists of chromosome 9 and MT for one MPN sample.
 The mutation data was obtained from the Sanger Institute Catalogue Of Somatic Mutations In Cancer web site, http://cancer.sanger.ac.uk/cosmic Bamford et al (2004) The COSMIC (Catalogue of Somatic Mutations in Cancer) database and website. Br J Cancer, 91,355-358.
@@ -32,7 +33,7 @@ The mutation data was obtained from the Sanger Institute Catalogue Of Somatic Mu
 
 ```
 
-# Current Features v0.2.51
+# Current Features v0.2.52
 
 - Loading data from VarTrix and MAEGATK.
 - Transforming the data to be compatible for joint analysis.

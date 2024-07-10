@@ -1,14 +1,14 @@
 Package: sigurd
 Type: Package
 Title: Single cell Genotyping Using RNA Data
-Version: 0.2.51
+Version: 0.2.52
 Authors@R: c(
   person(given = "Martin",
          family = "Grasshoff",
 	 role = c("aut", "cre"),
 	 email = "mgrasshoff@ukaachen.de"),
-  person(given = "Ivan Costa",
-         family = "Gesteira",
+  person(given = "Ivan",
+         family = "Costa",
          role = c("aut"),
          email = "ivan.costa@rwth-aachen.de",
          comment = c(ORCID = "0000-0003-2890-8697")))
@@ -26,31 +26,32 @@ Imports:
     data.table,
     dplyr,
     DropletUtils,
-    fastmatch,
     GenomeInfoDb,
-    ggplot2,
     grid,
     Matrix,
-    MatrixGenerics,
-    magrittr,
     methods,
     parallel,
-    rcompanion,
     S4Vectors,
     Seurat,
     SummarizedExperiment,
     scales,
     tibble,
-    tidyr,
-    tidyverse,
-    VariantAnnotation
-RoxygenNote: 7.2.3
+    VariantAnnotation,
+    vegan
+RoxygenNote: 7.3.2
 Suggests:
     GenomicRanges,
+    fastmatch,
+    ggplot2,
     IRanges,
     knitr,
+    magrittr,
+    MatrixGenerics,
+    rcompanion,
     rmarkdown,
     SeuratObject,
-    testthat (>= 3.0.0)
+    testthat (>= 3.0.0),
+    tidyr,
+    tidyverse
 VignetteBuilder: knitr
 Config/testthat/edition: 3
