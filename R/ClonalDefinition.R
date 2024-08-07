@@ -7,6 +7,7 @@
 #'@importFrom SummarizedExperiment assays
 #'@importFrom utils read.table
 #'@importFrom Matrix rowSums colSums
+#'@importFrom S4Vectors metadata
 #'@param se SummarizedExperiment object.
 #'@param variants_ls List of variants for clonal definition
 #'@param grouping The meta data	column used to split the cells into groups. Default = NULL
@@ -59,6 +60,7 @@ ClonalDefinition <- function(se, variants_ls, grouping = NULL, identities = NULL
   names(new_meta_data) <- colnames(se)
 
   # We get the lineages.
+  combinations_meta_data <- list()
   for(i in 1:length(combinations_ls)){
     combinations <- combinations_ls[[i]]
     # We get the variants used to create the combinations.
@@ -86,6 +88,7 @@ ClonalDefinition <- function(se, variants_ls, grouping = NULL, identities = NULL
     cells <- colSums(cells) == 0
     cells <- cells[cells]
     new_meta_data_subset[names(cells)] <- "Negative"
+    combinations_meta_data[[i]] <- data.frame(Clone = "Negative", Variants = "Negative")
 
     combination_number <- 0
     for(j in 1:length(combinations)){
@@ -96,7 +99,7 @@ ClonalDefinition <- function(se, variants_ls, grouping = NULL, identities = NULL
         cells <- as.matrix(SummarizedExperiment::assays(se_use)[["consensus"]][combination_use, , drop = FALSE])
         cells <- matrix(cells %in% 2:3, ncol = ncol(cells), nrow = nrow(cells), dimnames = list(rownames(cells), colnames(cells)))
         cells <- colSums(cells) == length(combination_use)
-        # The cells should only be positive for the currentl combination.
+        # The cells should only be positive for the current combination.
         variants_rest <- variants_uncombined[!variants_uncombined %in% combination_use]
         if(length(variants_rest) > 0){
           cells_rest <- as.matrix(SummarizedExperiment::assays(se_use)[["consensus"]][variants_rest, , drop = FALSE])
@@ -109,8 +112,11 @@ ClonalDefinition <- function(se, variants_ls, grouping = NULL, identities = NULL
         coverage <- mean(colMeans(SummarizedExperiment::assays(se_use)[["coverage"]][combination_use, cells, drop = FALSE]))
         cells <- cells[cells]
         new_meta_data_subset[names(cells)] <- paste0("C_", combination_number)
+        combinations_meta_data[[i]] <- rbind(combinations_meta_data[[i]], 
+                                             data.frame(Clone = paste0("C_", combination_number), Variants = paste0(combinations[[j]][,k], collapse = ",")))
       }
     }
+    rownames(combinations_meta_data[[i]]) <- combinations_meta_data[[i]][, "Clone"]
 
     # We rename the clones according to their size.
     variant_order <- sort(table(new_meta_data_subset), decreasing = TRUE)
@@ -131,12 +137,19 @@ ClonalDefinition <- function(se, variants_ls, grouping = NULL, identities = NULL
 
     # We add the new meta data to the combined meta data.
     new_meta_data[names(new_meta_data_subset)] <- new_meta_data_subset
+    combinations_meta_data[[i]][,"Clone"] <- new_names[rownames(combinations_meta_data[[i]]),"NewName"]
+    rownames(combinations_meta_data[[i]]) <- combinations_meta_data[[i]][,"Clone"]
+  }
+  # If we used identities, we set the names of the combinations_meta_data list to them.
+  if(!is.null(identities)){
+    names(combinations_meta_data) <- identities
   }
 
   # We add the new meta data to the column data.
   new_column_data <- SummarizedExperiment::colData(se)
   new_column_data$Clones <- new_meta_data
   SummarizedExperiment::colData(se) <- new_column_data
+  S4Vectors::metadata(se)[["ClonalLineages"]] <- combinations_meta_data
 
   # We return the SE object as a result.
   return(se)
