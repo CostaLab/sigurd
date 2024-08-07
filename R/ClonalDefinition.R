@@ -135,10 +135,13 @@ ClonalDefinition <- function(se, variants_ls, grouping = NULL, identities = NULL
     new_meta_data_subset <- new_names[new_meta_data_subset, "NewName"]
     names(new_meta_data_subset) <- colnames(se_use)
 
-    # We add the new meta data to the combined meta data.
-    new_meta_data[names(new_meta_data_subset)] <- new_meta_data_subset
+    # We remove unused clones.
+    combinations_meta_data[[i]] <- combinations_meta_data[[i]][rownames(combinations_meta_data[[i]]) %in% rownames(new_names),]
     combinations_meta_data[[i]][,"Clone"] <- new_names[rownames(combinations_meta_data[[i]]),"NewName"]
     rownames(combinations_meta_data[[i]]) <- combinations_meta_data[[i]][,"Clone"]
+
+    # We add the new meta data to the combined meta data.
+    new_meta_data[names(new_meta_data_subset)] <- new_meta_data_subset
   }
   # If we used identities, we set the names of the combinations_meta_data list to them.
   if(!is.null(identities)){
