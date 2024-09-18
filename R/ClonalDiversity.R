@@ -53,7 +53,7 @@ ClonalDiversity <- function(se, grouping = "Clones", cells = NULL, diversity_mea
     diversity <- vegan::diversity(clones, index = "simpson", equalize.groups = FALSE)
   }
   if(diversity_measure == "invsimpson"){
-    diversity <- vegan::diversity(clones, index = "simpson", equalize.groups = FALSE)
+    diversity <- vegan::diversity(clones, index = "invsimpson", equalize.groups = FALSE)
   }
   return(diversity)
 }

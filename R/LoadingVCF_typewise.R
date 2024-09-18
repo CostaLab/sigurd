@@ -209,7 +209,7 @@ LoadingVCF_typewise <- function(samples_file, samples_path = NULL, vcf_path, pat
     rownames(meta_data) <- meta_data$Cell
     meta_row <- data.frame(VariantName = rownames(consensus_matrix_total), Depth = coverage_depth_per_variant)
     rownames(meta_row) <- meta_row$VariantName
-    se_merged <- SummarizedExperiment::SummarizedExperiment(assays = list(consensus = consensus_matrix_total, fraction = fraction_total, coverage = reads_total, alts = coverage_matrix_total, refs = ref_matrix_total),
+    se_merged <- SummarizedExperiment::SummarizedExperiment(assays = list(consensus = as(consensus_matrix_total, "CsparseMatrix"), fraction = as(fraction_total, "CsparseMatrix"), coverage = as(reads_total, "CsparseMatrix"), alts = as(coverage_matrix_total, "CsparseMatrix"), refs = as(ref_matrix_total, "CsparseMatrix")),
                                                             colData = meta_data, rowData = meta_row)
     return(se_merged)
   }

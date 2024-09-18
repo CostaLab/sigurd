@@ -170,14 +170,14 @@ LoadingVarTrix_typewise <- function(samples_file, samples_path = NULL, barcodes_
   if(verbose) print(paste0(type_use, " Cells: ", ncol(consensus_matrix_total)))
 
   rm(consensus_test, keep_variants, keep_cells)
-  gc()
+  gc(verbose = FALSE)
 
 
   if(verbose) print("We transform the sparse matrices to matrices, so we can calculate the fraction.")
   reads_total                           <- coverage_matrix_total + ref_matrix_total
   fraction_total                        <- coverage_matrix_total / reads_total
   fraction_total[is.na(fraction_total)] <- 0
-  gc()
+  gc(verbose = FALSE)
 
 
   # We check if the matrices are empty (0 cells, 0 variants). Then we simply return NULL.
