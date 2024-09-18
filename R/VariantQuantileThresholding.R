@@ -92,7 +92,7 @@ VariantQuantileThresholding <- function(SE, min_coverage = 2, quantiles = c(0.1,
     top_cells_values <- top_cells_values > top_VAF
     top_cells_values <- Matrix::rowSums(top_cells_values, na.rm = TRUE)
     if(!is.null(min_quality)){
-      vars <- data.frame(Mean_AF = mean_af, Mean_Cov = mean_cov, Quality = SummarizedExperiment::rowData(SE)$VariantQuality, Quantile = quantiles, TopCells = top_cells_values)
+      vars <- data.frame(Mean_AF = mean_af, Mean_Cov = mean_cov, VariantQuality = SummarizedExperiment::rowData(SE)$VariantQuality, Quantile = quantiles, TopCells = top_cells_values)
       vars <- vars[!is.na(vars$VariantQuality), ]
       vars <- subset(vars, vars$VariantQuality > min_quality)
     } else{

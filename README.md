@@ -33,7 +33,7 @@ The mutation data was obtained from the Sanger Institute Catalogue Of Somatic Mu
 
 ```
 
-# Current Features v0.2.56
+# Current Features v0.2.57
 
 - Loading data from VarTrix and MAEGATK.
 - Transforming the data to be compatible for joint analysis.
