@@ -5,7 +5,7 @@
 #'
 #'@importFrom Matrix summary
 #'@importFrom SummarizedExperiment assays
-#'@importFrom utils read.table
+#'@importFrom utils combn read.table
 #'@importFrom Matrix rowSums colSums
 #'@importFrom S4Vectors metadata
 #'@param se SummarizedExperiment object.
