@@ -6,6 +6,7 @@
 <url><loc>https://costalab.github.io/sigurd/articles/index.html</loc></url>
 <url><loc>https://costalab.github.io/sigurd/authors.html</loc></url>
 <url><loc>https://costalab.github.io/sigurd/index.html</loc></url>
+<url><loc>https://costalab.github.io/sigurd/reference/AllelFrequencyFoldChange.html</loc></url>
 <url><loc>https://costalab.github.io/sigurd/reference/AmpliconSupplementing.html</loc></url>
 <url><loc>https://costalab.github.io/sigurd/reference/AmpliconSupplementing_big.html</loc></url>
 <url><loc>https://costalab.github.io/sigurd/reference/CalculateAlleleFrequency.html</loc></url>
@@ -16,7 +17,9 @@
 <url><loc>https://costalab.github.io/sigurd/reference/CalculateFisherTestPValue.html</loc></url>
 <url><loc>https://costalab.github.io/sigurd/reference/CalculateFisherTestPValue2.html</loc></url>
 <url><loc>https://costalab.github.io/sigurd/reference/CalculateQuality.html</loc></url>
+<url><loc>https://costalab.github.io/sigurd/reference/CalculateRefReads.html</loc></url>
 <url><loc>https://costalab.github.io/sigurd/reference/CalculateStrandCorrelation.html</loc></url>
+<url><loc>https://costalab.github.io/sigurd/reference/CallSupport.html</loc></url>
 <url><loc>https://costalab.github.io/sigurd/reference/ClonalDefinition.html</loc></url>
 <url><loc>https://costalab.github.io/sigurd/reference/ClonalDiversity.html</loc></url>
 <url><loc>https://costalab.github.io/sigurd/reference/CombineSEobjects.html</loc></url>
@@ -45,6 +48,10 @@
 <url><loc>https://costalab.github.io/sigurd/reference/VariantCorrelationHeatmap.html</loc></url>
 <url><loc>https://costalab.github.io/sigurd/reference/VariantFisherTestHeatmap.html</loc></url>
 <url><loc>https://costalab.github.io/sigurd/reference/VariantQuantileThresholding.html</loc></url>
+<url><loc>https://costalab.github.io/sigurd/reference/VariantQuantileThresholding_Combined.html</loc></url>
+<url><loc>https://costalab.github.io/sigurd/reference/VariantSelection_Group.html</loc></url>
+<url><loc>https://costalab.github.io/sigurd/reference/VariantSelection_Quantile.html</loc></url>
+<url><loc>https://costalab.github.io/sigurd/reference/VariantSelection_TopCells.html</loc></url>
 <url><loc>https://costalab.github.io/sigurd/reference/VariantWiseCorrelation.html</loc></url>
 <url><loc>https://costalab.github.io/sigurd/reference/VariantWiseFisherTest.html</loc></url>
 <url><loc>https://costalab.github.io/sigurd/reference/char_to_numeric.html</loc></url>

@@ -11,7 +11,7 @@ test_that("Testing GetVariantInfo.R", {
   expected_output_fraction  <- Matrix::sparseMatrix(i = 1, j = 1, x = 0.07168459, dims = c(1,1), dimnames = list("chrM_1_G_A", "Test_Cell_1"))
   expected_output_coverage  <- Matrix::sparseMatrix(i = c(1,1), j = 1:2, x = c(279,230), dims = c(1,2), dimnames = list("chrM_1_G_A", paste0("Test_Cell_", c(1,3))))
   expected_output_alts      <- Matrix::sparseMatrix(i = c(1,1,1,1), j = 1:4, x = c(20,50,50,10), dims = c(1,4), dimnames = list("chrM_1_G_A", paste0("Test_Cell_", 1:4)))
-  expected_output_refs      <- Matrix::sparseMatrix(i = c(1,1,1,1), j = 1:4, x = c(259,278,180,290), dims = c(1,4), dimnames = list("chrM_1_G_A", paste0("Test_Cell_", 1:4)))
+  expected_output_refs      <- Matrix::sparseMatrix(i = c(1,1,1,1), j = 1:4, x = c(157,25,75,116), dims = c(1,4), dimnames = list("chrM_1_G_A", paste0("Test_Cell_", 1:4)))
   # We perform the tests.
   expect_equal(test_consensus, expected_output_consensus, tolerance = 1e-6)
   expect_equal(test_fraction, expected_output_fraction, tolerance = 1e-6)

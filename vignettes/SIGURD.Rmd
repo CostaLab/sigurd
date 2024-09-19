@@ -109,7 +109,7 @@ https://www.nature.com/articles/s41587-022-01210-8
 The heatmap needs some time to plot, since the cells are clustered. 
 
 ```{r VariantsOfInterest, warning = FALSE, message = FALSE, output = FALSE, fig.width = 6}
-voi_ch <- VariantQuantileThresholding(SE = Sample1_combined, min_coverage = 2, quantiles = c(0.1, 0.9), thresholds = c(0.1, 0.9), remove_nocall = FALSE)
+voi_ch <- VariantSelection_Quantile(SE = Sample1_combined, min_coverage = 2, quantiles = c(0.1, 0.9), thresholds = c(0.1, 0.9), remove_nocall = FALSE)
 hm <- HeatmapVoi(SE = Sample1_combined, voi = voi_ch)
 print(hm)
 ```
