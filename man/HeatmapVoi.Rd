@@ -9,6 +9,7 @@ HeatmapVoi(
   voi,
   annotation_trait = NULL,
   column_title = NULL,
+  minimum_coverage = 0,
   remove_empty_cells = FALSE
 )
 }
@@ -20,6 +21,8 @@ HeatmapVoi(
 \item{annotation_trait}{Cell Annotation at the bottom of the heat map.}
 
 \item{column_title}{The title of the heat map. Default = NULL}
+
+\item{minimum_coverage}{The minimum coverage per cell to be plotted.}
 
 \item{remove_empty_cells}{Should cells that have a fraction of 0 for all variants be removed? Default = FALSE}
 }

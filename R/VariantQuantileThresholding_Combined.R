@@ -1,6 +1,6 @@
-#'VariantQuantileThresholding
+#'VariantQuantileThresholding_Combined
 #'@description
-#'We get variants of interest using the quantile thresholding.
+#'We get variants of interest using the quantile thresholding. This function combines the functions VariantSelection_Quantile, VariantSelection_Group and VariantSelection_TopCells.
 #'If you use top_cells and top_VAF, you have to only supply one quantil value (quantiles = 0.9, thresholds = 0).
 #'This function is adapted from the Peter van Galen.
 #'Source: https://github.com/petervangalen/MAESTER-2021
@@ -22,7 +22,7 @@
 #'@param remove_nocall Should NoCall cells (consensus = 0) be disregarded during the analysis?
 #'@param verbose Should the function be verbose? Default = TRUE
 #'@export
-VariantQuantileThresholding <- function(SE, min_coverage = 2, quantiles = c(0.1, 0.9), thresholds = c(0.1, 0.9), top_cells = NULL, top_VAF = NULL, min_quality = NULL, mean_allele_frequency = 0,
+VariantQuantileThresholding_Combined <- function(SE, min_coverage = 2, quantiles = c(0.1, 0.9), thresholds = c(0.1, 0.9), top_cells = NULL, top_VAF = NULL, min_quality = NULL, mean_allele_frequency = 0,
                                         group_of_interest = NULL, group1 = NULL, group2 = NULL, group_factor = NULL, remove_nocall = TRUE, verbose = TRUE){
   if(remove_nocall){
     if(verbose) print("We set NoCall cells as NA.")

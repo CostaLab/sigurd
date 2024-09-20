@@ -100,7 +100,8 @@ LoadingMAEGATK_typewise <- function(samples_file, samples_path = NULL, patient, 
 
 
   if(verbose) print("We get the number of reference reads.")
-  reads_ref <- coverage - reads_alt
+  reads_ref <- CalculateRefReads(SE = se_merged, chromosome_prefix = chromosome_prefix)
+  reads_ref <- reads_ref[rownames(coverage), , drop = FALSE]
 
 
   if(verbose) print("Calculating the strand concordance.")

@@ -11,10 +11,15 @@
 #'@param voi Variants Of Interest.
 #'@param annotation_trait Cell Annotation at the bottom of the heat map.
 #'@param column_title The title of the heat map. Default = NULL
+#'@param minimum_coverage The minimum coverage per cell to be plotted.
 #'@param remove_empty_cells Should cells that have a fraction of 0 for all variants be removed? Default = FALSE
 #'@export
-HeatmapVoi <- function(SE, voi, annotation_trait = NULL, column_title = NULL, remove_empty_cells = FALSE){
-
+HeatmapVoi <- function(SE, voi, annotation_trait = NULL, column_title = NULL, minimum_coverage = 0, remove_empty_cells = FALSE){
+  coverage_test <- SummarizedExperiment::assays(SE)[["coverage"]][voi,]
+  coverage_test <- coverage_test > minimum_coverage
+  coverage_test <- Matrix::colSums(coverage_test)
+  coverage_test <- coverage_test == length(voi)
+  SE <- SE[,coverage_test]
   fraction <- SummarizedExperiment::assays(SE)[["fraction"]][voi,]
   fraction[is.na(fraction)] <- 0
   if(length(voi) == 1){

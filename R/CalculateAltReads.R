@@ -1,7 +1,6 @@
 #'CalculateAltReads
 #'@description
 #'We calculate the number of reads covering a variant using forward and reverse reads.
-# #'@import MatrixGenerics
 #'@importFrom SummarizedExperiment SummarizedExperiment assays rowRanges
 #'@param SE SummarizedExperiment object.
 #'@param chromosome_prefix List of matrices for the alternative reads.
