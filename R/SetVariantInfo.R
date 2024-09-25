@@ -13,7 +13,8 @@
 SetVariantInfo <- function(SE, seurat_object, information = "consensus", variants = NULL){
   # We check if a vector of variants has been supplied.
   if(is.null(variants)){
-    stop("Error: You forgot to supply a vector of variants.")
+    print("You did not supply a vector of variants. All variants will be used.")
+    variants <- rownames(SE)
   }
   # We check if the variants are actually in a vector.
   if(!is.vector(variants)){

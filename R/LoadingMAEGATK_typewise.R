@@ -34,10 +34,10 @@ LoadingMAEGATK_typewise <- function(samples_file, samples_path = NULL, patient, 
     samples_file <- data.frame(patient = patient, sample = samples, input_path = samples_path, cells = barcodes_path)
   } else{
     if(verbose) print(paste0("Loading the data for patient ", patient, "."))
-    if(verbose) print("We read in the central input file.")
+    if(verbose) print("We read in the design matrix.")
     samples_file <- utils::read.csv(samples_file)
     if(!patient_column %in% colnames(samples_file) & patient_column != "merge"){
-      stop(paste0("Error: the column ", patient_column, " is not in your central input file."))
+      stop(paste0("Error: the column ", patient_column, " is not in your design matrix."))
     }
 
     if(verbose) print("We subset to the relevant files.")
