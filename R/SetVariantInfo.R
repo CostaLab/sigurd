@@ -11,7 +11,7 @@
 #'@param variants A vector of variants.
 #'@param consensus_character Should the consensus information be save as a character value?
 #'@param consensus_group Should the consensus groups Alt and Both be merged? Has no effect if information is not consensus.
-#'#'@export
+#'@export
 SetVariantInfo <- function(SE, seurat_object, information = "consensus", variants = NULL, consensus_character = TRUE, consensus_group = TRUE){
   # We check if a vector of variants has been supplied.
   if(is.null(variants)){

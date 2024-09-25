@@ -24,8 +24,7 @@ SetVariantInfo(
 
 \item{consensus_character}{Should the consensus information be save as a character value?}
 
-\item{consensus_group}{Should the consensus groups Alt and Both be merged? Has no effect if information is not consensus.
-#'@export}
+\item{consensus_group}{Should the consensus groups Alt and Both be merged? Has no effect if information is not consensus.}
 }
 \description{
 We add the genotyping information for a set of variants to a Seurat object.
