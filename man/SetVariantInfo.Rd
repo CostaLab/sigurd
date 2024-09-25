@@ -4,7 +4,14 @@
 \alias{SetVariantInfo}
 \title{SetVariantInfo}
 \usage{
-SetVariantInfo(SE, seurat_object, information = "consensus", variants = NULL)
+SetVariantInfo(
+  SE,
+  seurat_object,
+  information = "consensus",
+  variants = NULL,
+  consensus_character = TRUE,
+  consensus_group = TRUE
+)
 }
 \arguments{
 \item{SE}{SummarizedExperiment object.}
@@ -14,6 +21,11 @@ SetVariantInfo(SE, seurat_object, information = "consensus", variants = NULL)
 \item{information}{The assay with the desired information. Default: consensus}
 
 \item{variants}{A vector of variants.}
+
+\item{consensus_character}{Should the consensus information be save as a character value?}
+
+\item{consensus_group}{Should the consensus groups Alt and Both be merged? Has no effect if information is not consensus.
+#'@export}
 }
 \description{
 We add the genotyping information for a set of variants to a Seurat object.
