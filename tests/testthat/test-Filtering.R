@@ -1,8 +1,8 @@
 test_that("Testing Filtering.R", {
   # Testing if blacklisting works.
   test_blacklist <- readRDS(paste0(getwd(), "/test_data/LoadingMAEGATK_typewise_Test_ExpectedResults.rds"))
-  blacklist <- paste0(getwd(), "/test_data/Filtering_Blacklisted_Barcodes.tsv")
-  test_blacklist <- sigurd::Filtering(test_blacklist, blacklisted_barcodes_path = blacklist, verbose = FALSE)
+  blacklist <- read.table(paste0(getwd(), "/test_data/Filtering_Blacklisted_Barcodes.tsv"))[,1]
+  test_blacklist <- sigurd::Filtering(test_blacklist, cells_exclude = blacklist, verbose = FALSE)
   # saveRDS(test_blacklist, paste0(getwd(), "/test_data/Filtering_Blacklist_ExpectedResults.rds"))
   expected_result_blacklist <- readRDS(paste0(getwd(), "/test_data/Filtering_Blacklist_ExpectedResults.rds"))
   expect_equal(test_blacklist, expected_result_blacklist, tolerance = 1e-6)

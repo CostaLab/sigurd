@@ -13,6 +13,8 @@ LoadingVCF_typewise(
   type_use = "scRNAseq_Somatic",
   min_reads = NULL,
   min_cells = 2,
+  cells_include = NULL,
+  cells_exclude = NULL,
   remove_N_alternative = TRUE,
   cellbarcode_length = 18,
   verbose = TRUE
@@ -34,6 +36,10 @@ LoadingVCF_typewise(
 \item{min_reads}{The minimum number of reads we want. Otherwise we treat this as a NoCall. Default = NULL.}
 
 \item{min_cells}{The minimum number of cells for a variant. Otherwise, we will remove a variant. Default = 2.}
+
+\item{cells_include}{A vector of cell barcodes. Only these cells will be retained.}
+
+\item{cells_exclude}{A vector of cell barcodes. These cells will be removed from the output.}
 
 \item{remove_N_alternative}{Remove all variants that have N as an alternative, see Description. Default = TRUE}
 

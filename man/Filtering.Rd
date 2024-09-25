@@ -6,7 +6,8 @@
 \usage{
 Filtering(
   se,
-  blacklisted_barcodes_path = NULL,
+  cells_include = NULL,
+  cells_exclude = NULL,
   fraction_threshold = NULL,
   alts_threshold = NULL,
   min_cells_per_variant = 2,
@@ -18,7 +19,9 @@ Filtering(
 \arguments{
 \item{se}{SummarizedExperiment object.}
 
-\item{blacklisted_barcodes_path}{Barcodes you want to remove. Path to a file with one column without header.}
+\item{cells_include}{A vector of cell barcodes. Only these cells will be retained.}
+
+\item{cells_exclude}{A vector of cell barcodes. These cells will be removed from the output.}
 
 \item{fraction_threshold}{Variants with an VAF below this threshold are set to 0. Numeric. Default = NULL.}
 
@@ -39,7 +42,8 @@ We filter a SummarizedExperiment object to exclude variants and cells.
 We do this for one sample at a time.
 We want to remove:
 \enumerate{
-  \item all cells that are blacklisted,
+  \item all cells not in an allow list,
+  \item all cells in an exclusion list,
   \item all cells that do not have at least one variant with >1 (Reference),
   \item all variants that are for alternative transcripts,
   \item all variants that are always NoCall,

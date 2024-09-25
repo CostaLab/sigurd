@@ -26,11 +26,13 @@
 #'@param type_use The type of input. Only rows that have the specified type will be loaded.
 #'@param min_reads The minimum number of reads we want. Otherwise we treat this as a NoCall. Default = NULL.
 #'@param min_cells The minimum number of cells for a variant. Otherwise, we will remove a variant. Default = 2.
+#'@param cells_include A vector of cell barcodes. Only these cells will be retained. 
+#'@param cells_exclude A vector of cell barcodes. These cells will be removed from the output.
 #'@param remove_N_alternative Remove all variants that have N as an alternative, see Description. Default = TRUE
 #'@param cellbarcode_length The length of the cell barcode. This should be the length of the actual barcode plus two for the suffix (-1). Default = 18
 #'@param verbose Should the function be verbose? Default = TRUE
 #'@export
-LoadingVCF_typewise <- function(samples_file, samples_path = NULL, vcf_path, patient, patient_column = "patient", type_use = "scRNAseq_Somatic", min_reads = NULL, min_cells = 2, remove_N_alternative = TRUE, cellbarcode_length = 18, verbose = TRUE){
+LoadingVCF_typewise <- function(samples_file, samples_path = NULL, vcf_path, patient, patient_column = "patient", type_use = "scRNAseq_Somatic", min_reads = NULL, min_cells = 2, cells_include = NULL, cells_exclude = NULL, remove_N_alternative = TRUE, cellbarcode_length = 18, verbose = TRUE){
   if(!is.null(samples_path)){
     if(verbose) print(paste0("Loading the data for sample ", patient, "."))
     samples_file <- data.frame(patient = patient, sample = patient, input_path = samples_path)
@@ -69,8 +71,6 @@ LoadingVCF_typewise <- function(samples_file, samples_path = NULL, vcf_path, pat
     sample_use <- samples_file$sample[i]
 
     # We load the VCF file.
-    # vcf_data <- paste0(input_folder_use, sample_use, "/cellSNP.cells.sorted.vcf.gz")
-    #depth_to_add                      <- VariantAnnotation::readGeno(input_folder_use, "DP")
     depth_to_add                      <- VariantAnnotation::readVcf(file = input_folder_use, param = VariantAnnotation::ScanVcfParam(geno = "DP"))
     depth_to_add                      <- VariantAnnotation::geno(depth_to_add)$DP
     depth_to_add[is.na(depth_to_add)] <- 0
@@ -79,7 +79,6 @@ LoadingVCF_typewise <- function(samples_file, samples_path = NULL, vcf_path, pat
     depth_to_add                      <- methods::as(depth_to_add, "CsparseMatrix")
     reads_matrix_total                <- cbind(reads_matrix_total, depth_to_add)
 
-    #alts_to_add                       <- VariantAnnotation::readGeno(input_folder_use, "AD")
     alts_to_add                       <- VariantAnnotation::readVcf(file = input_folder_use, param = VariantAnnotation::ScanVcfParam(geno = "AD"))
     alts_to_add                       <- VariantAnnotation::geno(alts_to_add)$AD
     alts_to_add[is.na(alts_to_add)]   <- 0
@@ -88,7 +87,6 @@ LoadingVCF_typewise <- function(samples_file, samples_path = NULL, vcf_path, pat
     alts_to_add                       <- methods::as(alts_to_add, "CsparseMatrix")
     coverage_matrix_total             <- cbind(coverage_matrix_total, alts_to_add)
 
-    #consensus_to_add                  <- VariantAnnotation::readGeno(input_folder_use, "GT")
     consensus_to_add                  <- VariantAnnotation::readVcf(file = input_folder_use, param = VariantAnnotation::ScanVcfParam(geno = "GT"))
     consensus_to_add                  <- VariantAnnotation::geno(consensus_to_add)$GT
     consensus_to_add                  <- matrix(sapply(consensus_to_add, char_to_numeric), nrow = nrow(consensus_to_add), dimnames = list(make.names(rownames(consensus_to_add)), paste0(sample_use, "_", colnames(consensus_to_add))))
@@ -97,6 +95,28 @@ LoadingVCF_typewise <- function(samples_file, samples_path = NULL, vcf_path, pat
   }
   ref_matrix_total <- reads_matrix_total - coverage_matrix_total
   rm(consensus_to_add, alts_to_add, depth_to_add)
+
+
+  if(!is.null(cells_include)){
+    if(verbose) "We remove all cells not in the allow list."
+    # Check if any cells would be left.
+    check_leftover <- any(colnames(coverage_matrix_total) %in% cells_include)
+    if(!check_leftover) stop("No cells are in your supplied list.")
+    coverage_matrix_total <- coverage_matrix_total[, colnames(coverage_matrix_total) %in% cells_include, drop = FALSE]
+    ref_matrix_total <- ref_matrix_total[, colnames(ref_matrix_total) %in% cells_include, drop = FALSE]
+    reads_matrix_total <- reads_matrix_total[, colnames(reads_matrix_total) %in% cells_include, drop = FALSE]
+  }
+
+
+  if(!is.null(cells_exclude)){
+    if(verbose) "We remove all cells in the exclusion list."
+    # Check if any cells would be left.
+    check_leftover <- all(colnames(coverage_matrix_total) %in% cells_exclude)
+    if(!check_leftover) stop("All cells are in your supplied list.")
+    coverage_matrix_total <- coverage_matrix_total[, !colnames(coverage_matrix_total) %in% cells_exclude]
+    ref_matrix_total <- ref_matrix_total[, !colnames(ref_matrix_total) %in% cells_exclude]
+    reads_matrix_total <- reads_matrix_total[, !colnames(reads_matrix_total) %in% cells_exclude]
+  }
 
 
   # We can get the N allele as an alternative allele. This happened in a visium data set.

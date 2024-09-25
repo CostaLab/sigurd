@@ -20,11 +20,13 @@
 #'@param type_use The type of input. Only rows that have the specified type will be loaded.
 #'@param min_reads The minimum number of reads we want. Otherwise we treat this as a NoCall. Default = NULL.
 #'@param min_cells The minimum number of cells for a variant. Otherwise, we will remove a variant. Default = 2.
+#'@param cells_include A vector of cell barcodes. Only these cells will be retained. 
+#'@param cells_exclude A vector of cell barcodes. These cells will be removed from the output.
 #'@param barcodes_path The path to the cell barcodes tsv. Default = NULL
 #'@param cellbarcode_length The length of the cell barcode. This should be the length of the actual barcode plus two for the suffix (-1). Default = 18
 #'@param verbose Should the function be verbose? Default = TRUE
 #'@export
-LoadingVarTrix_typewise <- function(samples_file, samples_path = NULL, barcodes_path = NULL, snp_path = NULL, vcf_path, patient, patient_column = "patient", type_use = "scRNAseq_Somatic", min_reads = NULL, min_cells = 2, cellbarcode_length = 18, verbose = TRUE){
+LoadingVarTrix_typewise <- function(samples_file, samples_path = NULL, barcodes_path = NULL, snp_path = NULL, vcf_path, patient, patient_column = "patient", type_use = "scRNAseq_Somatic", min_reads = NULL, min_cells = 2, cells_include = NULL, cells_exclude = NULL, cellbarcode_length = 18, verbose = TRUE){
   if(all(!is.null(samples_path), !is.null(barcodes_path), !is.null(snp_path))){
     if(verbose) print(paste0("Loading the data for sample ", patient, "."))
     samples_file <- data.frame(patient = patient, sample = patient, input_path = samples_path, cells = barcodes_path)
@@ -108,7 +110,7 @@ LoadingVarTrix_typewise <- function(samples_file, samples_path = NULL, barcodes_
   }
 
 
-  if(verbose) print("We generate a large data.frame of all the snv matrices.")
+  if(verbose) print("We merge the matrices.")
   coverage_matrix_total  <- do.call("cbind", coverage_matrices)
   ref_matrix_total       <- do.call("cbind", ref_matrices)
   consensus_matrix_total <- do.call("cbind", consensus_matrices)
@@ -117,6 +119,28 @@ LoadingVarTrix_typewise <- function(samples_file, samples_path = NULL, barcodes_
   if(verbose) print("We remove the matrix lists.")
   rm(coverage_matrices, ref_matrices, consensus_matrices)
   gc()
+
+
+  if(!is.null(cells_include)){
+    if(verbose) "We remove all cells not in the allow list."
+    # Check if any cells would be left.
+    check_leftover <- any(colnames(coverage_matrix_total) %in% cells_include)
+    if(!check_leftover) stop("No cells are in your supplied list.")
+    coverage_matrix_total <- coverage_matrix_total[, colnames(coverage_matrix_total) %in% cells_include, drop = FALSE]
+    ref_matrix_total <- ref_matrix_total[, colnames(ref_matrix_total) %in% cells_include, drop = FALSE]
+    consensus_matrix_total <- consensus_matrix_total[, colnames(consensus_matrix_total) %in% cells_include, drop = FALSE]
+  }
+
+
+  if(!is.null(cells_exclude)){
+    if(verbose) "We remove all cells in the exclusion list."
+    # Check if any cells would be left.
+    check_leftover <- all(colnames(coverage_matrix_total) %in% cells_exclude)
+    if(check_leftover) stop("All cells are in your exclusion list.")
+    coverage_matrix_total <- coverage_matrix_total[, !colnames(coverage_matrix_total) %in% cells_exclude]
+    ref_matrix_total <- ref_matrix_total[, !colnames(ref_matrix_total) %in% cells_exclude]
+    consensus_matrix_total <- consensus_matrix_total[, !colnames(consensus_matrix_total) %in% cells_exclude]
+  }
 
 
   if(!is.null(min_reads)){

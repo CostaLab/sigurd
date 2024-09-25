@@ -7,7 +7,8 @@
 #'We do this for one sample at a time.
 #'We want to remove:
 #' \enumerate{
-#'   \item all cells that are blacklisted,
+#'   \item all cells not in an allow list,
+#'   \item all cells in an exclusion list,
 #'   \item all cells that do not have at least one variant with >1 (Reference),
 #'   \item all variants that are for alternative transcripts,
 #'   \item all variants that are always NoCall,
@@ -18,7 +19,8 @@
 #'@importFrom utils read.table
 #'@importFrom Matrix rowSums colSums
 #'@param se SummarizedExperiment object.
-#'@param blacklisted_barcodes_path Barcodes you want to remove. Path to a file with one column without header.
+#'@param cells_include A vector of cell barcodes. Only these cells will be retained. 
+#'@param cells_exclude A vector of cell barcodes. These cells will be removed from the output.
 #'@param fraction_threshold Variants with an VAF below this threshold are set to 0. Numeric. Default = NULL.
 #'@param alts_threshold Variants with a number of alt reads less than this threshold are set to 0. Numeric. Default = NULL.
 #'@param min_cells_per_variant In how many cells should a variant be present to be included? Numeric. Default = 2.
@@ -32,7 +34,7 @@
 #'   se_geno <- Filtering(se_geno, min_cells_per_variant = 2, fraction_threshold = 0.05)
 #' }
 #'@export
-Filtering <- function(se, blacklisted_barcodes_path = NULL, fraction_threshold = NULL, alts_threshold = NULL, min_cells_per_variant = 2, min_variants_per_cell = 1, reject_value = "NoCall", verbose = TRUE){
+Filtering <- function(se, cells_include = NULL, cells_exclude = NULL, fraction_threshold = NULL, alts_threshold = NULL, min_cells_per_variant = 2, min_variants_per_cell = 1, reject_value = "NoCall", verbose = TRUE){
   # Checking if the reject_value variable is correct.
   if(!reject_value %in% c("Reference", "NoCall")){
     stop(paste0("Your reject_value is ", reject_value, ".\nIt should be Reference or NoCall."))
@@ -42,13 +44,21 @@ Filtering <- function(se, blacklisted_barcodes_path = NULL, fraction_threshold =
   }
 
 
-  if(!is.null(blacklisted_barcodes_path)){
+  if(!is.null(cells_include)){
+    if(verbose) print("We remove all cells not in the allow list.")
+    # Check if any cells would be left.
+    check_leftover <- any(colnames(se) %in% cells_include)
+    if(!check_leftover) stop("No cells are in your supplied list.")
+    se <- se[, colnames(se) %in% cells_include]
+  }
+
+
+  if(!is.null(cells_exclude)){
     if(verbose) print("We remove the unwanted cell barcodes.")
-    blacklisted_barcodes <- utils::read.table(blacklisted_barcodes_path, header = FALSE)
-    blacklisted_barcodes <- blacklisted_barcodes[,1]
-    barcodes_keep <- colnames(se)
-    barcodes_keep <- barcodes_keep[!barcodes_keep %in% blacklisted_barcodes]
-    se <- se[, barcodes_keep]
+    # Check if any cells would be left.
+    check_leftover <- all(colnames(se) %in% cells_exclude)
+    if(check_leftover) stop("No cells are in your supplied list.")
+    se <- se[, !colnames(se) %in% cells_exclude]
   }
 
 

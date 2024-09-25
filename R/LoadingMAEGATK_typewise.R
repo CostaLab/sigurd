@@ -20,12 +20,14 @@
 #'@param patient_column The column that contains the patient information. Use merge, if all samples should be merged.
 #'@param chromosome_prefix The prefix you want use. Default: "chrM"
 #'@param min_cells The minimum number of cells with coverage for a variant. Variants with coverage in less than this amount of cells are removed. Default = 2
+#'@param cells_include A vector of cell barcodes. Only these cells will be retained. 
+#'@param cells_exclude A vector of cell barcodes. These cells will be removed from the output.
 #'@param barcodes_path Path to the barcodes file tsv. Default = NULL
 #'@param cellbarcode_length The length of the cell barcode. This should be the length of the actual barcode plus two for the suffix (-1). Default = 18
 #'@param verbose Should the function be verbose? Default = TRUE
 #'@export
 LoadingMAEGATK_typewise <- function(samples_file, samples_path = NULL, patient, patient_column = "patient", type_use = "scRNAseq_MT", chromosome_prefix = "chrM",
-                                    min_cells = 2, barcodes_path = NULL, cellbarcode_length = 18, verbose = TRUE){
+                                    min_cells = 2, cells_include = NULL, cells_exclude = NULL, barcodes_path = NULL, cellbarcode_length = 18, verbose = TRUE){
   if(all(!is.null(samples_path), !is.null(barcodes_path))){
     if(verbose) print(paste0("Loading the data for patient ", patient, "."))
     samples <- patient
@@ -78,6 +80,24 @@ LoadingMAEGATK_typewise <- function(samples_file, samples_path = NULL, patient, 
   se_merged <- do.call("cbind", se_ls)
   rm(se_ls)
   gc()
+
+
+  if(!is.null(cells_include)){
+    if(verbose) "We remove all cells not in the allow list."
+    # Check if any cells would be left.
+    check_leftover <- any(colnames(se_merged) %in% cells_include)
+    if(!check_leftover) stop("No cells are in your supplied list.")
+    se_merged <- se_merged[, colnames(se_merged) %in% cells_include]
+  }
+
+
+  if(!is.null(cells_exclude)){
+    if(verbose) "We remove all cells in the exclusion list."
+    # Check if any cells would be left.
+    check_leftover <- all(colnames(se_merged) %in% cells_exclude)
+    if(check_leftover) stop("All cells are in your exclusion list.")
+    se_merged <- se_merged[, !colnames(se_merged) %in% cells_exclude]
+  }
 
 
   if(verbose) print("We get the allele frequency.")
