@@ -15,6 +15,8 @@ LoadingVarTrix_typewise(
   type_use = "scRNAseq_Somatic",
   min_reads = NULL,
   min_cells = 2,
+  cells_include = NULL,
+  cells_exclude = NULL,
   cellbarcode_length = 18,
   verbose = TRUE
 )
@@ -39,6 +41,10 @@ LoadingVarTrix_typewise(
 \item{min_reads}{The minimum number of reads we want. Otherwise we treat this as a NoCall. Default = NULL.}
 
 \item{min_cells}{The minimum number of cells for a variant. Otherwise, we will remove a variant. Default = 2.}
+
+\item{cells_include}{A vector of cell barcodes. Only these cells will be retained.}
+
+\item{cells_exclude}{A vector of cell barcodes. These cells will be removed from the output.}
 
 \item{cellbarcode_length}{The length of the cell barcode. This should be the length of the actual barcode plus two for the suffix (-1). Default = 18}
 

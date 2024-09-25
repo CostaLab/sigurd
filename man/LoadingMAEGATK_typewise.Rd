@@ -12,6 +12,8 @@ LoadingMAEGATK_typewise(
   type_use = "scRNAseq_MT",
   chromosome_prefix = "chrM",
   min_cells = 2,
+  cells_include = NULL,
+  cells_exclude = NULL,
   barcodes_path = NULL,
   cellbarcode_length = 18,
   verbose = TRUE
@@ -31,6 +33,10 @@ LoadingMAEGATK_typewise(
 \item{chromosome_prefix}{The prefix you want use. Default: "chrM"}
 
 \item{min_cells}{The minimum number of cells with coverage for a variant. Variants with coverage in less than this amount of cells are removed. Default = 2}
+
+\item{cells_include}{A vector of cell barcodes. Only these cells will be retained.}
+
+\item{cells_exclude}{A vector of cell barcodes. These cells will be removed from the output.}
 
 \item{barcodes_path}{Path to the barcodes file tsv. Default = NULL}
 
