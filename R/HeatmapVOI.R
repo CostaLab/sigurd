@@ -64,7 +64,7 @@ HeatmapVoi <- function(SE, voi, annotation_trait = NULL, column_title = NULL, mi
                                          row_names_gp = grid::gpar(fontsize = 10, fontface = "bold"),
                                          col = circlize::colorRamp2(seq(0, round(max(fraction, na.rm = TRUE)), length.out = 9),
                                                                     c("#FCFCFC","#FFEDB0","#FFDF5F","#FEC510","#FA8E24","#F14C2B","#DA2828","#BE2222","#A31D1D")),
-                                         show_row_names = TRUE, show_column_names = FALSE, cluster_columns = ifelse(sort_variants, FALSE, TRUE), clustering_method_columns = "complete", cluster_rows = FALSE, name = "VAF",
+                                         show_row_names = TRUE, show_column_names = FALSE, cluster_columns = ifelse(sort_cells, FALSE, TRUE), clustering_method_columns = "complete", cluster_rows = FALSE, name = "VAF",
                                          heatmap_legend_param = list(border = "#000000"),
                                          bottom_annotation = ha, border = TRUE, use_raster = FALSE,
                                          column_title = column_title,
