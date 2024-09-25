@@ -11,9 +11,10 @@
 #'@param min_reads Minimum number of reads per cell for a classification.
 #'@param group_of_interest The column data that divides the cells.
 #'@param group_factor How much higher has the mean allele frequency to be in group 1 when compared to group 2?
+#'@param return_nonsupport Should nonsupporting cells be return too? Default FALSE.
 #'@param verbose Should the function be verbose? Default = TRUE
 #'@export
-CallSupport <- function(SE, VOI_group1, VOI_group2, group1_name = "group1", group2_name = "group2", min_mutated_reads = 3, min_reads = 30, group_factor = NULL, verbose = TRUE){
+CallSupport <- function(SE, VOI_group1, VOI_group2, group1_name = "group1", group2_name = "group2", min_mutated_reads = 3, min_reads = 30, group_factor = NULL, verbose = TRUE, return_nonsupport = FALSE){
   if(!is.numeric(min_reads) & length(min_reads) != 1){
     stop("Your minimum number of reads is not a single number.")
   }
@@ -49,5 +50,8 @@ CallSupport <- function(SE, VOI_group1, VOI_group2, group1_name = "group1", grou
       return("NoSupport")
     }
   })
+  if(!return_nonsupport){
+    cells_df <- subset(cells_df, Support %in% c(group1_name, group2_name))
+  }
   return(cells_df)
 }
