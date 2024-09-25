@@ -10,6 +10,7 @@ HeatmapVoi(
   annotation_trait = NULL,
   column_title = NULL,
   minimum_coverage = 0,
+  sort_cells = FALSE,
   remove_empty_cells = FALSE
 )
 }
@@ -23,6 +24,8 @@ HeatmapVoi(
 \item{column_title}{The title of the heat map. Default = NULL}
 
 \item{minimum_coverage}{The minimum coverage per cell to be plotted.}
+
+\item{sort_cells}{Should the cells be sorted by clustering the cells? FALSE uses default complete clustering with euclidean distance.}
 
 \item{remove_empty_cells}{Should cells that have a fraction of 0 for all variants be removed? Default = FALSE}
 }

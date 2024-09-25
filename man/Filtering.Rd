@@ -5,7 +5,7 @@
 \title{Filtering the loaded genotyping data.}
 \usage{
 Filtering(
-  se,
+  SE,
   cells_include = NULL,
   cells_exclude = NULL,
   fraction_threshold = NULL,
@@ -17,7 +17,7 @@ Filtering(
 )
 }
 \arguments{
-\item{se}{SummarizedExperiment object.}
+\item{SE}{SummarizedExperiment object.}
 
 \item{cells_include}{A vector of cell barcodes. Only these cells will be retained.}
 
