@@ -10,8 +10,8 @@ Filtering(
   cells_exclude = NULL,
   fraction_threshold = NULL,
   alts_threshold = NULL,
-  min_cells_per_variant = 2,
-  min_variants_per_cell = 1,
+  min_cells_per_variant = NULL,
+  min_variants_per_cell = NULL,
   reject_value = "NoCall",
   verbose = TRUE
 )

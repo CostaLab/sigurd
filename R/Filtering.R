@@ -34,7 +34,7 @@
 #'   se_geno <- Filtering(se_geno, min_cells_per_variant = 2, fraction_threshold = 0.05)
 #' }
 #'@export
-Filtering <- function(se, cells_include = NULL, cells_exclude = NULL, fraction_threshold = NULL, alts_threshold = NULL, min_cells_per_variant = 2, min_variants_per_cell = 1, reject_value = "NoCall", verbose = TRUE){
+Filtering <- function(se, cells_include = NULL, cells_exclude = NULL, fraction_threshold = NULL, alts_threshold = NULL, min_cells_per_variant = NULL, min_variants_per_cell = NULL, reject_value = "NoCall", verbose = TRUE){
   # Checking if the reject_value variable is correct.
   if(!reject_value %in% c("Reference", "NoCall")){
     stop(paste0("Your reject_value is ", reject_value, ".\nIt should be Reference or NoCall."))
@@ -143,15 +143,18 @@ Filtering <- function(se, cells_include = NULL, cells_exclude = NULL, fraction_t
   keep_variants <- Matrix::rowSums(consensus_test) > 0
   se <- se[keep_variants,]
 
-  if(verbose) print(paste0("We remove variants, that are not at least detected in ", min_cells_per_variant, " cells."))
-  keep_variants <- Matrix::rowSums(SummarizedExperiment::assays(se)$consensus >= 2)
-  keep_variants <- keep_variants >= min_cells_per_variant
-  se <- se[keep_variants,]
+  if(!is.null(min_cells_per_variant)){
+    if(verbose) print(paste0("We remove variants, that are not at least detected in ", min_cells_per_variant, " cells."))
+    keep_variants <- Matrix::rowSums(SummarizedExperiment::assays(se)$consensus >= 2)
+    keep_variants <- keep_variants >= min_cells_per_variant
+    se <- se[keep_variants,]
+  }
 
-
-  if(verbose) print(paste0("We remove all cells that are not >= 1 (Ref) for at least ", min_variants_per_cell, " variant."))
-  consensus_test <- SummarizedExperiment::assays(se)$consensus >= 1
-  keep_cells <- Matrix::colSums(consensus_test) >= min_variants_per_cell
-  se <- se[,keep_cells]
+  if(!is.null(min_variants_per_cell)){
+    if(verbose) print(paste0("We remove all cells that are not >= 1 (Ref) for at least ", min_variants_per_cell, " variant."))
+    consensus_test <- SummarizedExperiment::assays(se)$consensus >= 1
+    keep_cells <- Matrix::colSums(consensus_test) >= min_variants_per_cell
+    se <- se[,keep_cells]
+  }
   return(se)
 }
