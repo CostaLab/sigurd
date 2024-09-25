@@ -50,6 +50,8 @@ Filtering <- function(se, cells_include = NULL, cells_exclude = NULL, fraction_t
     check_leftover <- any(colnames(se) %in% cells_include)
     if(!check_leftover) stop("No cells are in your supplied list.")
     se <- se[, colnames(se) %in% cells_include]
+    cells_include <- cells_include[cells_include %in% colnames(SE)]
+    se <- se[, cells_include]
   }
 
 
