@@ -38,14 +38,6 @@ HeatmapVoi <- function(SE, voi, annotation_trait = NULL, column_title = NULL, mi
     fraction <- fraction[, cell_check, drop = FALSE]
     SE <- SE[, cell_check]
   }
-  if(!is.null(annotation_trait)){
-    colours_use <- scales::hue_pal()(length(unique(SummarizedExperiment::colData(SE)[,annotation_trait])))
-    names(colours_use) <- unique(SummarizedExperiment::colData(SE)[,annotation_trait])
-    ha <- ComplexHeatmap::columnAnnotation(annotation_trait = SummarizedExperiment::colData(SE)[,annotation_trait],
-                                           col = list(annotation_trait = colours_use))
-  } else if(is.null(annotation_trait)){
-    ha <- NULL
-  }
 
   # We get a different column title.
   if(is.null(column_title)){
@@ -59,6 +51,16 @@ HeatmapVoi <- function(SE, voi, annotation_trait = NULL, column_title = NULL, mi
     }
     cell_order <- colnames(cell_order)
     fraction <- fraction[, cell_order, drop = FALSE]
+    SE <- SE[, cell_order]
+  }
+
+  if(!is.null(annotation_trait)){
+    colours_use <- scales::hue_pal()(length(unique(SummarizedExperiment::colData(SE)[,annotation_trait])))
+    names(colours_use) <- unique(SummarizedExperiment::colData(SE)[,annotation_trait])
+    ha <- ComplexHeatmap::columnAnnotation(annotation_trait = SummarizedExperiment::colData(SE)[,annotation_trait],
+                                           col = list(annotation_trait = colours_use))
+  } else if(is.null(annotation_trait)){
+    ha <- NULL
   }
 
   heatmap_voi <- ComplexHeatmap::Heatmap(fraction,
