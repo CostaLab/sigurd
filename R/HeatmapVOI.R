@@ -14,13 +14,16 @@
 #'@param minimum_coverage The minimum coverage per cell to be plotted.
 #'@param sort_cells Should the cells be sorted by clustering the cells? FALSE uses default complete clustering with euclidean distance.
 #'@param remove_empty_cells Should cells that have a fraction of 0 for all variants be removed? Default = FALSE
+#'@param minimum_allele_freq Minimum allele frequency to include a cell.
 #'@export
-HeatmapVoi <- function(SE, voi, annotation_trait = NULL, column_title = NULL, minimum_coverage = 0, sort_cells = FALSE, remove_empty_cells = FALSE){
-  coverage_test <- SummarizedExperiment::assays(SE)[["coverage"]][voi,]
-  coverage_test <- coverage_test > minimum_coverage
-  coverage_test <- Matrix::colSums(coverage_test)
-  coverage_test <- coverage_test == length(voi)
-  SE <- SE[,coverage_test]
+HeatmapVoi <- function(SE, voi, annotation_trait = NULL, column_title = NULL, minimum_coverage = 0, sort_cells = FALSE, remove_empty_cells = FALSE, minimum_allele_freq = 0){
+  if(minimum_coverage > 0){
+    coverage_test <- SummarizedExperiment::assays(SE)[["coverage"]][voi,]
+    coverage_test <- coverage_test > minimum_coverage
+    coverage_test <- Matrix::colSums(coverage_test)
+    coverage_test <- coverage_test == length(voi)
+    SE <- SE[,coverage_test]
+  }
   fraction <- SummarizedExperiment::assays(SE)[["fraction"]][voi,]
   fraction[is.na(fraction)] <- 0
   if(length(voi) == 1){
@@ -31,7 +34,7 @@ HeatmapVoi <- function(SE, voi, annotation_trait = NULL, column_title = NULL, mi
   }
   # We remove cells that are negative for all variants.
   if(remove_empty_cells){
-    cell_check <- Matrix::colSums(fraction > 0) > 0
+    cell_check <- Matrix::colSums(fraction > minimum_allele_freq) > 0
     fraction <- fraction[, cell_check, drop = FALSE]
     SE <- SE[, cell_check]
   }
