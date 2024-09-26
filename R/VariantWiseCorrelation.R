@@ -13,8 +13,6 @@ VariantWiseCorrelation <- function(variants_list, n_cores = 1, p_value_adjustmen
   # We correlate the somatic variants with each other and the MT variants.
   # Since we have tens of thousands of MT variants, we do not correlate them with each other.
   variants <- names(variants_list)
-  MT_check <- grepl("^chrM_|^chrMT_|^MT_|^chrMt_|^chrM_|^Mt_", variants)
-  variants <- variants[!MT_check]
 
   results_total <- c()
   number_of_variants <- length(variants)
