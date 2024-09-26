@@ -32,7 +32,7 @@ CallSupport(
 
 \item{min_reads}{Minimum number of reads per cell for a classification.}
 
-\item{group_factor}{How much higher has the mean allele frequency to be in group 1 when compared to group 2?}
+\item{group_factor}{How much higher has the mean allele frequency to be in group 1 when compared to group 2 and vice versa? Can be a vector of length 2.}
 
 \item{verbose}{Should the function be verbose? Default = TRUE}
 
