@@ -12,14 +12,18 @@
 #'@param annotation_trait Cell Annotation at the bottom of the heat map.
 #'@param column_title The title of the heat map. Default = NULL
 #'@param minimum_coverage The minimum coverage per cell to be plotted.
+#'@param sort_cells Should the cells be sorted by clustering the cells? FALSE uses default complete clustering with euclidean distance.
 #'@param remove_empty_cells Should cells that have a fraction of 0 for all variants be removed? Default = FALSE
+#'@param minimum_allele_freq Minimum allele frequency to include a cell.
 #'@export
-HeatmapVoi <- function(SE, voi, annotation_trait = NULL, column_title = NULL, minimum_coverage = 0, remove_empty_cells = FALSE){
-  coverage_test <- SummarizedExperiment::assays(SE)[["coverage"]][voi,]
-  coverage_test <- coverage_test > minimum_coverage
-  coverage_test <- Matrix::colSums(coverage_test)
-  coverage_test <- coverage_test == length(voi)
-  SE <- SE[,coverage_test]
+HeatmapVoi <- function(SE, voi, annotation_trait = NULL, column_title = NULL, minimum_coverage = 0, sort_cells = FALSE, remove_empty_cells = FALSE, minimum_allele_freq = 0){
+  if(minimum_coverage > 0){
+    coverage_test <- SummarizedExperiment::assays(SE)[["coverage"]][voi,]
+    coverage_test <- coverage_test > minimum_coverage
+    coverage_test <- Matrix::colSums(coverage_test)
+    coverage_test <- coverage_test == length(voi)
+    SE <- SE[,coverage_test]
+  }
   fraction <- SummarizedExperiment::assays(SE)[["fraction"]][voi,]
   fraction[is.na(fraction)] <- 0
   if(length(voi) == 1){
@@ -30,10 +34,26 @@ HeatmapVoi <- function(SE, voi, annotation_trait = NULL, column_title = NULL, mi
   }
   # We remove cells that are negative for all variants.
   if(remove_empty_cells){
-    cell_check <- Matrix::colSums(fraction > 0) > 0
-    fraction <- fraction[,cell_check, drop = FALSE]
-    SE <- SE[,cell_check]
+    cell_check <- Matrix::colSums(fraction > minimum_allele_freq) > 0
+    fraction <- fraction[, cell_check, drop = FALSE]
+    SE <- SE[, cell_check]
   }
+
+  # We get a different column title.
+  if(is.null(column_title)){
+    column_title <- "Cells"
+  }
+
+  if(sort_cells){
+    cell_order <- fraction
+    for(variant in rev(rownames(fraction))){
+      cell_order <- cell_order[, order(cell_order[variant,], decreasing = TRUE), drop = FALSE]
+    }
+    cell_order <- colnames(cell_order)
+    fraction <- fraction[, cell_order, drop = FALSE]
+    SE <- SE[, cell_order]
+  }
+
   if(!is.null(annotation_trait)){
     colours_use <- scales::hue_pal()(length(unique(SummarizedExperiment::colData(SE)[,annotation_trait])))
     names(colours_use) <- unique(SummarizedExperiment::colData(SE)[,annotation_trait])
@@ -43,20 +63,15 @@ HeatmapVoi <- function(SE, voi, annotation_trait = NULL, column_title = NULL, mi
     ha <- NULL
   }
 
-  # We get a different column title.
-  if(is.null(column_title)){
-    column_title <- "Cells"
-  }
-
   heatmap_voi <- ComplexHeatmap::Heatmap(fraction,
-                                         column_title_gp = grid::gpar(fontsize = 20, fontface = "bold"),
-                                         row_title_gp = grid::gpar(fontsize = 20, fontface = "bold"),
-                                         row_names_gp = grid::gpar(fontsize = 20, fontface = "bold"),
+                                         column_title_gp = grid::gpar(fontsize = 10, fontface = "bold"),
+                                         row_title_gp = grid::gpar(fontsize = 10, fontface = "bold"),
+                                         row_names_gp = grid::gpar(fontsize = 10, fontface = "bold"),
                                          col = circlize::colorRamp2(seq(0, round(max(fraction, na.rm = TRUE)), length.out = 9),
                                                                     c("#FCFCFC","#FFEDB0","#FFDF5F","#FEC510","#FA8E24","#F14C2B","#DA2828","#BE2222","#A31D1D")),
-                                         show_row_names = T, show_column_names = F, cluster_columns = T, clustering_method_columns = "complete", cluster_rows = F, name = "VAF",
-                                         heatmap_legend_param = list(border = "#000000", grid_height = grid::unit(10, "mm")),
-                                         bottom_annotation = ha, border = T, use_raster = F,
+                                         show_row_names = TRUE, show_column_names = FALSE, cluster_columns = ifelse(sort_cells, FALSE, TRUE), cluster_rows = FALSE, name = "VAF",
+                                         heatmap_legend_param = list(border = "#000000"),
+                                         bottom_annotation = ha, border = TRUE, use_raster = FALSE,
                                          column_title = column_title,
                                          row_title = "Variants")
   return(heatmap_voi)

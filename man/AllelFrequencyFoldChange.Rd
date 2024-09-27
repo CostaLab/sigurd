@@ -10,7 +10,12 @@ AllelFrequencyFoldChange(
   group_of_interest,
   group1 = "group1",
   group2 = "group2",
-  verbose = TRUE
+  maximum_foldchange = NULL,
+  minimum_foldchange = NULL,
+  minimum_coverage = NULL,
+  minimum_allele_freq = NULL,
+  maximum_allele_freq = NULL,
+  verbose = FALSE
 )
 }
 \arguments{
@@ -23,6 +28,16 @@ AllelFrequencyFoldChange(
 \item{group1}{The first group.}
 
 \item{group2}{The second group.}
+
+\item{maximum_foldchange}{Maximum fold change.}
+
+\item{minimum_foldchange}{Minimum fold change.}
+
+\item{minimum_coverage}{Minimum coverage for a variant.}
+
+\item{minimum_allele_freq}{Minimum allele frequency in both groups.}
+
+\item{maximum_allele_freq}{Maximum allele frequency in both groups.}
 
 \item{verbose}{Should the function be verbose? Default = TRUE}
 }

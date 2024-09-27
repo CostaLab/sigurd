@@ -6,6 +6,6 @@ test_that("Testing SetVariantInfo.R", {
   test <- SetVariantInfo(SE = inputobject, seurat_object = seurat_object, information = "consensus", variants = "chrM_3_T_A")
   # We generate the expected result.
   expected_result <- seurat_object
-  expected_result <- Seurat::AddMetaData(object = seurat_object, metadata = c(3,0,3,3,NA,NA), col.name = "chrM_3_T_A_consensus")
+  expected_result <- Seurat::AddMetaData(object = seurat_object, metadata = c("Alt", "NoCall", "Alt", "Alt", NA, NA), col.name = "chrM_3_T_A_consensus")
   expect_equal(test, expected_result, tolerance = 1e-6)
 })

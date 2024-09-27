@@ -1,9 +1,10 @@
-pandoc: 3.1.11
-pkgdown: 2.1.0
+pandoc: 2.0.6
+pkgdown: 2.0.7
 pkgdown_sha: ~
 articles:
-  SIGURD: SIGURD.html
-last_built: 2024-09-20T17:19Z
+  SW_CellMixture_SIGURD: SW_CellMixture_SIGURD.html
+last_built: 2024-09-27T20:29Z
 urls:
   reference: https://costalab.github.io/sigurd/reference
   article: https://costalab.github.io/sigurd/articles
+

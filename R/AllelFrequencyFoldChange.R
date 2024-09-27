@@ -8,9 +8,14 @@
 #'@param group_of_interest The column data that divides the cells.
 #'@param group1 The first group.
 #'@param group2 The second group.
+#'@param minimum_foldchange Minimum fold change.
+#'@param maximum_foldchange Maximum fold change.
+#'@param minimum_coverage Minimum coverage for a variant.
+#'@param minimum_allele_freq Minimum allele frequency in both groups.
+#'@param maximum_allele_freq Maximum allele frequency in both groups.
 #'@param verbose Should the function be verbose? Default = TRUE
 #'@export
-AllelFrequencyFoldChange <- function(SE, VOI = NULL, group_of_interest, group1 = "group1", group2 = "group2", verbose = TRUE){
+AllelFrequencyFoldChange <- function(SE, VOI = NULL, group_of_interest, group1 = "group1", group2 = "group2", maximum_foldchange = NULL, minimum_foldchange = NULL, minimum_coverage = NULL, minimum_allele_freq = NULL, maximum_allele_freq = NULL, verbose = FALSE){
   if(is.null(VOI)){
     VOI <- row.names(SE)
   } else{
@@ -46,5 +51,20 @@ AllelFrequencyFoldChange <- function(SE, VOI = NULL, group_of_interest, group1 =
     fc <- (base_value + change_in_frequency) / base_value
     return(fc)
   })
+  if(!is.null(minimum_foldchange)){
+    result <- subset(result, FoldChange > minimum_foldchange)
+  }
+  if(!is.null(maximum_foldchange)){
+    result <- subset(result, FoldChange < maximum_foldchange)
+  }
+  if(!is.null(minimum_coverage)){
+    result <- subset(result, Coverage > minimum_coverage)
+  }
+  if(!is.null(minimum_allele_freq)){
+    result <- subset(result, Group1 > minimum_allele_freq & Group2 > minimum_allele_freq)
+  }
+  if(!is.null(maximum_allele_freq)){
+    result <- subset(result, Group1 < maximum_allele_freq & Group2 < maximum_allele_freq)
+  }
   return(result)
 }

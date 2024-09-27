@@ -13,7 +13,8 @@ CallSupport(
   min_mutated_reads = 3,
   min_reads = 30,
   group_factor = NULL,
-  verbose = TRUE
+  verbose = TRUE,
+  return_nonsupport = FALSE
 )
 }
 \arguments{
@@ -31,9 +32,11 @@ CallSupport(
 
 \item{min_reads}{Minimum number of reads per cell for a classification.}
 
-\item{group_factor}{How much higher has the mean allele frequency to be in group 1 when compared to group 2?}
+\item{group_factor}{How much higher has the mean allele frequency to be in group 1 when compared to group 2 and vice versa? Can be a vector of length 2.}
 
 \item{verbose}{Should the function be verbose? Default = TRUE}
+
+\item{return_nonsupport}{Should nonsupporting cells be return too? Default FALSE.}
 
 \item{group_of_interest}{The column data that divides the cells.}
 }

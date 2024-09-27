@@ -111,9 +111,9 @@ ClonalDefinition <- function(se, variants_ls, grouping = NULL, identities = NULL
         cells <- colSums(rbind(cells, cells_rest)) == 2
         coverage <- mean(colMeans(SummarizedExperiment::assays(se_use)[["coverage"]][combination_use, cells, drop = FALSE]))
         cells <- cells[cells]
-        new_meta_data_subset[names(cells)] <- paste0("C_", combination_number)
+        new_meta_data_subset[names(cells)] <- paste0("C", combination_number)
         combinations_meta_data[[i]] <- rbind(combinations_meta_data[[i]], 
-                                             data.frame(Clone = paste0("C_", combination_number), Variants = paste0(combinations[[j]][,k], collapse = ",")))
+                                             data.frame(Clone = paste0("C", combination_number), Variants = paste0(combinations[[j]][,k], collapse = ",")))
       }
     }
     rownames(combinations_meta_data[[i]]) <- combinations_meta_data[[i]][, "Clone"]
@@ -126,7 +126,7 @@ ClonalDefinition <- function(se, variants_ls, grouping = NULL, identities = NULL
       if(new_names[j, "OldName"] == "Negative"){
         new_names[j, "NewName"] <- "Negative"
       } else{
-        new_names[j, "NewName"] <- paste0("C_", new_rank)
+        new_names[j, "NewName"] <- paste0("C", new_rank)
         new_rank <- new_rank + 1
       }
     }

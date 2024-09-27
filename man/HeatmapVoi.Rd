@@ -10,7 +10,9 @@ HeatmapVoi(
   annotation_trait = NULL,
   column_title = NULL,
   minimum_coverage = 0,
-  remove_empty_cells = FALSE
+  sort_cells = FALSE,
+  remove_empty_cells = FALSE,
+  minimum_allele_freq = 0
 )
 }
 \arguments{
@@ -24,7 +26,11 @@ HeatmapVoi(
 
 \item{minimum_coverage}{The minimum coverage per cell to be plotted.}
 
+\item{sort_cells}{Should the cells be sorted by clustering the cells? FALSE uses default complete clustering with euclidean distance.}
+
 \item{remove_empty_cells}{Should cells that have a fraction of 0 for all variants be removed? Default = FALSE}
+
+\item{minimum_allele_freq}{Minimum allele frequency to include a cell.}
 }
 \description{
 We plot a heatmap of a set of Variants Of Interest using the Variant Allele Frequency values of a SummarizedExperiment object.

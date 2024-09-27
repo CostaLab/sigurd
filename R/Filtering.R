@@ -18,7 +18,7 @@
 #'@importFrom SummarizedExperiment assays
 #'@importFrom utils read.table
 #'@importFrom Matrix rowSums colSums
-#'@param se SummarizedExperiment object.
+#'@param SE SummarizedExperiment object.
 #'@param cells_include A vector of cell barcodes. Only these cells will be retained. 
 #'@param cells_exclude A vector of cell barcodes. These cells will be removed from the output.
 #'@param fraction_threshold Variants with an VAF below this threshold are set to 0. Numeric. Default = NULL.
@@ -34,7 +34,7 @@
 #'   se_geno <- Filtering(se_geno, min_cells_per_variant = 2, fraction_threshold = 0.05)
 #' }
 #'@export
-Filtering <- function(se, cells_include = NULL, cells_exclude = NULL, fraction_threshold = NULL, alts_threshold = NULL, min_cells_per_variant = 2, min_variants_per_cell = 1, reject_value = "NoCall", verbose = TRUE){
+Filtering <- function(SE, cells_include = NULL, cells_exclude = NULL, fraction_threshold = NULL, alts_threshold = NULL, min_cells_per_variant = NULL, min_variants_per_cell = NULL, reject_value = "NoCall", verbose = TRUE){
   # Checking if the reject_value variable is correct.
   if(!reject_value %in% c("Reference", "NoCall")){
     stop(paste0("Your reject_value is ", reject_value, ".\nIt should be Reference or NoCall."))
@@ -47,18 +47,20 @@ Filtering <- function(se, cells_include = NULL, cells_exclude = NULL, fraction_t
   if(!is.null(cells_include)){
     if(verbose) print("We remove all cells not in the allow list.")
     # Check if any cells would be left.
-    check_leftover <- any(colnames(se) %in% cells_include)
+    check_leftover <- any(colnames(SE) %in% cells_include)
     if(!check_leftover) stop("No cells are in your supplied list.")
-    se <- se[, colnames(se) %in% cells_include]
+    SE <- SE[, colnames(SE) %in% cells_include]
+    cells_include <- cells_include[cells_include %in% colnames(SE)]
+    SE <- SE[, cells_include]
   }
 
 
   if(!is.null(cells_exclude)){
     if(verbose) print("We remove the unwanted cell barcodes.")
     # Check if any cells would be left.
-    check_leftover <- all(colnames(se) %in% cells_exclude)
+    check_leftover <- all(colnames(SE) %in% cells_exclude)
     if(check_leftover) stop("No cells are in your supplied list.")
-    se <- se[, !colnames(se) %in% cells_exclude]
+    SE <- SE[, !colnames(SE) %in% cells_exclude]
   }
 
 
@@ -80,8 +82,8 @@ Filtering <- function(se, cells_include = NULL, cells_exclude = NULL, fraction_t
     if(verbose) print(paste0("We do not set fractions between ", fraction_threshold, " and 1 to 1."))
     if(verbose) print("This way, we retain the heterozygous information.")
     # Filtering using sparse matrices.
-    consensus_matrix <- SummarizedExperiment::assays(se)$consensus
-    fraction_matrix <- SummarizedExperiment::assays(se)$fraction
+    consensus_matrix <- SummarizedExperiment::assays(SE)$consensus
+    fraction_matrix <- SummarizedExperiment::assays(SE)$fraction
     position_matrix <- Matrix::summary(fraction_matrix)
     position_matrix <- subset(position_matrix, x > 0 & x < fraction_threshold)
     # If no elements fall between 0 and the fraction_threshold, we do not have to change the matrices.
@@ -89,8 +91,8 @@ Filtering <- function(se, cells_include = NULL, cells_exclude = NULL, fraction_t
       ij <- as.matrix(position_matrix[, 1:2])
       consensus_matrix[ij] <- reject_value_numeric
       fraction_matrix[ij] <- 0
-      SummarizedExperiment::assays(se)$consensus <- consensus_matrix
-      SummarizedExperiment::assays(se)$fraction <- fraction_matrix
+      SummarizedExperiment::assays(SE)$consensus <- consensus_matrix
+      SummarizedExperiment::assays(SE)$fraction <- fraction_matrix
     }
   }
 
@@ -104,11 +106,11 @@ Filtering <- function(se, cells_include = NULL, cells_exclude = NULL, fraction_t
     if(reject_value == "NoCall") if(verbose) print("We set Alts, Refs and Coverage to 0.")
     if(reject_value == "Reference") if(verbose) print("We set Alts to 0 and adjust the Coverage.")
     # Filtering using sparse matrices.
-    consensus_matrix <- SummarizedExperiment::assays(se)$consensus
-    fraction_matrix <- SummarizedExperiment::assays(se)$fraction
-    coverage_matrix <- SummarizedExperiment::assays(se)$coverage
-    alts_matrix <- SummarizedExperiment::assays(se)$alts
-    refs_matrix <- SummarizedExperiment::assays(se)$refs
+    consensus_matrix <- SummarizedExperiment::assays(SE)$consensus
+    fraction_matrix <- SummarizedExperiment::assays(SE)$fraction
+    coverage_matrix <- SummarizedExperiment::assays(SE)$coverage
+    alts_matrix <- SummarizedExperiment::assays(SE)$alts
+    refs_matrix <- SummarizedExperiment::assays(SE)$refs
     position_matrix <- summary(alts_matrix)
     position_matrix <- subset(position_matrix, x < alts_threshold)
     # If no elements fall between 0 and the alts_threshold, we do not have to change the matrices.
@@ -129,29 +131,32 @@ Filtering <- function(se, cells_include = NULL, cells_exclude = NULL, fraction_t
         refs_matrix[ij] <- 0
         coverage_matrix[ij] <- 0
       }
-      SummarizedExperiment::assays(se)$consensus <- consensus_matrix
-      SummarizedExperiment::assays(se)$fraction <- fraction_matrix
-      SummarizedExperiment::assays(se)$coverage <- coverage_matrix
-      SummarizedExperiment::assays(se)$alts <- alts_matrix
-      SummarizedExperiment::assays(se)$refs <- refs_matrix
+      SummarizedExperiment::assays(SE)$consensus <- consensus_matrix
+      SummarizedExperiment::assays(SE)$fraction <- fraction_matrix
+      SummarizedExperiment::assays(SE)$coverage <- coverage_matrix
+      SummarizedExperiment::assays(SE)$alts <- alts_matrix
+      SummarizedExperiment::assays(SE)$refs <- refs_matrix
     }
   }
 
 
   if(verbose) print("We remove all the variants that are always NoCall.")
-  consensus_test <- SummarizedExperiment::assays(se)$consensus > 0
+  consensus_test <- SummarizedExperiment::assays(SE)$consensus > 0
   keep_variants <- Matrix::rowSums(consensus_test) > 0
-  se <- se[keep_variants,]
+  SE <- SE[keep_variants,]
 
-  if(verbose) print(paste0("We remove variants, that are not at least detected in ", min_cells_per_variant, " cells."))
-  keep_variants <- Matrix::rowSums(SummarizedExperiment::assays(se)$consensus >= 2)
-  keep_variants <- keep_variants >= min_cells_per_variant
-  se <- se[keep_variants,]
+  if(!is.null(min_cells_per_variant)){
+    if(verbose) print(paste0("We remove variants, that are not at least detected in ", min_cells_per_variant, " cells."))
+    keep_variants <- Matrix::rowSums(SummarizedExperiment::assays(SE)$consensus >= 2)
+    keep_variants <- keep_variants >= min_cells_per_variant
+    SE <- SE[keep_variants,]
+  }
 
-
-  if(verbose) print(paste0("We remove all cells that are not >= 1 (Ref) for at least ", min_variants_per_cell, " variant."))
-  consensus_test <- SummarizedExperiment::assays(se)$consensus >= 1
-  keep_cells <- Matrix::colSums(consensus_test) >= min_variants_per_cell
-  se <- se[,keep_cells]
-  return(se)
+  if(!is.null(min_variants_per_cell)){
+    if(verbose) print(paste0("We remove all cells that are not >= 1 (Ref) for at least ", min_variants_per_cell, " variant."))
+    consensus_test <- SummarizedExperiment::assays(SE)$consensus >= 1
+    keep_cells <- Matrix::colSums(consensus_test) >= min_variants_per_cell
+    SE <- SE[,keep_cells]
+  }
+  return(SE)
 }
