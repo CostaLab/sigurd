@@ -1,0 +1,90 @@
+---
+title: "SW CellMixture SIGURD"
+author: |
+  Martin Grasshoff<sup>1</sup>, Ivan G. Costa<sup>1</sup>
+
+affiliations: |
+  1. Institute for Computational Genomics, Faculty of Medicine, RWTH Aachen University, Aachen, 52074 Germany
+
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{SW CellMixture SIGURD}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+header-includes:
+  - \usepackage[utf8]{inputenc}  # Optional, if needed for LaTeX output.
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+## Cell Mixture Analysis using SIGURD
+
+Here, we reproduce the results from the MAESTER script 3.1_SW_CellLineMix_variants.R.
+
+It is available here: https://github.com/petervangalen/MAESTER-2021/blob/main/3_Cell_line_mixes_variants/3.1_SW_CellLineMix_variants.R
+
+In this data set, chronic myelogenous leukemia cells (K562) and brain tumor cells (BT142) were mixed and then sequenced using Seq-Well S3. The cells can be separated using the expression of marker genes. 
+
+The original script then identifies 6 variants that can distinguish between the two cell types.
+
+The analysis was repeated by Miller et al using the 10x Genomics v3 protocol. This was performed in the script 3.3_TenX_CellLineMix_variants.R.
+Available here: https://github.com/petervangalen/MAESTER-2021/blob/main/3_Cell_line_mixes_variants/3.3_TenX_CellLineMix_variants.R
+
+Both approaches produced similar results and we are able to reproduce them. We show case the reproduction of the Seq-Well results, since these results were shown in the main figure 1. 
+
+In this reproduction, we show that the analysis can be faithfully reproduced using a very streamlined set of functions. This greatly simplifies the analysis. Using a set of dedicated functions, the analysis can now also be easily adopted to new data sets. 
+
+## Loading necessary packages.
+
+We load the data from MAESTER. 
+
+```{r Packages}
+print("Libraries for SIGURD.")
+suppressPackageStartupMessages(library(sigurd))
+suppressPackageStartupMessages(library(SummarizedExperiment))
+suppressPackageStartupMessages(library(ggplot2))
+```
+
+## We load the Seurat object for the scRNA-seq data.
+
+```{r warning = FALSE}
+seu <- readRDS("data/SW_CellLineMix_Seurat_Keep_Renamed.rds")
+```
+
+## Loading the data using SIGURD.
+
+SIGURD loads the data and automatically reformats the data. This code uses dedicated functions to load the and process the data, which streamlines the analysis quite substantially.
+
+
+```{r warning = FALSE}
+# The design matrix contains information for the genotyping data.
+genotyping <- LoadingMAEGATK_typewise(patient = "SW", samples_file = "data/MAESTER_Reproduction.csv", min_cells = 0, type_use = "Amplicon_MT", verbose = FALSE)
+
+# Removing cells that are not in the Seurat object.
+genotyping <- Filtering(genotyping, cells_include = colnames(seu))
+
+# Adding meta data do the SIGURD object.
+colData(genotyping)$CellType <- seu$CellType
+
+```
+
+## Selecting the Variants of Interest
+
+Now, we select the variants of interest.
+
+```{r warning = FALSE}
+# Selecting informative variants. 
+voi.ch.sigurd <- VariantSelection_Quantile(genotyping, min_coverage = 20, min_quality = 30, quantiles = c(0.1, 0.9), thresholds = c(0.1, 0.9), verbose = FALSE)
+print(voi.ch.sigurd)
+```
+
+## Visualisation using SIGURD
+
+```{r warning = FALSE, fig.width = 6, fig.height = 4, dev = "CairoPNG"}
+# Determining if a cell is supporting one of the two cell types.
+cell_support <- CallSupport(SE = genotyping, VOI_group1 = c("chrM_709_G_A", "chrM_1888_G_A", "chrM_1420_T_C", "chrM_2141_T_C", "chrM_9117_T_C"), VOI_group2 = "chrM_7990_C_T", group1_name = "K562", group2_name = "BT142", min_mutated_reads = 3, min_reads = 30, group_factor = 10, verbose = FALSE)
+
+# Plotting the results on a heatmap.
+HeatmapVoi(SE = genotyping[,cell_support$Cell], voi = voi.ch.sigurd, annotation_trait = "CellType", minimum_coverage = 3, remove_empty_cells = FALSE)
+```
