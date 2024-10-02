@@ -1,5 +1,5 @@
 ---
-title: "BPDCN BoneMarrow SIGURD"
+title: "Analysis of Blastic Plasmacytoid Dendritic Cell Neoplasm"
 author: |
   Martin Grasshoff<sup>1</sup>, Ivan G. Costa<sup>1</sup>
 
@@ -23,11 +23,9 @@ knitr::opts_chunk$set(echo = TRUE, dev = "CairoPNG")
 
 Here, we compare the analysis of cells from a patient with BPDCN.
 
-The original script is available here: https://github.com/petervangalen/MAESTER-2021/blob/main/4_CH_sample/4.2_Variant_Selection.R
-
 In this setup, the cells are all from a single donor and do not have to be separated into categories. 
 
-Then small clones that might characterize the clonal lineages in the sample are selected.
+Then small clones are selected, that might characterize the clonal lineages in the sample.
 
 ## Loading necessary packages.
 
@@ -47,7 +45,7 @@ suppressPackageStartupMessages(library(ggplot2))
 genotyping <- LoadingMAEGATK_typewise(patient = "BPDCN712", samples_file = "data/MAESTER_Reproduction.csv", type_use = "Amplicon_MT", verbose = FALSE)
 
 # Loading the scRNA-seq data.
-scrna <- readRDS("data/BPDCN712_Seurat_with_TCR_Renamed.rds")
+seu <- readRDS("data/BPDCN712_Seurat_with_TCR_Renamed.rds")
 ```
 
 ## Generating a block list
@@ -76,7 +74,7 @@ print(voi.ch.sigurd)
 ## Visualisation using SIGURD
 
 ```{r Vis_SIGURD, fig.width = 6, fig.height = 4, warning = FALSE}
-genotyping <- Filtering(SE = genotyping, cells_include = colnames(scrna))
-colData(genotyping)$CellType <- scrna$CellType
+genotyping <- Filtering(SE = genotyping, cells_include = colnames(seu))
+colData(genotyping)$CellType <- seu$CellType
 HeatmapVoi(SE = genotyping, voi = voi.ch.sigurd, annotation_trait = "CellType", sort_cells = TRUE, remove_empty_cells = TRUE, minimum_allele_freq = 0.01)
 ```
