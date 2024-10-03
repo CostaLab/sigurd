@@ -40,7 +40,7 @@ suppressPackageStartupMessages(library(ggplot2))
 
 ```{r Loading_SIGURD, warning = FALSE}
 # The design matrix contains information for the genotyping data.
-genotyping <- LoadingMAEGATK_typewise(patient = "BPDCN712", samples_file = "data/MAESTER_Reproduction.csv", type_use = "Amplicon_MT", verbose = FALSE)
+genotyping <- LoadingMAEGATK_typewise(patient = "BPDCN712", samples_file = "/data/MPN/exp/scRNA/MPN_mutations/SIGURD_paper/sigurd/data/MAESTER_Reproduction.csv", type_use = "Amplicon_MT", verbose = FALSE)
 
 # Loading the scRNA-seq data.
 scrna <- readRDS("/data/MPN/exp/scRNA/MPN_mutations/SIGURD_paper/sigurd/data/BPDCN712_Seurat_with_TCR_Renamed.rds")

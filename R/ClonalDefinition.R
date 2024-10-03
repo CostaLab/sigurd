@@ -11,10 +11,11 @@
 #'@param se SummarizedExperiment object.
 #'@param variants_ls List of variants for clonal definition
 #'@param grouping The meta data	column used to split the cells into groups. Default = NULL
+#'@param n_cores Number of cores you want to use. Numeric.
 #'@param identities Vector of groups, like samples.
 #'@param verbose Should the function be verbose? Default = TRUE
 #'@export
-ClonalDefinition <- function(se, variants_ls, grouping = NULL, identities = NULL, verbose = TRUE){
+ClonalDefinition <- function(se, variants_ls, grouping = NULL, identities = NULL, n_cores = 1, verbose = TRUE){
   # Checking if the group variable is in the column data.
   if(!is.null(grouping)){
     # We check if the grouping variable is in the column data.
@@ -109,7 +110,6 @@ ClonalDefinition <- function(se, variants_ls, grouping = NULL, identities = NULL
           cells_rest <- rep(TRUE, ncol(se_use))
         }
         cells <- colSums(rbind(cells, cells_rest)) == 2
-        coverage <- mean(colMeans(SummarizedExperiment::assays(se_use)[["coverage"]][combination_use, cells, drop = FALSE]))
         cells <- cells[cells]
         new_meta_data_subset[names(cells)] <- paste0("C", combination_number)
         combinations_meta_data[[i]] <- rbind(combinations_meta_data[[i]], 
