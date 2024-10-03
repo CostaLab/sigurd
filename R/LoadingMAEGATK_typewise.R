@@ -26,7 +26,7 @@
 #'@param cellbarcode_length The length of the cell barcode. This should be the length of the actual barcode plus two for the suffix (-1). Default = 18
 #'@param verbose Should the function be verbose? Default = TRUE
 #'@export
-LoadingMAEGATK_typewise <- function(samples_file, samples_path = NULL, patient, patient_column = "patient", type_use = "scRNAseq_MT", chromosome_prefix = "chrM",
+LoadingMAEGATK_typewise <- function(samples_file, patient, samples_path = NULL, patient_column = "patient", type_use = "scRNAseq_MT", chromosome_prefix = "chrM",
                                     min_cells = 2, cells_include = NULL, cells_exclude = NULL, barcodes_path = NULL, cellbarcode_length = 18, verbose = TRUE){
   if(all(!is.null(samples_path), !is.null(barcodes_path))){
     if(verbose) print(paste0("Loading the data for patient ", patient, "."))

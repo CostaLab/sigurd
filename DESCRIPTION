@@ -53,5 +53,5 @@ Suggests:
     testthat (>= 3.0.0),
     tidyr,
     tidyverse
-VignetteBuilder: knitr
+# VignetteBuilder: knitr
 Config/testthat/edition: 3

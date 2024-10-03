@@ -164,3 +164,41 @@ We calculate the clonal diversity for the sample MPN1 as an example.
 clonal_diversity <- ClonalDiversity(genotyping_mt, grouping = "Clones", diversity_measure = "EffectiveSpecies", verbose = FALSE)
 print(paste0("Clonal Diversity in Effective Number of Species for MPN1: ", clonal_diversity))
 ```
+
+## Repeating the MT analysis for all samples.
+
+We now repeat the MT analysis for all samples. This will take considereable time.
+
+```{r warning = FALSE, dev = "CairoPNG"}
+# We get all patients present in the design matrix.
+design_matrix <- read.table("/data/MPN/exp/scRNA/MPN_mutations/SIGURD_paper/sigurd/data/DesignMatrix_MT.csv", header = TRUE, sep = ",")
+patients <- design_matrix$patient
+genotyping_mt_all <- lapply(patients, LoadingMAEGATK_typewise, samples_file = "/data/MPN/exp/scRNA/MPN_mutations/SIGURD_paper/sigurd/data/DesignMatrix_MT.csv", min_cells = 0, cells_include = colnames(scrna), type_use = "scRNAseq_MT", verbose = FALSE)
+genotyping_mt_all <- lapply(genotyping_mt_all, Filtering, min_variants_per_cell = 1, min_cells_per_variant = 2, fraction_threshold = 0.05, cells_include = colnames(scrna), verbose = FALSE)
+genotyping_mt_all <- Filtering(genotyping_mt, min_variants_per_cell = 1, min_cells_per_variant = 2, fraction_threshold = 0.05, cells_include = colnames(erythroid_cells), verbose = FALSE)
+```
+
+## Selecting variants of interest for all samples
+
+We select variants of interest for all samples. 
+
+```{r MPN_VOI, warning = FALSE}
+# Selecting the mtVOIS.
+mt_vois_all <- lapply(genotyping_mt_all, VariantSelection_Quantile, min_coverage = 1, verbose = FALSE)
+names(mt_vois_all) <- names(genotyping_mt_all)
+
+# Determining the clonal lineages. This takes very long. We use parallel computing to process all samples simultaneously.
+genotyping_mt_all <- parallel::mclapply(1:length(mt_vois_all), function(x){
+  sample_use <- names(mt_vois_all)[x]
+  clones <- sigurd::ClonalDefinition(se = genotyping_mt_all[[sample_use]], mt_vois_all[sample_use], verbose = FALSE)
+  return(clones)
+}, mc.cores = length(mt_vois_all))
+```
+
+## Calculating the diverstiy for all samples
+
+```{r warning = FALSE}
+clonal_diversity_all <- unlist(lapply(genotyping_mt_all, ClonalDiversity, grouping = "Clones", diversity_measure = "EffectiveSpecies", verbose = FALSE))
+clonal_diversity_all <- data.frame(Sample = names(genotyping_mt_all), EffectiveSpecies = clonal_diversity_all)
+knitr::kable(clonal_diversity_all, format="html")
+```
