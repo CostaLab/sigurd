@@ -24,7 +24,9 @@
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/SW_CellMixture_SIGURD.html">SW CellMixture SIGURD</a>
+    <a class="dropdown-item" href="../articles/MPN_SIGURD.html">MPN SIGURD</a>
+    <a class="dropdown-item" href="../articles/SW_CellMixture_SIGURD.html">Cell Mixture Analysis using Seq-Well Sequencing</a>
+    <a class="dropdown-item" href="../articles/TenX_CellMixture_SIGURD.html">Cell Mixture Experiment using 10X Genomics Sequencing</a>
   </div>
 </li>
       </ul><form class="form-inline my-2 my-lg-0" role="search">
@@ -56,7 +58,10 @@
 <span>  minimum_coverage <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  sort_cells <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  remove_empty_cells <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  minimum_allele_freq <span class="op">=</span> <span class="fl">0</span></span>
+<span>  minimum_allele_freq <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  cluster_variants <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  cluster_variants_distance <span class="op">=</span> <span class="st">"euclidean"</span>,</span>
+<span>  cluster_variants_method <span class="op">=</span> <span class="st">"complete"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -83,7 +88,7 @@
 
 
 <dt>sort_cells</dt>
-<dd><p>Should the cells be sorted by clustering the cells? FALSE uses default complete clustering with euclidean distance.</p></dd>
+<dd><p>Should the cells be sorted by ordering the cells according the the largest clones? FALSE uses default complete clustering with euclidean distance.</p></dd>
 
 
 <dt>remove_empty_cells</dt>
@@ -92,6 +97,18 @@
 
 <dt>minimum_allele_freq</dt>
 <dd><p>Minimum allele frequency to include a cell.</p></dd>
+
+
+<dt>cluster_variants</dt>
+<dd><p>Should the variants be clustered? Default FALSE.</p></dd>
+
+
+<dt>cluster_variants_distance</dt>
+<dd><p>The distance for clustering the variants. Default euclidean.</p></dd>
+
+
+<dt>cluster_variants_method</dt>
+<dd><p>The distance for the variant clustering. Default complete</p></dd>
 
 </dl></div>
 

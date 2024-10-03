@@ -8,4 +8,6 @@
 module unload R
 module load scRNA
 
+export TMPDIR=/data/MPN/exp/scRNA/MPN_mutations/SIGURD_paper/tmpdir
+export VIGNETTE_DATA_PATH=/data/MPN/exp/scRNA/MPN_mutations/SIGURD_paper/sigurd/data
 Rscript /data/mg000001/sigurd/build.R

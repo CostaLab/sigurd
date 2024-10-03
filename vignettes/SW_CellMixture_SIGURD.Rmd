@@ -1,18 +1,14 @@
 ---
-title: "SW CellMixture SIGURD"
-author: |
-  Martin Grasshoff<sup>1</sup>, Ivan G. Costa<sup>1</sup>
-
-affiliations: |
-  1. Institute for Computational Genomics, Faculty of Medicine, RWTH Aachen University, Aachen, 52074 Germany
-
+title: "Cell Mixture Analysis using Seq-Well Sequencing"
+author: "Martin Grasshoff<sup>1</sup>, Ivan G. Costa<sup>1</sup>"
+affiliations: "1. Institute for Computational Genomics, Faculty of Medicine, RWTH Aachen University, Aachen, 52074 Germany"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{SW CellMixture SIGURD}
+  %\VignetteIndexEntry{Cell Mixture Analysis using Seq-Well Sequencing}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 header-includes:
-  - \usepackage[utf8]{inputenc}  # Optional, if needed for LaTeX output.
+  - '\usepackage[utf8]{inputenc}'
 ---
 
 ```{r setup, include=FALSE}
@@ -40,7 +36,7 @@ suppressPackageStartupMessages(library(ggplot2))
 ## We load the Seurat object for the scRNA-seq data.
 
 ```{r warning = FALSE}
-seu <- readRDS("data/SW_CellLineMix_Seurat_Keep_Renamed.rds")
+seu <- readRDS("/data/MPN/exp/scRNA/MPN_mutations/SIGURD_paper/sigurd/data/SW_CellLineMix_Seurat_Keep_Renamed.rds")
 ```
 
 ## Loading the data using SIGURD.
@@ -49,7 +45,7 @@ SIGURD loads the data and automatically reformats the data. This code uses dedic
 
 ```{r warning = FALSE}
 # The design matrix contains information for the genotyping data.
-genotyping <- LoadingMAEGATK_typewise(patient = "SW", samples_file = "data/MAESTER_Reproduction.csv", min_cells = 0, type_use = "Amplicon_MT", verbose = FALSE)
+genotyping <- LoadingMAEGATK_typewise(patient = "SW", samples_file = "/data/MPN/exp/scRNA/MPN_mutations/SIGURD_paper/sigurd/data/MAESTER_Reproduction.csv", min_cells = 0, type_use = "Amplicon_MT", verbose = FALSE)
 
 # Removing cells that are not in the Seurat object.
 genotyping <- Filtering(genotyping, cells_include = colnames(seu))
@@ -97,7 +93,6 @@ print(voi.ch.lineages)
 ## Visualisation using SIGURD
 
 ```{r warning = FALSE, dev = "CairoPNG"}
-
 # Plotting the results on a heatmap.
 cell_support <- subset(cell_support, Support == "K562")
 genotyping <- Filtering(genotyping, cells_include = cell_support$Cell, verbose = FALSE)

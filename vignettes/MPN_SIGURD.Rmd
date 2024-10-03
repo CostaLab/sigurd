@@ -1,18 +1,14 @@
 ---
 title: "MPN SIGURD"
-author: |
-  Martin Grasshoff<sup>1</sup>, Ivan G. Costa<sup>1</sup>
-
-affiliations: |
-  1. Institute for Computational Genomics, Faculty of Medicine, RWTH Aachen University, Aachen, 52074 Germany
-
+author: "Martin Grasshoff<sup>1</sup>, Ivan G. Costa<sup>1</sup>"
+affiliations: "1. Institute for Computational Genomics, Faculty of Medicine, RWTH Aachen University, Aachen, 52074 Germany"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{MPN SIGURD}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 header-includes:
-  - \usepackage[utf8]{inputenc}
+  - '\usepackage[utf8]{inputenc}'
 ---
 
 ```{r setup, include=FALSE}
@@ -42,13 +38,13 @@ Now, we load the JAK2V617F data and plot the mutated cells on the UMAP.
 
 Since we are loading multiple samples, this code is more complicated than the code for the MAESTER SW sample.
 
-```{r MPN warning = FALSE}
+```{r MPN, warning = FALSE}
 # Loading the scRNA-seq data.
-scrna <- load_object("data/scrna_MPN.rds.lz4")
+scrna <- load_object("/data/MPN/exp/scRNA/MPN_mutations/SIGURD_paper/sigurd/data/scrna_MPN.rds.lz4")
 
 # Loading the genotyping data.
-genotyping  <- LoadingVarTrix_typewise(patient = "MPN", samples_file = "data/DesignMatrix_VarTrix.csv", min_reads = 0, vcf_path = "data/CosmicSubset_JAK2V617F.vcf", type_use = "scRNAseq_Somatic", min_cells = 0, verbose = FALSE)
-amplicon <- LoadingVarTrix_typewise(patient = "MPN", samples_file = "data/DesignMatrix_Amplicon.csv", min_reads = 0, vcf_path = "data/CosmicSubset_UCSC_JAK2V617F.vcf", type_use = "scRNAseq_Amplicon", min_cells = 0, verbose = FALSE)
+genotyping  <- LoadingVarTrix_typewise(patient = "MPN", samples_file = "/data/MPN/exp/scRNA/MPN_mutations/SIGURD_paper/sigurd/data/DesignMatrix_VarTrix.csv", min_reads = 0, vcf_path = "/data/MPN/exp/scRNA/MPN_mutations/SIGURD_paper/sigurd/data/CosmicSubset_JAK2V617F.vcf", type_use = "scRNAseq_Somatic", min_cells = 0, verbose = FALSE)
+amplicon <- LoadingVarTrix_typewise(patient = "MPN", samples_file = "/data/MPN/exp/scRNA/MPN_mutations/SIGURD_paper/sigurd/data/DesignMatrix_Amplicon.csv", min_reads = 0, vcf_path = "/data/MPN/exp/scRNA/MPN_mutations/SIGURD_paper/sigurd/data/CosmicSubset_UCSC_JAK2V617F.vcf", type_use = "scRNAseq_Amplicon", min_cells = 0, verbose = FALSE)
 genotyping  <- AmpliconSupplementing(scRNAseq = genotyping, amplicon = amplicon, verbose = FALSE)
 
 # Filtering the genotyping object to remove false positives.
@@ -103,7 +99,7 @@ First, we load and filter the mitochondrial variant information.
 
 ```{r Combining, warning = FALSE}
 # Loading the data. 
-genotyping_mt <- LoadingMAEGATK_typewise(patient = "MPN1", samples_file = "data/DesignMatrix_MT.csv", min_cells = 0, cells_include = colnames(scrna), type_use = "scRNAseq_MT", verbose = FALSE)
+genotyping_mt <- LoadingMAEGATK_typewise(patient = "MPN1", samples_file = "/data/MPN/exp/scRNA/MPN_mutations/SIGURD_paper/sigurd/data/DesignMatrix_MT.csv", min_cells = 0, cells_include = colnames(scrna), type_use = "scRNAseq_MT", verbose = FALSE)
 genotyping_mt <- Filtering(genotyping_mt, min_variants_per_cell = 1, min_cells_per_variant = 2, fraction_threshold = 0.05, cells_include = colnames(scrna), verbose = FALSE)
 ```
 
