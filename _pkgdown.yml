@@ -1,4 +1,5 @@
 url: https://costalab.github.io/sigurd/
 template:
   bootstrap: 5
-
+vignettes:
+  build: false
