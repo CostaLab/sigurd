@@ -58,7 +58,7 @@ ClonalDefinition <- function(se, variants_ls, grouping = NULL, identities = NULL
     # We prepare a new meta data column.
     new_meta_data <- rep("OtherLineage", ncol(se))
     names(new_meta_data) <- colnames(se)
-    for(i in 1:length(combinations_ls)){
+    for(i in 1:length(variants_ls)){
       variants_ls_group <- variants_ls[[i]]
       
       # If the grouping variables is not NULL, we get the relevant identity.
