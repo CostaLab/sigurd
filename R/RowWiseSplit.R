@@ -9,7 +9,7 @@
 #'@param n_cores Number of cores to use.
 #'@param remove_nocalls Do you want to remove NoCall cells?
 #'@export
-RowWiseSplit <- function(se, n_cores = 1, remove_nocalls = TRUE){
+RowWiseSplit <- function(se, n_cores = 1, minimum_reads, remove_nocalls = TRUE){
   consensus <- SummarizedExperiment::assays(se)$consensus
   consensus_list <- parallel::mclapply(rownames(se), SeparatingMatrixToList, total_matrix = consensus, remove_nocalls = remove_nocalls, mc.cores = n_cores)
   names(consensus_list) <- rownames(se)

@@ -12,7 +12,7 @@ header-includes:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, dev = "pdf")
+knitr::opts_chunk$set(echo = TRUE, dev = "CairoPNG")
 ```
 
 ## Analysis of Blastic Plasmacytoid Dendritic Cell Neoplasm (BPDCN)
@@ -75,20 +75,4 @@ print(voi.ch.sigurd)
 genotyping <- Filtering(SE = genotyping, cells_include = colnames(scrna))
 colData(genotyping)$CellType <- scrna$CellType
 HeatmapVoi(SE = genotyping, voi = voi.ch.sigurd, annotation_trait = "CellType", sort_cells = TRUE, remove_empty_cells = TRUE, minimum_allele_freq = 0.01)
-```
-
-## Enrichment with somatic variants
-
-```{r warning = FALSE}
-somatic_variants <- c("ASXL1.G642fs.1", "ASXL1.G642fs.2", "TET2.S792X", "TET2.Q1034X", "TET2.R1216X", "TET2.H1380Y")
-variants <- LoadingRawMatrix_typewise(samples_file = "/data/MPN/exp/scRNA/MPN_mutations/SIGURD_paper/sigurd/data/MAESTER_Reproduction.csv", patient = "BPDCN712", variant_use = somatic_variants, matrix_column_separator = "\t", verbose = FALSE)
-geno1 <- genotyping[voi.ch.sigurd, ]
-geno1 <- Filtering(geno1, cells_include = colnames(variants))
-variants <- Filtering(variants, cells_include = colnames(scrna), fraction_threshold = 0.01, reject_value = "Reference")
-genotyping <- CombineSEobjects(se_1 = genotyping, se_2 = variants)
-genotyping <- ClonalDefinition(se = genotyping, variants_ls = list("chrM_2593_G_A"), grouping = NULL, identities = NULL, explicit = TRUE, explicit_not = list("chrM_6243_G_A"), explicit_min_vaf = 0.01, verbose = TRUE)
-genotyping <- genotyping[, genotyping$Clones == "C1"]
-var_values <- RowWiseSplit(se = genotyping)
-res <- VariantWiseFisherTest(variants_list = var_values)
-knitr::kable(res, format="html")
 ```

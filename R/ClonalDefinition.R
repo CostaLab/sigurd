@@ -11,11 +11,13 @@
 #'@param se SummarizedExperiment object.
 #'@param variants_ls List of variants for clonal definition
 #'@param grouping The meta data	column used to split the cells into groups. Default = NULL
-#'@param n_cores Number of cores you want to use. Numeric.
 #'@param identities Vector of groups, like samples.
+#'@param explicit Do you want to specify the variants forming a clone? Then the variant_ls needs to be a list of variants that each define a clone. One variant per group.
+#'@param explicit_not Do you want to specify a set of variants that the cell may not have? One set per group.
+#'@param explicit_min_vaf Minimum VAF for a cell to be considered positive.
 #'@param verbose Should the function be verbose? Default = TRUE
 #'@export
-ClonalDefinition <- function(se, variants_ls, grouping = NULL, identities = NULL, n_cores = 1, verbose = TRUE){
+ClonalDefinition <- function(se, variants_ls, grouping = NULL, identities = NULL, explicit = FALSE, explicit_not = NULL, explicit_min_vaf = 0.01, verbose = TRUE){
   # Checking if the group variable is in the column data.
   if(!is.null(grouping)){
     # We check if the grouping variable is in the column data.
@@ -44,11 +46,70 @@ ClonalDefinition <- function(se, variants_ls, grouping = NULL, identities = NULL
   }
   # Checking if any of the variants is not in the SE object.
   for(i in 1:length(variants_ls)){
-    check_variants <- all(variants_ls[[i]] %in% rownames(se))
+    check_variants <- all(unlist(variants_ls[[i]]) %in% rownames(se))
     if(!check_variants){
       stop(paste0("The set of variants number ", i, " has variants not in the object. Please check."))
     }
   }
+
+
+  if(explicit){
+    if(verbose) print("Explicit clone definition.")
+    # We prepare a new meta data column.
+    new_meta_data <- rep("OtherLineage", ncol(se))
+    names(new_meta_data) <- colnames(se)
+    for(i in 1:length(combinations_ls)){
+      variants_ls_group <- variants_ls[[i]]
+      
+      # If the grouping variables is not NULL, we get the relevant identity.
+      if(!is.null(grouping)){
+        identity_use <- identities[i]
+        cells_use <- SummarizedExperiment::colData(se)
+        cells_use <- cells_use[cells_use[,grouping] == identity_use, ]
+        cells_use <- rownames(cells_use)
+        se_use <- se[,cells_use]
+      } else{
+        se_use <- se
+      }
+
+      # We prepare the new meta data for the subset of the cells.
+      new_meta_data_subset <- rep("OtherLineage", ncol(se_use))
+      names(new_meta_data_subset) <- colnames(se_use)
+
+      # For each set of variants, we now assign a cell to be part of this clone.
+      for(j in 1:length(variants_ls_group)){
+        variants_use <- variants_ls_group[[j]]
+	# We check if a cell is mutated for the set of variants.
+	check_use <- as.matrix(SummarizedExperiment::assays(se_use)[["consensus"]][variants_use, , drop = FALSE])	
+	if(explicit_min_vaf > 0){
+	  frac_check <- as.matrix(SummarizedExperiment::assays(se_use)[["fraction"]][variants_use, , drop = FALSE])
+	  check_use[frac_check < explicit_min_vaf] <- 1
+	}
+	check_use <- matrix(check_use %in% 2:3, ncol = ncol(check_use), nrow = nrow(check_use), dimnames = list(rownames(check_use), colnames(check_use)))
+        check_use <- colSums(check_use) == length(variants_use)
+	if(!is.null(explicit_not)){
+	  variants_not <- explicit_not[[i]][[j]]
+	  check_not <- as.matrix(SummarizedExperiment::assays(se_use)[["consensus"]][variants_not, , drop = FALSE])
+  	  if(explicit_min_vaf > 0){
+            frac_not <- as.matrix(SummarizedExperiment::assays(se_use)[["fraction"]][variants_not, , drop = FALSE])
+            check_not[frac_not < explicit_min_vaf] <- 1
+          }
+	  check_not <- matrix(check_not %in% 2:3, ncol = ncol(check_not), nrow = nrow(check_not), dimnames = list(rownames(check_not), colnames(check_not)))
+	  check_not <- colSums(check_not) > 0
+	  check_not <- check_not[check_not]
+	  check_use[names(check_not)] <- FALSE
+	}
+	check_use <- check_use[check_use]
+	# We check if a cell is mutated for any of the other variants.
+	new_meta_data_subset[names(check_use)] <- paste0("C", j)
+	# We add the new meta data to the combined meta data.
+        new_meta_data[names(new_meta_data_subset)] <- new_meta_data_subset
+      }
+    }
+    SummarizedExperiment::colData(se)$Clones <- new_meta_data
+    return(se)
+  }
+
 
   # For each set of variants, we get all possible combinations.
   combinations_ls <- list()

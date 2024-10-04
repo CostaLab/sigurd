@@ -6,8 +6,8 @@
 \usage{
 LoadingMAEGATK_typewise(
   samples_file,
-  samples_path = NULL,
   patient,
+  samples_path = NULL,
   patient_column = "patient",
   type_use = "scRNAseq_MT",
   chromosome_prefix = "chrM",
@@ -22,9 +22,9 @@ LoadingMAEGATK_typewise(
 \arguments{
 \item{samples_file}{Path to the csv file with the samples to be loaded.}
 
-\item{samples_path}{Path to the input folder.}
-
 \item{patient}{The patient you want to load.}
+
+\item{samples_path}{Path to the input folder.}
 
 \item{patient_column}{The column that contains the patient information. Use merge, if all samples should be merged.}
 

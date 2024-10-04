@@ -4,7 +4,7 @@
 \alias{RowWiseSplit}
 \title{RowWiseSplit}
 \usage{
-RowWiseSplit(se, n_cores = 1, remove_nocalls = TRUE)
+RowWiseSplit(se, n_cores = 1, minimum_reads, remove_nocalls = TRUE)
 }
 \arguments{
 \item{se}{SummarizedExperiment object.}
