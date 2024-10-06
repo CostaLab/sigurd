@@ -1,14 +1,12 @@
 ---
 title: "Cell Mixture Experiment using 10X Genomics Sequencing"
-author: "Martin Grasshoff<sup>1</sup>, Ivan G. Costa<sup>1</sup>"
-affiliations: "1. Institute for Computational Genomics, Faculty of Medicine, RWTH Aachen University, Aachen, 52074 Germany"
-output: rmarkdown::html_vignette
+output:
+  rmarkdown::html_vignette:
+    self_contained: true
 vignette: >
   %\VignetteIndexEntry{Cell Mixture Experiment using 10X Genomics Sequencing}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
-header-includes:
-  - '\usepackage[utf8]{inputenc}'
 ---
 
 ```{r setup, include=FALSE}

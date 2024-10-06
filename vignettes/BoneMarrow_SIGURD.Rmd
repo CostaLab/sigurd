@@ -1,18 +1,16 @@
 ---
 title: "Analysis of Blastic Plasmacytoid Dendritic Cell Neoplasm (BPDCN)"
-author: Martin Grasshoff<sup>1</sup>, Ivan G. Costa<sup>1</sup>
-affiliations: 1. Institute for Computational Genomics, Faculty of Medicine, RWTH Aachen University, Aachen, 52074 Germany
-output: rmarkdown::html_vignette
+output:
+  rmarkdown::html_vignette:
+    self_contained: true
 vignette: >
   %\VignetteIndexEntry{Analysis of Blastic Plasmacytoid Dendritic Cell Neoplasm (BPDCN)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
-header-includes:
-  - \usepackage[utf8]{inputenc}
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, dev = "pdf")
+knitr::opts_chunk$set(echo = TRUE, dev = "CairoPNG")
 ```
 
 ## Analysis of Blastic Plasmacytoid Dendritic Cell Neoplasm (BPDCN)
@@ -77,18 +75,37 @@ colData(genotyping)$CellType <- scrna$CellType
 HeatmapVoi(SE = genotyping, voi = voi.ch.sigurd, annotation_trait = "CellType", sort_cells = TRUE, remove_empty_cells = TRUE, minimum_allele_freq = 0.01)
 ```
 
+## Cell Type Enrichment 2593G>A
+
+We check the cell type enrichment for the variant 2593G>A.
+
+```{r warning = FALSE}
+result_enrichment <- Enrichment_FisherTest(se = genotyping, variant = "chrM_2593_G_A", use_nocall = FALSE, trait = "CellType")
+ComplexHeatmap::Heatmap(as.matrix(result_enrichment$Heatmap_Values), cluster_rows = FALSE, cluster_columns = FALSE, col= circlize::colorRamp2(c(0, max(result_enrichment$Heatmap_Values, na.rm = TRUE)), c("white", "red")))
+```
+
+## Cell Type Enrichment 6243G>A
+
+We check the cell type enrichment for the variant 6243G>A.
+
+```{r warning = FALSE}
+result_enrichment <- Enrichment_FisherTest(se = genotyping, variant = "chrM_6243_G_A", use_nocall = FALSE, trait = "CellType")
+ComplexHeatmap::Heatmap(as.matrix(result_enrichment$Heatmap_Values), cluster_rows = FALSE, cluster_columns = FALSE, col= circlize::colorRamp2(c(0, max(result_enrichment$Heatmap_Values, na.rm = TRUE)), c("white", "red")))
+```
+
 ## Enrichment with somatic variants
+
+We get the number of 2593_G>A cells that are also mutated for a different somatic variant.
 
 ```{r warning = FALSE}
 somatic_variants <- c("ASXL1.G642fs.1", "ASXL1.G642fs.2", "TET2.S792X", "TET2.Q1034X", "TET2.R1216X", "TET2.H1380Y")
 variants <- LoadingRawMatrix_typewise(samples_file = "/data/MPN/exp/scRNA/MPN_mutations/SIGURD_paper/sigurd/data/MAESTER_Reproduction.csv", patient = "BPDCN712", variant_use = somatic_variants, matrix_column_separator = "\t", verbose = FALSE)
-geno1 <- genotyping[voi.ch.sigurd, ]
-geno1 <- Filtering(geno1, cells_include = colnames(variants))
+genotyping <- genotyping[voi.ch.sigurd, ]
+genotyping <- Filtering(genotyping, cells_include = colnames(variants))
 variants <- Filtering(variants, cells_include = colnames(scrna), fraction_threshold = 0.01, reject_value = "Reference")
 genotyping <- CombineSEobjects(se_1 = genotyping, se_2 = variants)
 genotyping <- ClonalDefinition(se = genotyping, variants_ls = list("chrM_2593_G_A"), grouping = NULL, identities = NULL, explicit = TRUE, explicit_not = list("chrM_6243_G_A"), explicit_min_vaf = 0.01, verbose = TRUE)
 genotyping <- genotyping[, genotyping$Clones == "C1"]
-var_values <- RowWiseSplit(se = genotyping)
-res <- VariantWiseFisherTest(variants_list = var_values)
+res <- VariantWiseFisherTest(variants_list = RowWiseSplit(se = genotyping))
 knitr::kable(res, format="html")
 ```
