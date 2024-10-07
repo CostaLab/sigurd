@@ -1,0 +1,160 @@
+---
+title: "BPDCN BoneMarrow MAESTER"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, dev = "CairoPNG")
+```
+
+## BPDCN BoneMarrow MAESTER Analysis
+
+We reproduce the results from the script 4.2_Variant_Selection.R
+
+Available here: https://github.com/petervangalen/MAESTER-2021/blob/main/4_CH_sample/4.2_Variant_Selection.R
+
+## Loading necessary packages.
+
+We load the data from MAESTER. 
+
+```{r Packages}
+print("Libraries for SIGURD.")
+suppressPackageStartupMessages(library(tidyverse))
+suppressPackageStartupMessages(library(SummarizedExperiment))
+suppressPackageStartupMessages(library(Seurat))
+suppressPackageStartupMessages(library(Matrix))
+suppressPackageStartupMessages(library(readxl))
+suppressPackageStartupMessages(library(ComplexHeatmap))
+suppressPackageStartupMessages(library(circlize))
+suppressPackageStartupMessages(library(magick))
+suppressPackageStartupMessages(library(mclust))
+cutf <- function(x, f=1, d="/") sapply(strsplit(x, d), function(i) paste(i[f], collapse=d))
+computeAFMutMatrix <- function(SE){
+  cov <- assays(SE)[["coverage"]]+ 0.000001
+  ref_allele <- as.character(rowRanges(SE)$refAllele)
+  getMutMatrix <- function(letter){
+    mat <- (assays(SE)[[paste0(letter, "_counts_fw")]] + assays(SE)[[paste0(letter, "_counts_rev")]]) / cov
+    rownames(mat) <- paste0(as.character(1:dim(mat)[1]), "_", toupper(ref_allele), ">", letter)
+    return(mat[toupper(ref_allele) != letter,])
+  }
+  rbind(getMutMatrix("A"), getMutMatrix("C"), getMutMatrix("G"), getMutMatrix("T"))
+}
+var_fc <- function(a, b) {
+  # Distance to homoplasmy
+  x <- min(a, abs(100-a))
+  y <- min(b, abs(100-b))
+  d <- abs(a-b)
+  # Fold difference
+  z <- (min(x,y)+d) / min(x,y)
+  return(z)
+}
+popcol.tib <- read_excel("MAESTER_colors.xlsx")
+mycol.ch <- popcol.tib$hex
+names(mycol.ch) <- popcol.tib$name
+```
+
+## Loading the data using SIGURD.
+
+```{r dev = "CairoPNG"}
+maegatk.rse <- readRDS("BPDCN712_Maegatk_Final.rds")
+seu <- readRDS("BPDCN712_Seurat_with_TCR.rds")
+metadata.tib <- as_tibble(seu@meta.data, rownames = "cell")
+```
+
+## Collect information for each variant
+
+```{r warning = FALSE, dev = "CairoPNG"}
+af.dm <- data.matrix(computeAFMutMatrix(maegatk.rse))*100
+
+assays.ls <- lapply(maegatk.rse@assays$data, function(x) as.matrix(x))
+qual.num <- sapply(rownames(af.dm), function(x) {
+    pos <- as.numeric( cutf(x, d = "_") )
+    mut <- cutf(x, d = ">", f = 2)
+    covered_fw <- assays.ls[[str_c(mut, "_counts_fw")]][pos,] > 0
+    qual_fw <- assays.ls[[str_c(mut, "_qual_fw")]][pos, covered_fw]
+    covered_rev <- assays.ls[[str_c(mut, "_counts_rev")]][pos,] > 0
+    qual_rev <- assays.ls[[str_c(mut, "_qual_rev")]][pos, covered_rev]
+    qual <- mean(c(qual_fw, qual_rev))
+    return(qual)
+})
+vars.tib <- tibble(var = rownames(af.dm),
+                   mean_af = rowMeans(af.dm),
+                   mean_cov = rowMeans(assays(maegatk.rse)[["coverage"]])[as.numeric(cutf(rownames(af.dm), d = "_"))],
+                   quality = qual.num)
+vars.tib <- vars.tib %>%
+  mutate(n0 = apply(af.dm, 1, function(x) sum(x == 0))) %>%
+  mutate(n1 = apply(af.dm, 1, function(x) sum(x > 1))) %>%
+  mutate(n5 = apply(af.dm, 1, function(x) sum(x > 5))) %>%
+  mutate(n10 = apply(af.dm, 1, function(x) sum(x > 10))) %>%
+  mutate(n50 = apply(af.dm, 1, function(x) sum(x > 50)))
+```
+
+## Generate a blocklist
+
+```{r warning = FALSE}
+backgroundvars.tib <- read_tsv("TenX_CellLineMix_Variants1.txt")
+backgroundvars.tib <- backgroundvars.tib %>% select(var, mean_cov.unionCells, mean_af.K562, mean_af.BT142)
+backgroundvars.tib$FoldChange <- apply(backgroundvars.tib, 1, function(x) var_fc(as.numeric(x[3]), as.numeric(x[4])) )
+blocklist.var <- backgroundvars.tib %>% filter(mean_cov.unionCells > 5) %>%
+    filter(between(mean_af.K562, 0.1, 99.9), between(mean_af.BT142, 0.1, 99.9), FoldChange < 5) %>% .$var
+blocklist.var <- c(blocklist.var, backgroundvars.tib[grepl("N", backgroundvars.tib$var),]$var)
+```
+
+## Select VOIs
+
+```{r warning = FALSE}
+conditions.tib <- tibble(min_clone_size = rep(1:25, 4),
+                         min_vaf = rep(c("n1", "n5", "n10", "n50"), each = 25),
+                         vois = NA,
+                         n_vois = NA,
+                         cells = NA,
+                         n_cells = NA,
+                         transitions = NA)
+vois.ls <- vector(mode = "list", length = nrow(conditions.tib))
+cells.ls <- vector(mode = "list", length = nrow(conditions.tib))
+vars_filter.tib <- vars.tib %>% filter(mean_cov > 5, quality >= 30, n0 > 0.9*ncol(af.dm))
+for(x in 1:nrow(conditions.tib)){
+    min_clone_size <- conditions.tib$min_clone_size[x]
+    min_vaf <- conditions.tib$min_vaf[x]
+    voi.ch <- vars_filter.tib$var[vars_filter.tib[[min_vaf]] >= min_clone_size]
+    voi.ch <- setdiff(voi.ch, c("1583_A>G", blocklist.var))
+    af_subset.dm <- af.dm[voi.ch,]
+    positive_cells <- colnames( af_subset.dm[,colSums(af_subset.dm > 1)] )
+    conditions.tib[x,"n_vois"] <- length(voi.ch)
+    conditions.tib[x,"n_cells"] <- length(positive_cells)
+    conditions.tib[x,"transitions"] <- mean( str_count(voi.ch, "G>A|A>G|C>T|T>C") )
+    vois.ls[[x]] <- voi.ch
+    cells.ls[[x]] <- positive_cells
+}
+conditions.tib$vois <- vois.ls
+conditions.tib$cells <- cells.ls
+conditions_subset.tib <- conditions.tib %>% filter(min_clone_size %in% c(5,10), min_vaf %in% c("n10","n50"))
+voi.ch <- conditions_subset.tib$vois[[4]]
+print(voi.ch)
+```
+
+## Visualisation
+
+```{r warning = FALSE, fig.width = 6, dev = "CairoPNG"}
+af_voi.mat <- af.dm[voi.ch, ]
+af_subset.mat <- af_voi.mat[,apply(af_voi.mat, 2, function(x) sum(x > 1) > 0)]
+plot_order.mat <- af_subset.mat
+for (x in rev(voi.ch)) { plot_order.mat <- plot_order.mat[,order(-plot_order.mat[x,])] }
+anno.tib <- tibble(cell = colnames(plot_order.mat)) %>% left_join(metadata.tib, by = "cell") %>% select(CellType)
+ha <- HeatmapAnnotation(df = data.frame(anno.tib), col = list(CellType = mycol.ch))
+Heatmap(plot_order.mat,
+        col = colorRamp2(seq(0, round(max(plot_order.mat)), length.out = 9),
+                         c("#FCFCFC","#FFEDB0","#FFDF5F","#FEC510","#FA8E24","#F14C2B","#DA2828","#BE2222","#A31D1D")),
+        show_row_names = ifelse(nrow(plot_order.mat) < 100, T, F),
+        show_column_names = F,
+        cluster_columns = F,
+        cluster_rows = F,
+        row_names_gp = gpar(fontsize = 10),
+        name = "AF",
+        heatmap_legend_param = list(border = "#000000", grid_height = unit(10, "mm")),
+        top_annotation = ha,
+        border = T,
+        use_raster = T,
+        raster_quality = 5)
+```

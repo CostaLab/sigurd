@@ -69,7 +69,7 @@ print(voi.ch.sigurd)
 
 ## Visualisation using SIGURD
 
-```{r Vis_SIGURD, fig.width = 6, fig.height = 4, warning = FALSE}
+```{r Vis_SIGURD, fig.width = 6, fig.height = 4, warning = FALSE, dev = "CairoPNG"}
 genotyping <- Filtering(SE = genotyping, cells_include = colnames(scrna))
 colData(genotyping)$CellType <- scrna$CellType
 HeatmapVoi(SE = genotyping, voi = voi.ch.sigurd, annotation_trait = "CellType", sort_cells = TRUE, remove_empty_cells = TRUE, minimum_allele_freq = 0.01)
@@ -79,7 +79,7 @@ HeatmapVoi(SE = genotyping, voi = voi.ch.sigurd, annotation_trait = "CellType", 
 
 We check the cell type enrichment for the variant 2593G>A.
 
-```{r warning = FALSE}
+```{r fig.width = 6, fig.height = 4, warning = FALSE, dev = "CairoPNG"}
 result_enrichment <- Enrichment_FisherTest(se = genotyping, variant = "chrM_2593_G_A", use_nocall = FALSE, trait = "CellType")
 ComplexHeatmap::Heatmap(as.matrix(result_enrichment$Heatmap_Values), cluster_rows = FALSE, cluster_columns = FALSE, col= circlize::colorRamp2(c(0, max(result_enrichment$Heatmap_Values, na.rm = TRUE)), c("white", "red")))
 ```
