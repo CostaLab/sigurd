@@ -9,6 +9,9 @@ ClonalDefinition(
   variants_ls,
   grouping = NULL,
   identities = NULL,
+  explicit = FALSE,
+  explicit_not = NULL,
+  explicit_min_vaf = 0.01,
   verbose = TRUE
 )
 }
@@ -20,6 +23,12 @@ ClonalDefinition(
 \item{grouping}{The meta data    column used to split the cells into groups. Default = NULL}
 
 \item{identities}{Vector of groups, like samples.}
+
+\item{explicit}{Do you want to specify the variants forming a clone? Then the variant_ls needs to be a list of variants that each define a clone. One variant per group.}
+
+\item{explicit_not}{Do you want to specify a set of variants that the cell may not have? One set per group.}
+
+\item{explicit_min_vaf}{Minimum VAF for a cell to be considered positive.}
 
 \item{verbose}{Should the function be verbose? Default = TRUE}
 }

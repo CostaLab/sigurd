@@ -34,9 +34,6 @@ VariantWiseFisherTest <- function(variants_list, n_cores = 1, p_value_adjustment
   if(verbose) print("We remove the NA P values.")
   results_total <- results_total[!is.na(results_total$P),]
 
-  if(verbose) print("We remove the SNPs with a odds ratio lower than 1.")
-  results_total <- subset(results_total, OddsRatio > 1)
-
   if(verbose) print(paste0("Adjusting P values using ", p_value_adjustment, "."))
   results_total$P_adj <- stats::p.adjust(results_total$P, method = p_value_adjustment)
   rownames(results_total) <- NULL
