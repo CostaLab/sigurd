@@ -1,23 +1,4 @@
----
-title: "MPN SIGURD"
-author: "Martin Grasshoff<sup>1</sup>, Ivan G. Costa<sup>1</sup>"
-affiliations: "1. Institute for Computational Genomics, Faculty of Medicine, RWTH Aachen University, Aachen, 52074 Germany"
-output: rmarkdown::html_vignette
-vignette: >
-  %\VignetteIndexEntry{MPN SIGURD}
-  %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
-header-includes:
-  - '\usepackage[utf8]{inputenc}'
----
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
-
-## Loading necessary packages.
-
-```{r Packages, warning = FALSE}
+# Loading necessary packages.
 suppressPackageStartupMessages(library(sigurd))
 suppressPackageStartupMessages(library(SummarizedExperiment))
 suppressPackageStartupMessages(library(ggplot2))
@@ -26,45 +7,27 @@ suppressPackageStartupMessages(library(ComplexHeatmap))
 suppressPackageStartupMessages(library(circlize))
 suppressPackageStartupMessages(library(grid))
 suppressPackageStartupMessages(library(EnhancedVolcano))
-```
-## Analysis of MPN data
 
-Here, we illustrate how to analysis genotyping data from MPN samples. The JAK2V617F mutation was genotyped for 6 MPN samples and 3 healthy controls.
+# Analysis of MPN data
+# Here, we illustrate how to analysis genotyping data from MPN samples. The JAK2V617F mutation was genotyped for 6 MPN samples and 3 healthy controls.
 
-This setup makes this analysis different from the previous analyses. Previously, only one sample was analysed at a time. Now, we load and analyse the samples simultaneously.
+# This setup makes this analysis different from the previous analyses. Previously, only one sample was analysed at a time. Now, we load and analyse the samples simultaneously.
 
-## Loading MPN data
-Now, we load the JAK2V617F data and plot the mutated cells on the UMAP.
-
-Since we are loading multiple samples, this code is more complicated than the code for the MAESTER SW sample.
-
-```{r MPN, warning = FALSE}
-# Loading the scRNA-seq data.
+# Loading MPN data
 scrna <- load_object("/data/MPN/exp/scRNA/MPN_mutations/SIGURD_paper/sigurd/data/scrna_MPN.rds.lz4")
 
 # Loading the genotyping data.
-genotyping  <- LoadingVarTrix_typewise(patient = "MPN", samples_file = "/data/MPN/exp/scRNA/MPN_mutations/SIGURD_paper/sigurd/data/DesignMatrix_VarTrix.csv", min_reads = 0, vcf_path = "/data/MPN/exp/scRNA/MPN_mutations/SIGURD_paper/sigurd/data/CosmicSubset_JAK2V617F.vcf", type_use = "scRNAseq_Somatic", min_cells = 0, verbose = FALSE)
-amplicon <- LoadingVarTrix_typewise(patient = "MPN", samples_file = "/data/MPN/exp/scRNA/MPN_mutations/SIGURD_paper/sigurd/data/DesignMatrix_Amplicon.csv", min_reads = 0, vcf_path = "/data/MPN/exp/scRNA/MPN_mutations/SIGURD_paper/sigurd/data/CosmicSubset_UCSC_JAK2V617F.vcf", type_use = "scRNAseq_Amplicon", min_cells = 0, verbose = FALSE)
+genotyping  <- LoadingVarTrix_typewise(patient = "MPN", samples_file = "DesignMatrix_VarTrix.csv", min_reads = 0, vcf_path = "/data/MPN/exp/scRNA/MPN_mutations/SIGURD_paper/sigurd/data/CosmicSubset_JAK2V617F.vcf", type_use = "scRNAseq_Somatic", min_cells = 0, verbose = FALSE)
+amplicon <- LoadingVarTrix_typewise(patient = "MPN", samples_file = "DesignMatrix_Amplicon.csv", min_reads = 0, vcf_path = "/data/MPN/exp/scRNA/MPN_mutations/SIGURD_paper/sigurd/data/CosmicSubset_UCSC_JAK2V617F.vcf", type_use = "scRNAseq_Amplicon", min_cells = 0, verbose = FALSE)
 genotyping  <- AmpliconSupplementing(scRNAseq = genotyping, amplicon = amplicon, verbose = FALSE)
 
 # Filtering the genotyping object to remove false positives.
 genotyping <- Filtering(genotyping, min_cells_per_variant = 0, fraction_threshold = 0.21, cells_include = colnames(scrna), min_variants_per_cell = 1, reject_value = "NoCall", verbose = FALSE)
-```
 
-## Combining Seurat and SIGURD
-
-Now, we add the genotyping information to the Seurat object.
-
-```{r warning = FALSE}
+# Combining Seurat and SIGURD
 scrna <- SetVariantInfo(SE = genotyping, seurat_object = scrna)
-```
 
-## Visualisation
-
-We visualise the genotyping information on the UMAP.
-
-```{r warning = FALSE, fig.width = 4, fig.height = 4}
-# Plotting the mutated cells on the UMAP.
+# Visualisation
 scrna$JAK2_p.V617F_c.1849G.T_consensus <- factor(scrna$JAK2_p.V617F_c.1849G.T_consensus, levels = c("Ref", "Alt"))
 jak2_cells <- sum(scrna$JAK2_p.V617F_c.1849G.T_consensus == "Alt", na.rm = TRUE)
 ref_cells <- sum(scrna$JAK2_p.V617F_c.1849G.T_consensus == "Ref", na.rm = TRUE)
@@ -74,43 +37,21 @@ p <- DimPlot(scrna, group.by = "JAK2_p.V617F_c.1849G.T_consensus", reduction = "
   xlab("UMAP 1") + ylab("UMAP 2") + scale_color_manual(breaks = c("Alt", "Ref"), values = c("#aa0051", "#79b938"), na.value = "grey95") +
   theme(legend.position = "top")
 print(p)
-```
 
-## We determine DEGs between the JAK2V617F and WT cells.
-
-Now, we determine the DEGs between the JAK2V617F cells and the wild type cells for the Orthochromatic Erythroblasts.
-
-```{r DEGs_OrthoE_JAK2V617F, fig.width = 6, fig.height = 6, warning = FALSE}
+# We determine DEGs between the JAK2V617F and WT cells for Orthochromatic Erythroblasts.
 scrna_orthoe <- subset(scrna, CellType == "Orthochromatic Erythroblasts" & Condition != "HC")
 degs <- FindMarkers(scrna_orthoe, group.by = "JAK2_p.V617F_c.1849G.T_consensus", ident.1 = "Alt", ident.2 = "Ref", logfc.threshold = 0)
 degs <- data.frame(degs, gene = rownames(degs))
 degs_up   <- nrow(subset(degs, avg_log2FC >   0.25 & p_val_adj < 0.05))
 degs_down <- nrow(subset(degs, avg_log2FC <  -0.25 & p_val_adj < 0.05))
 EnhancedVolcano(degs, x = "avg_log2FC", y = "p_val_adj", lab = degs$gene, FCcutoff = 0.25, pCutoff = 0.05, title = "OrthoE JAK2V617F Pos. vs. Neg.",subtitle = NULL)
-```
 
-## Combining the JAK2V617F data with the MT data.
-
-We combine the JAK2V617F SIGURD object with the MT object. Cells and variants in both objects are combined.
-
-To save time, we are only processing a single sample. All other samples are processed equally. Since the genotyping object is a list, it is easily processed using parallel computing.
-
-First, we load and filter the mitochondrial variant information.
-
-```{r Combining, warning = FALSE}
-# Loading the data. 
+# Combining the JAK2V617F data with the MT data.
+# To save time, we are only processing a single sample. All other samples are processed equally. Since the genotyping object is a list, it is easily processed using parallel computing.
 genotyping_mt <- LoadingMAEGATK_typewise(patient = "MPN1", samples_file = "/data/MPN/exp/scRNA/MPN_mutations/SIGURD_paper/sigurd/data/DesignMatrix_MT.csv", min_cells = 0, cells_include = colnames(scrna), type_use = "scRNAseq_MT", verbose = FALSE)
 genotyping_mt <- Filtering(genotyping_mt, min_variants_per_cell = 1, min_cells_per_variant = 2, fraction_threshold = 0.05, cells_include = colnames(scrna), verbose = FALSE)
-```
 
-## MPN VOIs and Diversity
-
-Now, we select the mtVOIs. We then determine the clonal lineages and plot the results on a heatmap.
-
-We subset the cells to only include the erythroid cells.
-
-```{r fig.width = 6, warning = FALSE, dev = "pdf"}
-# Subset to erythroid cells.
+# MPN VOIs and Diversity for erythroid cells.
 erythroid_cells <- subset(scrna, annotation == "ErythroidCells")
 genotyping_mt <- Filtering(genotyping_mt, cells_include = colnames(erythroid_cells))
 
@@ -119,14 +60,8 @@ mt_vois <- VariantSelection_Quantile(genotyping_mt, min_coverage = 1, verbose = 
 
 # Determining the clonal lineages.
 genotyping_mt <- ClonalDefinition(se = genotyping_mt, variants_ls = list(mt_vois), verbose = FALSE)
-```
 
-## Visualisation of mtVOIs and Clonal Lineages
-
-We now plot the variants of interest and the clonal lineages.
-
-```{r warning = FALSE, fig.width = 6, fig.height = 4, dev = "pdf"}
-# Generating a heatmap.
+# Visualisation of mtVOIs and Clonal Lineages
 colors_lineage <- c("C1" = "#563e00", "C2" = "#dec234", "C3" = "#e23856", "C4" = "#7f0073", "C5" = "#006639", "C6" = "#b1db8e", "C7" = "#00348f", "Negative" = "black")
 ha <- columnAnnotation(Clones = colData(genotyping_mt)[,"Clones"],
                        col = list(Clones = colors_lineage),
@@ -154,38 +89,19 @@ hm <- Heatmap(fraction,
   use_raster = TRUE,
   show_heatmap_legend = TRUE)
 draw(hm, annotation_legend_side = "bottom")
-```
 
-## Calculating clonal diversity.
-
-We calculate the clonal diversity for the sample MPN1 as an example.
-
-```{r Diversity, warning = FALSE, dev = "pdf"}
+# Calculating clonal diversity.
 clonal_diversity <- ClonalDiversity(genotyping_mt, grouping = "Clones", diversity_measure = "EffectiveSpecies", verbose = FALSE)
 print(paste0("Clonal Diversity in Effective Number of Species for MPN1: ", clonal_diversity))
-```
 
-## Repeating the MT analysis for all samples.
-
-We now repeat the MT analysis for all samples. This will take considereable time.
-
-We speed the analsyis up by using parallel computing. We load the results generated by this code.
-
-```{r warning = FALSE, eval = FALSE}
-# We get all patients present in the design matrix.
-design_matrix <- read.table("/data/MPN/exp/scRNA/MPN_mutations/SIGURD_paper/sigurd/data/DesignMatrix_MT.csv", header = TRUE, sep = ",")
+# Repeating the MT analysis for all samples.
+design_matrix <- read.table("DesignMatrix_MT.csv", header = TRUE, sep = ",") # Reading the matrix to get all patients present.
 patients <- design_matrix$patient[1]
-genotyping_mt_all <- parallel::mclapply(patients, LoadingMAEGATK_typewise, samples_file = "/data/MPN/exp/scRNA/MPN_mutations/SIGURD_paper/sigurd/data/DesignMatrix_MT.csv", min_cells = 0, cells_include = colnames(scrna), type_use = "scRNAseq_MT", verbose = FALSE, mc.cores = length(patients))
+genotyping_mt_all <- parallel::mclapply(patients, LoadingMAEGATK_typewise, samples_file = "DesignMatrix_MT.csv", min_cells = 0, cells_include = colnames(scrna), type_use = "scRNAseq_MT", verbose = FALSE, mc.cores = length(patients))
 names(genotyping_mt_all) <- patients
 genotyping_mt_all <- parallel::mclapply(genotyping_mt_all, Filtering, min_variants_per_cell = 1, min_cells_per_variant = 2, fraction_threshold = 0.05, cells_include = colnames(scrna), verbose = FALSE, mc.cores = length(patients))
-```
 
-## Selecting variants of interest for all samples
-
-We select variants of interest for all samples. 
-
-```{r warning = FALSE, eval = FALSE}
-# Selecting the mtVOIS.
+# Selecting variants of interest for all samples
 mt_vois_all <- parallel::mclapply(genotyping_mt_all, VariantSelection_Quantile, min_coverage = 1, verbose = FALSE, mc.cores = length(patients))
 
 # Determining the clonal lineages. This takes very long. We use parallel computing to process all samples simultaneously.
@@ -195,15 +111,9 @@ genotyping_mt_all <- parallel::mclapply(1:length(mt_vois_all), function(x){
   return(clones)
 }, mc.cores = length(mt_vois_all))
 names(genotyping_mt_all) <- patients
-save_object(genotyping_mt_all, "/data/MPN/exp/scRNA/MPN_mutations/SIGURD_paper/sigurd/data/genotyping_mt_all.rds.lz4", "lz4")
-```
+save_object(genotyping_mt_all, "genotyping_mt_all.rds.lz4", "lz4")
 
-## Calculating the diverstiy for all samples
-
-```{r warning = FALSE}
-# We load the previous results.
-genotyping_mt_all <- load_object("/data/MPN/exp/scRNA/MPN_mutations/SIGURD_paper/sigurd/data/genotyping_mt_all.rds.lz4")
+# Calculating the diverstiy for all samples
 clonal_diversity_all <- unlist(lapply(genotyping_mt_all, ClonalDiversity, grouping = "Clones", diversity_measure = "EffectiveSpecies", verbose = FALSE))
 clonal_diversity_all <- data.frame(Sample = names(genotyping_mt_all), EffectiveSpecies = clonal_diversity_all)
-knitr::kable(clonal_diversity_all, format="html")
-```
+print(clonal_diversity_all)
