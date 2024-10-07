@@ -123,7 +123,7 @@ genotyping_mt <- ClonalDefinition(se = genotyping_mt, variants_ls = list(mt_vois
 
 We now plot the variants of interest and the clonal lineages.
 
-```{r warning = FALSE, fig.width = 6, fig.height = 4, dev = "pdf"}
+```{r warning = FALSE, fig.width = 6, fig.height = 4, dev = "CairoPNG"}
 # Generating a heatmap.
 colors_lineage <- c("C1" = "#563e00", "C2" = "#dec234", "C3" = "#e23856", "C4" = "#7f0073", "C5" = "#006639", "C6" = "#b1db8e", "C7" = "#00348f", "Negative" = "black")
 ha <- columnAnnotation(Clones = colData(genotyping_mt)[,"Clones"],

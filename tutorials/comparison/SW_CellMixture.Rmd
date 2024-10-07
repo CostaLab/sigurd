@@ -1,0 +1,179 @@
+---
+title: "SW CellMixture MAESTER"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, dev = "CairoPNG")
+```
+
+## Reproduction of cell mixture results using Seq-Well data
+
+This is a reproduction using the MAESTER script 3.1_SW_CellLineMix_variants.R.
+
+Available here: https://github.com/petervangalen/MAESTER-2021/blob/main/3_Cell_line_mixes_variants/3.1_SW_CellLineMix_variants.R
+
+## Loading necessary packages.
+
+We load packages necessary for the MAESTER script.
+
+```{r Packages}
+print("Libraries for MAESTER.")
+options(stringsAsFactors = FALSE)
+options(scipen = 999)
+suppressPackageStartupMessages(library(tidyverse))
+suppressPackageStartupMessages(library(SummarizedExperiment))
+suppressPackageStartupMessages(library(Seurat))
+suppressPackageStartupMessages(library(data.table))
+suppressPackageStartupMessages(library(Matrix))
+suppressPackageStartupMessages(library(ComplexHeatmap))
+suppressPackageStartupMessages(library(readxl))
+suppressPackageStartupMessages(library(ggrastr))
+```
+
+## Loading the data using the MAESTER script.
+
+We load the data using the MAESTER script. This requires the use of multiple functions and objects.
+
+```{r warning = FALSE, dev = "CairoPNG"}
+popcol.tib <- read_excel("MAESTER_colors.xlsx")
+mycol.ch <- popcol.tib$hex
+names(mycol.ch) <- popcol.tib$name
+# Custom Functions
+cutf <- function(x, f=1, d="/") sapply(strsplit(x, d), function(i) paste(i[f], collapse=d))
+computeAFMutMatrix <- function(SE){
+  cov <- assays(SE)[["coverage"]]+ 0.000001
+  ref_allele <- as.character(rowRanges(SE)$refAllele)
+  getMutMatrix <- function(letter){
+    mat <- (assays(SE)[[paste0(letter, "_counts_fw")]] + assays(SE)[[paste0(letter, "_counts_rev")]]) / cov
+    rownames(mat) <- paste0(as.character(1:dim(mat)[1]), "_", toupper(ref_allele), ">", letter)
+    return(mat[toupper(ref_allele) != letter,])
+  }
+  rbind(getMutMatrix("A"), getMutMatrix("C"), getMutMatrix("G"), getMutMatrix("T"))
+}
+
+# Loading the scRNAseq data.
+seu <- readRDS("SW_CellLineMix_Seurat_Keep.rds")
+
+# Loading the MAEGATK results.
+maegatk_all.rse <- readRDS("SW_CellLineMix_All_mr3_maegatk.rds")
+
+# Intersecting the cells. We retain only cells that are in both data sets.
+common.cells <- intersect(colnames(seu), colnames(maegatk_all.rse))
+seu <- seu[,common.cells]
+maegatk.rse <- maegatk_all.rse[,common.cells]
+
+# Calculating the allele frequency per cell and possible variant.
+af.dm <- data.matrix(computeAFMutMatrix(maegatk.rse))*100
+
+# Organizing the cellular meta data in a tibble.
+cells.tib <- tibble(cell = common.cells,
+                    orig.ident = seu$orig.ident,
+                    CellType_RNA = seu$CellType,
+                    Mean_Cov = maegatk.rse$depth)
+
+# Separating the cells into distinct subgroups.
+CellSubsets.ls <- list(unionCells = cells.tib$cell,
+                       K562 = filter(cells.tib, CellType_RNA == "K562")$cell,
+                       BT142 = filter(cells.tib, CellType_RNA == "BT142")$cell)
+
+# Calculating the average allele frequency per variant.
+mean_af.ls <- lapply(CellSubsets.ls, function(x) rowMeans(af.dm[,x]))
+names(mean_af.ls) <- paste0("mean.af.", names(mean_af.ls))
+
+# Calculating the average coverage per variant.
+mean_cov.ls <- lapply(CellSubsets.ls, function(x) rowMeans(assays(maegatk.rse)[["coverage"]][,x])[as.numeric(cutf(rownames(af.dm), d = "_"))])
+names(mean_cov.ls) <- paste0("mean.cov.", names(mean_cov.ls))
+
+# Calculating the allele frequency quantile per variant.
+quantiles <- c("q01" = 0.01, "q10" = 0.1, "q50" = 0.5, "q90" = 0.9, "q99" = 0.99)
+quantiles.ls <- lapply(quantiles, function(x) lapply(CellSubsets.ls, function(y) apply(af.dm[,y], 1, quantile, x) ))
+assays.ls <- lapply(maegatk.rse@assays$data, function(x) as.matrix(x))
+qual.num <- sapply(rownames(af.dm), function(x){
+  pos <- as.numeric(cutf(x, d = "_"))
+  mut <- cutf(x, d = ">", f = 2)
+  covered_fw <- assays.ls[[str_c(mut, "_counts_fw")]][pos,] > 0
+  qual_fw <- assays.ls[[str_c(mut, "_qual_fw")]][pos, covered_fw]
+  covered_rev <- assays.ls[[str_c(mut, "_counts_rev")]][pos,] > 0
+  qual_rev <- assays.ls[[str_c(mut, "_qual_rev")]][pos, covered_rev]
+  qual <- mean(c(qual_fw, qual_rev))
+  return(qual)
+})
+
+# Organizing the results in a variant-wise tibble.
+vars.tib <- as_tibble(do.call(cbind, c(mean_af.ls, mean_cov.ls, unlist(quantiles.ls, recursive = F))), rownames = "var")
+vars.tib <- add_column(vars.tib, quality = qual.num, .before = 2)
+```
+
+## Selecting the Variants of Interest
+
+Now, we select the variants of interest.
+
+```{r dev = "CairoPNG"}
+# Identifying variants of interest by subsetting the variant-wise tibble.
+voi.ch <- vars.tib %>% filter(mean.cov.unionCells > 20,
+                              quality > 30,
+                              q10.unionCells < 10,
+                              q90.unionCells > 90) %>% .$var
+print(voi.ch)
+```
+
+## Plotting the mtVOIs as a heatmap
+
+```{r dev = "CairoPNG"}
+# Generate matrices with coverage, allele frequency and reference / variant reads
+cov_voi.mat <- assays(maegatk.rse)[["coverage"]][as.numeric(cutf(voi.ch, d = "_")),]
+af_voi.mat <- af.dm[voi.ch,]
+
+# Add coverage and allele frequency info from variants of interest to cells.tib
+for (voi in voi.ch) {
+  cells.tib <- cells.tib %>%
+    left_join(as_tibble(assays(maegatk.rse)[["coverage"]][as.numeric(cutf(voi, d = "_")),], rownames = "cell"), by = "cell") %>%
+    left_join(as_tibble(af.dm[voi,], rownames = "cell"), by = "cell") %>%
+    rename(value.x = str_c("cov_", str_replace(voi, ">", ".")), value.y = str_c("af_", str_replace(voi, ">", ".")))
+}
+
+# Calculating the support of each cell.
+supporting_calls <- function(voi, maegatk) {
+    # From the variant, determine position, reference and mutant allele
+    pos <- as.numeric(cutf(voi, d = "_"))
+    ref <- cutf(voi, d = "_|>|\\.", f = 2)
+    mut <- cutf(voi, d = ">|\\.", f = 2)
+    # Put all the counts for this variant from the maegatk object in a data frame
+    counts.df <- do.call(cbind, lapply(assays(maegatk)[grepl("counts", names(assays(maegatk)))], function(x) x[pos,]))
+    # Add up reads supporting reference or mutated allele
+    support.df <- data.frame(ref = rowSums(counts.df[,grepl(paste0("^", ref), colnames(counts.df))]),
+                             mut = rowSums(counts.df[,grepl(paste0("^", mut), colnames(counts.df))]))
+    support.df
+}
+supporting_calls.ls <- lapply(voi.ch, function(x) supporting_calls(x, maegatk.rse))
+names(supporting_calls.ls) <- voi.ch
+combined_supporting_calls.df <- do.call(cbind, supporting_calls.ls)
+
+supporting_calls.tib <- tibble(cell = rownames(combined_supporting_calls.df),
+    K562_supporting_calls = rowSums(combined_supporting_calls.df[,c("709_G>A.mut", "1888_G>A.mut", "1420_T>C.mut", "2141_T>C.mut", "9117_T>C.mut", "7990_C>T.ref")]),
+    BT142_supporting_calls = rowSums(combined_supporting_calls.df[,c("709_G>A.ref", "1888_G>A.ref", "1420_T>C.ref", "2141_T>C.ref", "9117_T>C.ref", "7990_C>T.mut")]))
+# Combine information
+cells.tib <- left_join(cells.tib, supporting_calls.tib, by = "cell")
+
+cells.tib <- cells.tib %>% mutate(CellType_MT = ifelse(K562_supporting_calls + BT142_supporting_calls < 30, yes = "NoCoverage", no =
+    ifelse(K562_supporting_calls > 3 & K562_supporting_calls > 10*BT142_supporting_calls, yes = "K562", no =
+    ifelse(BT142_supporting_calls > 3 & BT142_supporting_calls > 10*K562_supporting_calls, yes = "BT142", no = "Contaminated")))) %>%
+    mutate(CellType_MT = factor(CellType_MT, levels = c("Contaminated", "BT142", "K562", "NoCoverage")))
+
+# Selecting cells that have sufficient coverage for all the variants of interest.
+cells.ch <- cells.tib %>% filter(CellType_MT %in% c("K562", "BT142")) %>%
+    select(cell, starts_with("cov_")) %>%
+    filter(apply(.[,-1], 1, function(x) all(x > 3))) %>%
+    .$cell
+
+# Generating the annotation object for the heatmap.
+ha <- HeatmapAnnotation(CellType_RNA = cells.tib$CellType_RNA[cells.ch],
+                        col = list(CellType_RNA = c("K562" = "#7BF581", "BT142" = "#8E87F5")))
+
+# Visualize: clustered VAFs
+Heatmap(af_voi.mat[,cells.ch], name = "VAF", col=c("#FCFCFC","#FFEDB0","#FFDF5F","#FEC510","#FA8E24","#F14C2B","#DA2828","#BE2222","#A31D1D"), show_row_names = TRUE, show_column_names = FALSE, cluster_columns = TRUE, cluster_rows = FALSE, top_annotation = ha, border = TRUE,
+               heatmap_legend_param = list(border = "black", at = c(0,25,50,75,100)), use_raster = TRUE)
+```
+
