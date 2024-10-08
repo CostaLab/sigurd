@@ -4,7 +4,7 @@
 \alias{CombineSEobjects}
 \title{CombineSEobjects}
 \usage{
-CombineSEobjects(se_1, se_2, suffixes = c("_1", "_2"))
+CombineSEobjects(se_1, se_2, suffixes = c("_1", "_2"), patient_check = FALSE)
 }
 \arguments{
 \item{se_1}{SummarizedExperiment object 1.}
@@ -12,6 +12,8 @@ CombineSEobjects(se_1, se_2, suffixes = c("_1", "_2"))
 \item{se_2}{SummarizedExperiment object 2.}
 
 \item{suffixes}{The suffixes you want to add to the meta data.frame.}
+
+\item{patient_check}{Should the patient column in the data be check, if they are the same?}
 }
 \description{
 We combine two SummarizedExperiment objects. This is originally intended to add the mitochondrial genotyping information to the somatic genotyping information.
