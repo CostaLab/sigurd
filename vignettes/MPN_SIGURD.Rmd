@@ -112,8 +112,8 @@ We subset the cells to only include the erythroid cells.
 
 ```{r fig.width = 6, warning = FALSE, dev = "pdf"}
 # Subset to erythroid cells.
-erythroid_cells <- subset(scrna, annotation == "ErythroidCells")
-genotyping_mt <- Filtering(genotyping_mt, cells_include = colnames(erythroid_cells))
+erythroid_cells <- colnames(subset(scrna, annotation == "ErythroidCells"))
+genotyping_mt <- Filtering(genotyping_mt, cells_include = erythroid_cells)
 
 # Selecting the mtVOIS.
 mt_vois <- VariantSelection_Quantile(genotyping_mt, min_coverage = 1, verbose = FALSE)
@@ -175,12 +175,10 @@ We speed the analsyis up by using parallel computing.
 ```{r warning = FALSE, eval = FALSE}
 # We get all patients present in the design matrix.
 design_matrix <- read.table("/data/MPN/exp/scRNA/MPN_mutations/SIGURD_paper/sigurd/data/DesignMatrix_MT.csv", header = TRUE, sep = ",")
-patients <- design_matrix$patient[5]
+patients <- design_matrix$patient
 genotyping_mt_all <- parallel::mclapply(patients, LoadingMAEGATK_typewise, samples_file = "/data/MPN/exp/scRNA/MPN_mutations/SIGURD_paper/sigurd/data/DesignMatrix_MT.csv", min_cells = 0, cells_include = colnames(scrna), type_use = "scRNAseq_MT", verbose = FALSE, mc.cores = length(patients))
 names(genotyping_mt_all) <- patients
-genotyping_mt_all <- parallel::mclapply(genotyping_mt_all, Filtering, min_variants_per_cell = 1, min_cells_per_variant = 2, fraction_threshold = 0.05, cells_include = colnames(scrna), verbose = FALSE, mc.cores = length(patients))
-# genotyping_mt_all_ori <- genotyping_mt_all
-for(i in 1:length(genotyping_mt_all)) genotyping_mt_all[[i]] <- CombineSEobjects(Filtering(genotyping, cells_include = grep(patients[i], colnames(genotyping), value = TRUE), verbose = FALSE), genotyping_mt_all[[i]])
+genotyping_mt_all <- parallel::mclapply(genotyping_mt_all, Filtering, min_variants_per_cell = 1, min_cells_per_variant = 2, fraction_threshold = 0.05, cells_include = erythroid_cells, verbose = FALSE, mc.cores = length(patients))
 ```
 
 ## Selecting variants of interest for all samples
