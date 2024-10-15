@@ -4,12 +4,20 @@
 \alias{SeparatingMatrixToList}
 \title{SeparatingMatrixToList}
 \usage{
-SeparatingMatrixToList(row_use, total_matrix, remove_nocalls = TRUE)
+SeparatingMatrixToList(
+  row_use,
+  total_matrix,
+  consensus,
+  assay_to_split = "consensus",
+  remove_nocalls = TRUE
+)
 }
 \arguments{
 \item{row_use}{The row the separate.}
 
 \item{total_matrix}{The matrix to be split.}
+
+\item{assay_to_split}{Which assay are we splitting?}
 
 \item{remove_nocalls}{Do you want to remove NoCall cells?}
 }
