@@ -15,7 +15,7 @@
 RowWiseSplit <- function(se, n_cores = 1, assay_to_split = "consensus", remove_nocalls = TRUE){
   selected_assay <- SummarizedExperiment::assays(se)[[assay_to_split]]
   consensus <- SummarizedExperiment::assays(se)[["consensus"]]
-  consensus_list <- parallel::mclapply(rownames(se), SeparatingMatrixToList, total_matrix = selected_assay, consensus = consensus, remove_nocalls = remove_nocalls, mc.cores = n_cores)
+  consensus_list <- parallel::mclapply(rownames(se), SeparatingMatrixToList, total_matrix = selected_assay, assay_to_split = assay_to_split, consensus = consensus, remove_nocalls = remove_nocalls, mc.cores = n_cores)
   names(consensus_list) <- rownames(se)
   return(consensus_list)
 }
