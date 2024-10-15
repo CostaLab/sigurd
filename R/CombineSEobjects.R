@@ -7,8 +7,9 @@
 #'@param se_1 SummarizedExperiment object 1.
 #'@param se_2 SummarizedExperiment object 2.
 #'@param suffixes The suffixes you want to add to the meta data.frame.
+#'@param patient_check Should the patient column in the data be check, if they are the same?
 #'@export
-CombineSEobjects <- function(se_1, se_2, suffixes = c("_1", "_2")){
+CombineSEobjects <- function(se_1, se_2, suffixes = c("_1", "_2"), patient_check = FALSE){
   # We check if the assays are equally named.
   assay_names_1 <- names(SummarizedExperiment::assays(se_1))
   assay_names_2 <- names(SummarizedExperiment::assays(se_2))
@@ -19,7 +20,9 @@ CombineSEobjects <- function(se_1, se_2, suffixes = c("_1", "_2")){
   if(length(patients_1) > 1) stop("The se_1 object has more than 1 patient.")
   patients_2 <- unique(se_2$Patient)
   if(length(patients_2) > 1) stop("The se_2 object has more than 1 patient.")
-  if(patients_1 != patients_2) stop("The objects are not from the same patient.")
+  if(patient_check){
+    if(patients_1 != patients_2) stop("The objects are not from the same patient.")
+  }
 
   features <- sigurd::combine_NAMES(rownames(se_1), rownames(se_2))
   cells    <- sigurd::combine_NAMES(colnames(se_1), colnames(se_2))
@@ -64,12 +67,10 @@ CombineSEobjects <- function(se_1, se_2, suffixes = c("_1", "_2")){
     meta_row <- meta_row[match(features, meta_row$VariantName),]    
   }
 
-
   assays_combined <- lapply(assay_names_1, function(x){
     result <- sigurd::combine_SparseMatrix(matrix_1 = SummarizedExperiment::assays(se_1)[[x]], matrix_2 = SummarizedExperiment::assays(se_2)[[x]])
   })
   names(assays_combined) <- assay_names_1
-
 
   se_combined <- SummarizedExperiment::SummarizedExperiment(assays = assays_combined, colData = meta_data, rowData = meta_row)
   return(se_combined)

@@ -41,7 +41,7 @@ LoadingMAEGATK_typewise <- function(samples_file, patient, samples_path = NULL, 
     }
 
     if(verbose) print("We subset to the relevant files.")
-    samples_file <- samples_file[grep("maegatk|mgatk", samples_file$source, ignore.case = TRUE),]
+    samples_file <- samples_file[grep("maegatk", samples_file$source, ignore.case = TRUE),]
     if(patient_column != "merge") samples_file <- samples_file[samples_file[,patient_column] == patient,]
     samples_file <- samples_file[samples_file$type == type_use,]
 
