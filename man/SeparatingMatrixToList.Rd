@@ -4,7 +4,7 @@
 \alias{SeparatingMatrixToList}
 \title{SeparatingMatrixToList}
 \usage{
-SeparatingMatrixToList(row_use, total_matrix, remove_nocalls = TRUE)
+SeparatingMatrixToList(row_use, total_matrix, consensus, remove_nocalls = TRUE)
 }
 \arguments{
 \item{row_use}{The row the separate.}

@@ -4,12 +4,20 @@
 \alias{RowWiseSplit}
 \title{RowWiseSplit}
 \usage{
-RowWiseSplit(se, n_cores = 1, minimum_reads, remove_nocalls = TRUE)
+RowWiseSplit(
+  se,
+  n_cores = 1,
+  minimum_reads,
+  assay_to_split = "consensus",
+  remove_nocalls = TRUE
+)
 }
 \arguments{
 \item{se}{SummarizedExperiment object.}
 
 \item{n_cores}{Number of cores to use.}
+
+\item{assay_to_split}{Which assay to you want to split?}
 
 \item{remove_nocalls}{Do you want to remove NoCall cells?}
 }
@@ -17,4 +25,6 @@ RowWiseSplit(se, n_cores = 1, minimum_reads, remove_nocalls = TRUE)
 Performing the correlation or Fisher test association for a SummarizedExperiment object requires extreme amounts of memory.
 To reduce the amount of memory necessary, we instead get the individual rows from the consensus assay.
 We can then remove the NoCalls (no reads) from the individual vectors, further reducing the amount of memory needed.
+
+When the NoCalls are removed, the repective cells are also removed if a different assay is selected.
 }

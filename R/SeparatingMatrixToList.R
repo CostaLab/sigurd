@@ -9,13 +9,15 @@
 #'@param total_matrix The matrix to be split.
 #'@param remove_nocalls Do you want to remove NoCall cells?
 #'@export
-SeparatingMatrixToList <- function(row_use, total_matrix, remove_nocalls = TRUE){
+SeparatingMatrixToList <- function(row_use, total_matrix, consensus, remove_nocalls = TRUE){
   selected_row <- total_matrix[row_use,]
   selected_row <- stats::na.omit(selected_row)
 
   if(remove_nocalls == TRUE){
     # We remove the NoCall cells.
-    selected_row <- selected_row[selected_row != 0]
+    selected_consensus <- consensus[row_use,]
+    selected_consensus <- stats::na.omit(selected_consensus)
+    selected_row <- selected_row[selected_consensus != 0]
     selected_row[selected_row == 1] <- 0
     selected_row[selected_row >= 2] <- 1
   } else if(remove_nocalls == FALSE){
