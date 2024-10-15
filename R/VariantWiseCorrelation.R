@@ -36,6 +36,10 @@ VariantWiseCorrelation <- function(variants_list, n_cores = 1, p_value_adjustmen
   if(verbose) print("We remove the negative corrlated SNPs.")
   results_total <- subset(results_total, Corr > 0)
 
+  if(verbose) print("Remove duplicative results.")
+  results_check <- apply(results_total[, c("Variant1", "Variant2")], 1, function(x) paste(sort(x), collapse = "_"))
+  results_total <- results_total[!duplicated(results_check), , drop = FALSE]
+
   if(verbose) print(paste0("Adjusting P values using ", p_value_adjustment, "."))
   results_total$P_adj <- stats::p.adjust(results_total$P, method = p_value_adjustment)
   rownames(results_total) <- NULL
