@@ -8,6 +8,7 @@ VariantWiseCorrelation(
   variants_list,
   n_cores = 1,
   p_value_adjustment = "fdr",
+  value_type = "consensus",
   verbose = TRUE
 )
 }
@@ -17,6 +18,8 @@ VariantWiseCorrelation(
 \item{n_cores}{Number of cores you want to use. Numeric.}
 
 \item{p_value_adjustment}{Method for P value adjustment. See p.adjust for details.}
+
+\item{value_type}{Are we using consensus or other information?}
 
 \item{verbose}{Should the function be verbose? Default = TRUE}
 }
