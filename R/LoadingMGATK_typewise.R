@@ -1,7 +1,7 @@
-#'LoadingMAEGATK_typewise
+#'LoadingMGATK_typewise
 #'@description
-#'We load the MAEGATK output and transform it to be compatible with the VarTrix output.
-#'The input file is a specifically formated csv file with all the necessary information to run the analysis.
+#'We load the MGATK output and transform it to be compatible with the VarTrix output.
+#'The input file is a specifically formatted csv file with all the necessary information to run the analysis.
 #'Note that the source column in the input file needs to be mgaetk or mgatk for this function. This is case insensitive.
 #'If you want to only load a single sample without the use of an input file, you have to set the following variables.
 #' \enumerate{
@@ -24,10 +24,11 @@
 #'@param cells_exclude A vector of cell barcodes. These cells will be removed from the output.
 #'@param barcodes_path Path to the barcodes file tsv. Default = NULL
 #'@param cellbarcode_length The length of the cell barcode. This should be the length of the actual barcode plus two for the suffix (-1). Default = 18
+#'@param ignore_quality Should the quality assay be ignore? This can be useful if the quality was not reported in mgatk.
 #'@param verbose Should the function be verbose? Default = TRUE
 #'@export
-LoadingMAEGATK_typewise <- function(samples_file, patient, samples_path = NULL, patient_column = "patient", type_use = "scRNAseq_MT", chromosome_prefix = "chrM",
-                                    min_cells = 2, cells_include = NULL, cells_exclude = NULL, barcodes_path = NULL, cellbarcode_length = 18, verbose = TRUE){
+LoadingMGATK_typewise <- function(samples_file, patient, samples_path = NULL, patient_column = "patient", type_use = "scRNAseq_MT", chromosome_prefix = "chrM",
+                                  min_cells = 2, cells_include = NULL, cells_exclude = NULL, barcodes_path = NULL, cellbarcode_length = 18, ignore_quality = TRUE, verbose = TRUE){
   if(all(!is.null(samples_path), !is.null(barcodes_path))){
     if(verbose) print(paste0("Loading the data for patient ", patient, "."))
     samples <- patient
@@ -41,7 +42,7 @@ LoadingMAEGATK_typewise <- function(samples_file, patient, samples_path = NULL, 
     }
 
     if(verbose) print("We subset to the relevant files.")
-    samples_file <- samples_file[grep("maegatk", samples_file$source, ignore.case = TRUE),]
+    samples_file <- samples_file[grep("mgatk", samples_file$source, ignore.case = TRUE),]
     if(patient_column != "merge") samples_file <- samples_file[samples_file[,patient_column] == patient,]
     samples_file <- samples_file[samples_file$type == type_use,]
 
@@ -115,9 +116,24 @@ LoadingMAEGATK_typewise <- function(samples_file, patient, samples_path = NULL, 
   reads_alt <- CalculateAltReads(SE = se_merged, chromosome_prefix = chromosome_prefix)
 
 
-  if(verbose) print("We get the quality information.")
-  variant_quality <- CalculateQuality(SE = se_merged, variants = rownames(reads_alt), chromosome_prefix = chromosome_prefix)
+  if(verbose) print("We get the number of forward alternative reads per variant.")
+  reads_forward <- CalculateForwardReads(SE = se_merged, chromosome_prefix = chromosome_prefix)
 
+
+  if(verbose) print("We get the number of reverse alternative reads per variant.")
+  reads_reverse <- CalculateReverseReads(SE = se_merged, chromosome_prefix = chromosome_prefix)
+
+
+  if(!ignore_quality){
+    if(verbose) print("We get the quality information.")
+    # Checking if the quality assays are present.
+    quality_assay_check <- sum(grepl("_qual_", names(SummarizedExperiment::assays(se_merged)))) # This has to be 8 (1 Forward and 1 Reverse for 4 bases.)
+    if(quality_assay_check != 8){
+      quality_assays_present <- paste0(grep("_qual", names(SummarizedExperiment::assays(se_merged)), value = TRUE), collapse = ", ")
+      stop(paste0("Your quality assays are", quality_assays_present, ". Check if you forgot to emit the quality in mgatk."))
+    }
+    variant_quality <- CalculateQuality(SE = se_merged, variants = rownames(reads_alt), chromosome_prefix = chromosome_prefix)
+  }
 
   if(verbose) print("We get the number of reference reads.")
   reads_ref <- CalculateRefReads(SE = se_merged, chromosome_prefix = chromosome_prefix)
@@ -138,25 +154,29 @@ LoadingMAEGATK_typewise <- function(samples_file, patient, samples_path = NULL, 
 
   if(verbose) print("We perform some filtering to reduce the memory needed.")
   if(verbose) print(paste0("We remove variants, which are not covered in at least ", min_cells, " cells ."))
-  keep_variants   <- Matrix::rowSums(consensus >= 1)
-  keep_variants   <- keep_variants >= min_cells
-  consensus       <- consensus[keep_variants, , drop = FALSE]
-  coverage        <- coverage[keep_variants, ,  drop = FALSE]
-  fraction        <- fraction[keep_variants, ,  drop = FALSE]
-  concordance     <- concordance[keep_variants]
-  variant_quality <- variant_quality[keep_variants]
-  reads_alt       <- reads_alt[keep_variants, , drop = FALSE]
-  reads_ref       <- reads_ref[keep_variants, , drop = FALSE]
+  keep_variants <- Matrix::rowSums(consensus >= 1)
+  keep_variants <- keep_variants >= min_cells
+  consensus     <- consensus[keep_variants, , drop = FALSE]
+  coverage      <- coverage[keep_variants, ,  drop = FALSE]
+  fraction      <- fraction[keep_variants, ,  drop = FALSE]
+  concordance   <- concordance[keep_variants]
+  if(!ignore_quality) variant_quality <- variant_quality[keep_variants]
+  reads_alt     <- reads_alt[keep_variants, , drop = FALSE]
+  reads_ref     <- reads_ref[keep_variants, , drop = FALSE]
+  reads_forward <- reads_forward[keep_variants, , drop = FALSE]
+  reads_reverse <- reads_reverse[keep_variants, , drop = FALSE]
 
 
   if(verbose) print("We remove cells that are always NoCall.")
   consensus_test <- consensus > 0
-  keep_cells <- Matrix::colSums(consensus_test) > 0
-  consensus  <- consensus[, keep_cells, drop = FALSE]
-  coverage   <- coverage[,  keep_cells, drop = FALSE]
-  fraction   <- fraction[,  keep_cells, drop = FALSE]
-  reads_alt  <- reads_alt[, keep_cells, drop = FALSE]
-  reads_ref  <- reads_ref[, keep_cells, drop = FALSE]
+  keep_cells     <- Matrix::colSums(consensus_test) > 0
+  consensus      <- consensus[, keep_cells, drop = FALSE]
+  coverage       <- coverage[,  keep_cells, drop = FALSE]
+  fraction       <- fraction[,  keep_cells, drop = FALSE]
+  reads_alt      <- reads_alt[, keep_cells, drop = FALSE]
+  reads_ref      <- reads_ref[, keep_cells, drop = FALSE]
+  reads_forward  <- reads_forward[, keep_cells, drop = FALSE]
+  reads_reverse  <- reads_reverse[, keep_cells, drop = FALSE]
 
 
   # We check if the matrices are empty (0 cells, 0 variants). Then we simply return NULL.
@@ -167,18 +187,23 @@ LoadingMAEGATK_typewise <- function(samples_file, patient, samples_path = NULL, 
     return(NULL)
   } else{
     if(verbose) print("We add the information to the merged matrices.")
-    coverage_depth_per_cell           <- rownames(coverage)
-    coverage_depth_per_cell           <- gsub("_._.$", "", coverage_depth_per_cell)
-    coverage_depth_per_cell           <- !duplicated(coverage_depth_per_cell)
-    coverage_depth_per_cell           <- coverage[coverage_depth_per_cell,]
-    coverage_depth_per_variant        <- rowMeans(coverage)
-    coverage_depth_per_cell           <- colMeans(coverage_depth_per_cell)
-    meta_data_col                     <- data.frame(Cell = colnames(consensus), Patient = patient, Sample = substr(x = colnames(consensus), start = 1, stop = nchar(colnames(consensus))-(cellbarcode_length+1)), AverageCoverage = coverage_depth_per_cell)
-    rownames(meta_data_col)           <- meta_data_col$Cell
-    meta_data_row                     <- data.frame(VariantName = rownames(consensus), Concordance = concordance, VariantQuality = variant_quality, Depth = coverage_depth_per_variant)
-    rownames(meta_data_row)           <- meta_data_row$VariantName
+    coverage_depth_per_cell    <- rownames(coverage)
+    coverage_depth_per_cell    <- gsub("_._.$", "", coverage_depth_per_cell)
+    coverage_depth_per_cell    <- !duplicated(coverage_depth_per_cell)
+    coverage_depth_per_cell    <- coverage[coverage_depth_per_cell,]
+    coverage_depth_per_variant <- rowMeans(coverage)
+    coverage_depth_per_cell    <- colMeans(coverage_depth_per_cell)
+    meta_data_col              <- data.frame(Cell = colnames(consensus), Patient = patient, Sample = substr(x = colnames(consensus), start = 1, stop = nchar(colnames(consensus))-(cellbarcode_length+1)), AverageCoverage = coverage_depth_per_cell)
+    rownames(meta_data_col)    <- meta_data_col$Cell
+    if(ignore_quality){
+      meta_data_row <- data.frame(VariantName = rownames(consensus), Concordance = concordance, Depth = coverage_depth_per_variant)
+    } else{
+      meta_data_row <- data.frame(VariantName = rownames(consensus), Concordance = concordance, VariantQuality = variant_quality, Depth = coverage_depth_per_variant)
+    }
+    rownames(meta_data_row) <- meta_data_row$VariantName
 
-    se_output <- SummarizedExperiment::SummarizedExperiment(assays = list(consensus = as(consensus, "CsparseMatrix"), fraction = as(fraction, "CsparseMatrix"), coverage = as(coverage, "CsparseMatrix"), alts = as(reads_alt, "CsparseMatrix"), refs = as(reads_ref, "CsparseMatrix")),
+    se_output <- SummarizedExperiment::SummarizedExperiment(assays = list(consensus = as(consensus, "CsparseMatrix"), fraction = as(fraction, "CsparseMatrix"), coverage = as(coverage, "CsparseMatrix"), alts = as(reads_alt, "CsparseMatrix"), refs = as(reads_ref, "CsparseMatrix"),
+                                                                          forward = as(reads_forward, "CsparseMatrix"), reverse = as(reads_reverse, "CsparseMatrix")),
                                                             colData = meta_data_col, rowData = meta_data_row)
     return(se_output)
   }
