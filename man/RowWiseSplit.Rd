@@ -7,7 +7,6 @@
 RowWiseSplit(
   se,
   n_cores = 1,
-  minimum_reads,
   assay_to_split = "consensus",
   remove_nocalls = TRUE
 )
