@@ -22,14 +22,14 @@ VariantSelection_Quantile <- function(SE, min_coverage = 2, quantiles = c(0.1, 0
     SummarizedExperiment::assays(SE)[["fraction"]][nocall_check] <- NA
     SummarizedExperiment::assays(SE)[["coverage"]][nocall_check] <- NA
   }
-  
+
   if(verbose) print("Get the mean allele frequency and coverage.")
   mean_af  <- Matrix::rowMeans(SummarizedExperiment::assays(SE)[["fraction"]], na.rm = TRUE)
   mean_cov <- Matrix::rowMeans(SummarizedExperiment::assays(SE)[["coverage"]], na.rm = TRUE)
-  
+
   if(verbose) print("Get the quantiles of the VAFs of each variant.")
   quantiles <- lapply(quantiles, function(x) apply(SummarizedExperiment::assays(SE)[["fraction"]], 1, quantile, x, na.rm = TRUE))
-  
+
   # Apply min_quality filtering
   if(!is.null(min_quality)){
     vars <- data.frame(Mean_AF = mean_af, Mean_Cov = mean_cov, VariantQuality = SummarizedExperiment::rowData(SE)$VariantQuality, Quantile1 = quantiles[[1]], Quantile2 = quantiles[[2]])
@@ -37,9 +37,9 @@ VariantSelection_Quantile <- function(SE, min_coverage = 2, quantiles = c(0.1, 0
   } else{
     vars <- data.frame(Mean_AF = mean_af, Mean_Cov = mean_cov, Quantile1 = quantiles[[1]], Quantile2 = quantiles[[2]])
   }
-  
+
   if(verbose) print("Thresholding using the quantile approach.")
-  vois <- subset(vars, vars$Mean_AF > mean_allele_frequency & vars$Mean_Cov > min_coverage & vars$Quantile1 < thresholds[1] & vars$Quantile2 > thresholds[2])
-  
+  vois <- subset(vars, vars$Mean_AF > mean_allele_frequency & vars$Mean_Cov > min_coverage & vars$Quantile1 <= thresholds[1] & vars$Quantile2 >= thresholds[2])
+
   return(rownames(vois))
 }
