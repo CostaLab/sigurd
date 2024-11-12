@@ -16,7 +16,7 @@ This function gets called by RowWiseSplit in return."><!-- mathjax --><script sr
     
     <a class="navbar-brand me-2" href="../index.html">sigurd</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.8</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -60,7 +60,13 @@ This function gets called by RowWiseSplit in return.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">SeparatingMatrixToList</span><span class="op">(</span><span class="va">row_use</span>, <span class="va">total_matrix</span>, remove_nocalls <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">SeparatingMatrixToList</span><span class="op">(</span></span>
+<span>  <span class="va">row_use</span>,</span>
+<span>  <span class="va">total_matrix</span>,</span>
+<span>  <span class="va">consensus</span>,</span>
+<span>  assay_to_split <span class="op">=</span> <span class="st">"consensus"</span>,</span>
+<span>  remove_nocalls <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -71,6 +77,10 @@ This function gets called by RowWiseSplit in return.</p>
 
 <dt>total_matrix</dt>
 <dd><p>The matrix to be split.</p></dd>
+
+
+<dt>assay_to_split</dt>
+<dd><p>Which assay are we splitting?</p></dd>
 
 
 <dt>remove_nocalls</dt>

@@ -58,10 +58,16 @@
     <loc>https://costalab.github.io/sigurd/reference/CalculateFisherTestPValue2.html</loc>
   </url>
   <url>
+    <loc>https://costalab.github.io/sigurd/reference/CalculateForwardReads.html</loc>
+  </url>
+  <url>
     <loc>https://costalab.github.io/sigurd/reference/CalculateQuality.html</loc>
   </url>
   <url>
     <loc>https://costalab.github.io/sigurd/reference/CalculateRefReads.html</loc>
+  </url>
+  <url>
+    <loc>https://costalab.github.io/sigurd/reference/CalculateReverseReads.html</loc>
   </url>
   <url>
     <loc>https://costalab.github.io/sigurd/reference/CalculateStrandCorrelation.html</loc>
@@ -101,6 +107,9 @@
   </url>
   <url>
     <loc>https://costalab.github.io/sigurd/reference/LoadingMAEGATK_typewise.html</loc>
+  </url>
+  <url>
+    <loc>https://costalab.github.io/sigurd/reference/LoadingMGATK_typewise.html</loc>
   </url>
   <url>
     <loc>https://costalab.github.io/sigurd/reference/LoadingRawMatrix_typewise.html</loc>
@@ -167,6 +176,9 @@
   </url>
   <url>
     <loc>https://costalab.github.io/sigurd/reference/VariantSelection_TopCells.html</loc>
+  </url>
+  <url>
+    <loc>https://costalab.github.io/sigurd/reference/VariantSelection_VMR.html</loc>
   </url>
   <url>
     <loc>https://costalab.github.io/sigurd/reference/VariantWiseCorrelation.html</loc>

@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">sigurd</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.8</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -55,6 +55,7 @@
 <span>  <span class="va">variant_values</span>,</span>
 <span>  <span class="va">other_mutation</span>,</span>
 <span>  <span class="va">all_variants_list</span>,</span>
+<span>  value_type <span class="op">=</span> <span class="st">"consensus"</span>,</span>
 <span>  min_intersecting_cells <span class="op">=</span> <span class="fl">5</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -62,7 +63,7 @@
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>variant_values</dt>
-<dd><p>The fraction values you are analysing. A vector.</p></dd>
+<dd><p>The fraction values you are analyzing. A vector.</p></dd>
 
 
 <dt>other_mutation</dt>
@@ -71,6 +72,10 @@
 
 <dt>all_variants_list</dt>
 <dd><p>List of fraction values for all the variants you want to compare your variant with.</p></dd>
+
+
+<dt>value_type</dt>
+<dd><p>Are we using consensus or other information?</p></dd>
 
 
 <dt>min_intersecting_cells</dt>
