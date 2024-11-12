@@ -18,7 +18,20 @@ VariantSelection_VMR <- function(SE, stabilize_variance = TRUE, low_coverage_thr
   fraction[is.na(fraction)] <- 0
   mean_af <- Matrix::rowSums(SummarizedExperiment::assays(SE)[["alts"]]) / Matrix::rowSums(SummarizedExperiment::assays(SE)[["coverage"]])
   mean_af[is.na(mean_af)] <- 0
-
+  
+  if(verbose) print("We calculate the concordance.")
+  reads_forward <- SummarizedExperiment::assays(SE)[["forward"]]
+  reads_reverse <- SummarizedExperiment::assays(SE)[["reverse"]]
+  dt <- merge(data.table::data.table(summary(reads_forward)), 
+              data.table::data.table(summary(reads_reverse)), 
+              by.x = c("i", "j"), by.y = c("i", "j"), 
+              all = TRUE)
+  dt <- dt[dt[,x.x] > 0 | dt[,x.y] > 0,]
+  dt <- data.table::data.table(variant = rownames(SE)[dt[[1]]],
+                               cell_id = dt[[2]],
+                               fw = dt[[3]], rev = dt[[4]])
+  concordance <- dt[, .(cor = suppressWarnings(stats::cor(c(fw), c(rev), method = "pearson", use = "pairwise.complete"))), by = list(variant)]
+  
   if(stabilize_variance){
     if(verbose) print("We stabilize the variance.")
     coverage <- SummarizedExperiment::assays(SE)[["coverage"]]
@@ -42,7 +55,7 @@ VariantSelection_VMR <- function(SE, stabilize_variance = TRUE, low_coverage_thr
   
   if(verbose) print(paste0("We check if a cells has more than ", minimum_fw_rev_reads, " reads."))
   detected <- (SummarizedExperiment::assays(SE)[["forward"]] >= minimum_fw_rev_reads) + (assays(SE)[["reverse"]] >= minimum_fw_rev_reads)
-
+  
   voi <- data.frame(
     variant = rownames(detected),
     vmr = variants_variance / (mean_af + 0.00000000001),
@@ -50,11 +63,9 @@ VariantSelection_VMR <- function(SE, stabilize_variance = TRUE, low_coverage_thr
     mean = round(mean_af, 7),
     variance = round(variants_variance, 7),
     cells_detected = Matrix::rowSums(detected == 2), # We only select cells that have enough reads for both directions.
-    strand_correlation = SummarizedExperiment::rowData(SE)$Concordance,
+    strand_correlation = concordance$cor, #SummarizedExperiment::rowData(SE)$Concordance,
     mean_coverage = Matrix::rowMeans(SummarizedExperiment::assays(SE)[["coverage"]]),
     stringsAsFactors = FALSE, row.names = rownames(detected)
   )
   return(voi)
 }
-
-

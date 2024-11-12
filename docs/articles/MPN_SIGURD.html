@@ -26,7 +26,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">sigurd</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.3.8</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -96,15 +96,18 @@
 <p>Since we are loading multiple samples, this code is more complicated than the code for the MAESTER SW sample.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Loading the scRNA-seq data.</span></span>
-<span><span class="va">scrna</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/load_object.html">load_object</a></span><span class="op">(</span><span class="st">"/data/MPN/exp/scRNA/MPN_mutations/SIGURD_paper/sigurd/data/scrna_MPN.rds.lz4"</span><span class="op">)</span></span>
+<span><span class="va">scrna</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/load_object.html">load_object</a></span><span class="op">(</span><span class="st">"/data/MPN/exp/scRNA/MPN_mutations/SIGURD_paper/Paper_Figures/ZenodoFiles/Zenodo_Seurat_Object.rds"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Loading the genotyping data.</span></span>
-<span><span class="va">genotyping</span>  <span class="op">&lt;-</span> <span class="fu"><a href="../reference/LoadingVarTrix_typewise.html">LoadingVarTrix_typewise</a></span><span class="op">(</span>patient <span class="op">=</span> <span class="st">"MPN"</span>, samples_file <span class="op">=</span> <span class="st">"/data/MPN/exp/scRNA/MPN_mutations/SIGURD_paper/sigurd/data/DesignMatrix_VarTrix.csv"</span>, min_reads <span class="op">=</span> <span class="fl">0</span>, vcf_path <span class="op">=</span> <span class="st">"/data/MPN/exp/scRNA/MPN_mutations/SIGURD_paper/sigurd/data/CosmicSubset_JAK2V617F.vcf"</span>, type_use <span class="op">=</span> <span class="st">"scRNAseq_Somatic"</span>, min_cells <span class="op">=</span> <span class="fl">0</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="va">amplicon</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/LoadingVarTrix_typewise.html">LoadingVarTrix_typewise</a></span><span class="op">(</span>patient <span class="op">=</span> <span class="st">"MPN"</span>, samples_file <span class="op">=</span> <span class="st">"/data/MPN/exp/scRNA/MPN_mutations/SIGURD_paper/sigurd/data/DesignMatrix_Amplicon.csv"</span>, min_reads <span class="op">=</span> <span class="fl">0</span>, vcf_path <span class="op">=</span> <span class="st">"/data/MPN/exp/scRNA/MPN_mutations/SIGURD_paper/sigurd/data/CosmicSubset_UCSC_JAK2V617F.vcf"</span>, type_use <span class="op">=</span> <span class="st">"scRNAseq_Amplicon"</span>, min_cells <span class="op">=</span> <span class="fl">0</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="va">genotyping</span>  <span class="op">&lt;-</span> <span class="fu"><a href="../reference/AmpliconSupplementing.html">AmpliconSupplementing</a></span><span class="op">(</span>scRNAseq <span class="op">=</span> <span class="va">genotyping</span>, amplicon <span class="op">=</span> <span class="va">amplicon</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="co"># genotyping  &lt;- LoadingVarTrix_typewise(patient = "MPN", samples_file = "/data/MPN/exp/scRNA/MPN_mutations/SIGURD_paper/sigurd/data/DesignMatrix_VarTrix.csv", min_reads = 0, vcf_path = "/data/MPN/exp/scRNA/MPN_mutations/SIGURD_paper/sigurd/data/CosmicSubset_JAK2V617F.vcf", type_use = "scRNAseq_Somatic", min_cells = 0, verbose = FALSE)</span></span>
+<span><span class="co"># amplicon &lt;- LoadingVarTrix_typewise(patient = "MPN", samples_file = "/data/MPN/exp/scRNA/MPN_mutations/SIGURD_paper/sigurd/data/DesignMatrix_Amplicon.csv", min_reads = 0, vcf_path = "/data/MPN/exp/scRNA/MPN_mutations/SIGURD_paper/sigurd/data/CosmicSubset_UCSC_JAK2V617F.vcf", type_use = "scRNAseq_Amplicon", min_cells = 0, verbose = FALSE)</span></span>
+<span><span class="co"># genotyping  &lt;- AmpliconSupplementing(scRNAseq = genotyping, amplicon = amplicon, verbose = FALSE)</span></span>
 <span></span>
 <span><span class="co"># Filtering the genotyping object to remove false positives.</span></span>
-<span><span class="va">genotyping</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Filtering.html">Filtering</a></span><span class="op">(</span><span class="va">genotyping</span>, min_cells_per_variant <span class="op">=</span> <span class="fl">0</span>, fraction_threshold <span class="op">=</span> <span class="fl">0.21</span>, cells_include <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">scrna</span><span class="op">)</span>, min_variants_per_cell <span class="op">=</span> <span class="fl">1</span>, reject_value <span class="op">=</span> <span class="st">"NoCall"</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+<span><span class="co"># genotyping &lt;- Filtering(genotyping, min_cells_per_variant = 0, fraction_threshold = 0.21, cells_include = colnames(scrna), min_variants_per_cell = 1, reject_value = "NoCall", verbose = FALSE)</span></span>
+<span></span>
+<span><span class="co"># We load the provided genotyping object.</span></span>
+<span><span class="va">genotyping</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/load_object.html">load_object</a></span><span class="op">(</span><span class="st">"/data/MPN/exp/scRNA/MPN_mutations/SIGURD_paper/sigurd/data/MPN_JAK2V617F_Genotyping.rds"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="combining-seurat-and-sigurd">Combining Seurat and SIGURD<a class="anchor" aria-label="anchor" href="#combining-seurat-and-sigurd"></a>
@@ -117,7 +120,7 @@
 <div class="section level2">
 <h2 id="visualisation">Visualisation<a class="anchor" aria-label="anchor" href="#visualisation"></a>
 </h2>
-<p>We visualise the genotyping information on the UMAP.</p>
+<p>We visualize the genotyping information on the UMAP.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Plotting the mutated cells on the UMAP.</span></span>
 <span><span class="va">scrna</span><span class="op">$</span><span class="va">JAK2_p.V617F_c.1849G.T_consensus</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">scrna</span><span class="op">$</span><span class="va">JAK2_p.V617F_c.1849G.T_consensus</span>, levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Ref"</span>, <span class="st">"Alt"</span><span class="op">)</span><span class="op">)</span></span>
@@ -132,14 +135,14 @@
 <span><span class="co">## Adding another scale for <span style="color: #00BB00;">colour</span>, which will replace the existing scale.</span></span></code></pre>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">p</span><span class="op">)</span></span></code></pre></div>
-<p><img src="MPN_SIGURD_files/figure-html/unnamed-chunk-2-1.png" width="384"></p>
+<p><img src="MPN_SIGURD_files/figure-html/PlottingJAK2V617F-1.png" width="384"></p>
 </div>
 <div class="section level2">
 <h2 id="we-determine-degs-between-the-jak2v617f-and-wt-cells-">We determine DEGs between the JAK2V617F and WT cells.<a class="anchor" aria-label="anchor" href="#we-determine-degs-between-the-jak2v617f-and-wt-cells-"></a>
 </h2>
 <p>Now, we determine the DEGs between the JAK2V617F cells and the wild type cells for the Orthochromatic Erythroblasts.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">scrna_orthoe</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">scrna</span>, <span class="va">CellType</span> <span class="op">==</span> <span class="st">"Orthochromatic Erythroblasts"</span> <span class="op">&amp;</span> <span class="va">Condition</span> <span class="op">!=</span> <span class="st">"HC"</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">scrna_orthoe</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">scrna</span>, <span class="va">celltype</span> <span class="op">==</span> <span class="st">"Orthochromatic Erythroblasts"</span> <span class="op">&amp;</span> <span class="va">condition</span> <span class="op">!=</span> <span class="st">"HC"</span><span class="op">)</span></span>
 <span><span class="va">degs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/FindMarkers.html" class="external-link">FindMarkers</a></span><span class="op">(</span><span class="va">scrna_orthoe</span>, group.by <span class="op">=</span> <span class="st">"JAK2_p.V617F_c.1849G.T_consensus"</span>, ident.1 <span class="op">=</span> <span class="st">"Alt"</span>, ident.2 <span class="op">=</span> <span class="st">"Ref"</span>, logfc.threshold <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span>
 <span><span class="va">degs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span><span class="va">degs</span>, gene <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">degs</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">degs_up</span>   <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">degs</span>, <span class="va">avg_log2FC</span> <span class="op">&gt;</span>   <span class="fl">0.25</span> <span class="op">&amp;</span> <span class="va">p_val_adj</span> <span class="op">&lt;</span> <span class="fl">0.05</span><span class="op">)</span><span class="op">)</span></span>
@@ -155,7 +158,15 @@
 <p>First, we load and filter the mitochondrial variant information.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Loading the data. </span></span>
-<span><span class="va">genotyping_mt</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/LoadingMAEGATK_typewise.html">LoadingMAEGATK_typewise</a></span><span class="op">(</span>patient <span class="op">=</span> <span class="st">"MPN1"</span>, samples_file <span class="op">=</span> <span class="st">"/data/MPN/exp/scRNA/MPN_mutations/SIGURD_paper/sigurd/data/DesignMatrix_MT.csv"</span>, min_cells <span class="op">=</span> <span class="fl">0</span>, cells_include <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">scrna</span><span class="op">)</span>, type_use <span class="op">=</span> <span class="st">"scRNAseq_MT"</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="co"># genotyping_mt &lt;- LoadingMAEGATK_typewise(patient = "MPN1", samples_file = "/data/MPN/exp/scRNA/MPN_mutations/SIGURD_paper/sigurd/data/DesignMatrix_MT.csv", min_cells = 0, cells_include = colnames(scrna), type_use = "scRNAseq_MT", verbose = FALSE)</span></span>
+<span><span class="co"># genotyping_mt &lt;- Filtering(genotyping_mt, min_variants_per_cell = 1, min_cells_per_variant = 2, fraction_threshold = 0.05, cells_include = colnames(scrna), verbose = FALSE)</span></span>
+<span><span class="co"># Adding the JAK2V617F information.</span></span>
+<span><span class="co"># genotyping_MPN1 &lt;- Filtering(genotyping, cells_include = grep("MPN1", colnames(genotyping), value = TRUE))</span></span>
+<span><span class="co"># genotyping_mt &lt;- CombineSEobjects(genotyping_MPN1, genotyping_mt)</span></span>
+<span></span>
+<span><span class="co"># We load the Zenodo File. This is equivalent to the way we do it above. </span></span>
+<span><span class="va">genotyping_mt_all</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/load_object.html">load_object</a></span><span class="op">(</span><span class="st">"/data/MPN/exp/scRNA/MPN_mutations/SIGURD_paper/Paper_Figures/ZenodoFiles/scrna_genotyping.rds"</span><span class="op">)</span></span>
+<span><span class="va">genotyping_mt</span> <span class="op">&lt;-</span> <span class="va">genotyping_mt_all</span><span class="op">[[</span><span class="st">"MPN1"</span><span class="op">]</span><span class="op">]</span></span>
 <span><span class="va">genotyping_mt</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Filtering.html">Filtering</a></span><span class="op">(</span><span class="va">genotyping_mt</span>, min_variants_per_cell <span class="op">=</span> <span class="fl">1</span>, min_cells_per_variant <span class="op">=</span> <span class="fl">2</span>, fraction_threshold <span class="op">=</span> <span class="fl">0.05</span>, cells_include <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">scrna</span><span class="op">)</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
@@ -165,8 +176,8 @@
 <p>We subset the cells to only include the erythroid cells.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Subset to erythroid cells.</span></span>
-<span><span class="va">erythroid_cells</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">scrna</span>, <span class="va">annotation</span> <span class="op">==</span> <span class="st">"ErythroidCells"</span><span class="op">)</span></span>
-<span><span class="va">genotyping_mt</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Filtering.html">Filtering</a></span><span class="op">(</span><span class="va">genotyping_mt</span>, cells_include <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">erythroid_cells</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">erythroid_cells</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/subset.html" class="external-link">subset</a></span><span class="op">(</span><span class="va">scrna</span>, <span class="va">celltype_merged</span> <span class="op">==</span> <span class="st">"ErythroidCells"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">genotyping_mt</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Filtering.html">Filtering</a></span><span class="op">(</span><span class="va">genotyping_mt</span>, cells_include <span class="op">=</span> <span class="va">erythroid_cells</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] "We remove all cells not in the allow list."</span></span>
 <span><span class="co">## [1] "We remove all the variants that are always NoCall."</span></span></code></pre>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
@@ -209,7 +220,7 @@
 <span>  use_raster <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  show_heatmap_legend <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/ComplexHeatmap/man/draw-dispatch.html" class="external-link">draw</a></span><span class="op">(</span><span class="va">hm</span>, annotation_legend_side <span class="op">=</span> <span class="st">"bottom"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="MPN_SIGURD_files/figure-html/unnamed-chunk-4-1.png" width="576"></p>
+<p><img src="MPN_SIGURD_files/figure-html/PlottingLineages_MPN1-1.png" width="576"></p>
 </div>
 <div class="section level2">
 <h2 id="calculating-clonal-diversity-">Calculating clonal diversity.<a class="anchor" aria-label="anchor" href="#calculating-clonal-diversity-"></a>
@@ -224,14 +235,15 @@
 <h2 id="repeating-the-mt-analysis-for-all-samples-">Repeating the MT analysis for all samples.<a class="anchor" aria-label="anchor" href="#repeating-the-mt-analysis-for-all-samples-"></a>
 </h2>
 <p>We now repeat the MT analysis for all samples. This will take considereable time.</p>
-<p>We speed the analsyis up by using parallel computing. We load the results generated by this code.</p>
+<p>We speed the analsyis up by using parallel computing. Since the Zenodo file was already loaded, we save time here.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># We get all patients present in the design matrix.</span></span>
 <span><span class="va">design_matrix</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html" class="external-link">read.table</a></span><span class="op">(</span><span class="st">"/data/MPN/exp/scRNA/MPN_mutations/SIGURD_paper/sigurd/data/DesignMatrix_MT.csv"</span>, header <span class="op">=</span> <span class="cn">TRUE</span>, sep <span class="op">=</span> <span class="st">","</span><span class="op">)</span></span>
-<span><span class="va">patients</span> <span class="op">&lt;-</span> <span class="va">design_matrix</span><span class="op">$</span><span class="va">patient</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span></span>
-<span><span class="va">genotyping_mt_all</span> <span class="op">&lt;-</span> <span class="fu">parallel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/parallel/mclapply.html" class="external-link">mclapply</a></span><span class="op">(</span><span class="va">patients</span>, <span class="va">LoadingMAEGATK_typewise</span>, samples_file <span class="op">=</span> <span class="st">"/data/MPN/exp/scRNA/MPN_mutations/SIGURD_paper/sigurd/data/DesignMatrix_MT.csv"</span>, min_cells <span class="op">=</span> <span class="fl">0</span>, cells_include <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">scrna</span><span class="op">)</span>, type_use <span class="op">=</span> <span class="st">"scRNAseq_MT"</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span>, mc.cores <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">patients</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">genotyping_mt_all</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">patients</span></span>
-<span><span class="va">genotyping_mt_all</span> <span class="op">&lt;-</span> <span class="fu">parallel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/parallel/mclapply.html" class="external-link">mclapply</a></span><span class="op">(</span><span class="va">genotyping_mt_all</span>, <span class="va">Filtering</span>, min_variants_per_cell <span class="op">=</span> <span class="fl">1</span>, min_cells_per_variant <span class="op">=</span> <span class="fl">2</span>, fraction_threshold <span class="op">=</span> <span class="fl">0.05</span>, cells_include <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">scrna</span><span class="op">)</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span>, mc.cores <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">patients</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">patients</span> <span class="op">&lt;-</span> <span class="va">design_matrix</span><span class="op">$</span><span class="va">patient</span></span>
+<span><span class="co"># genotyping_mt_all &lt;- parallel::mclapply(patients, LoadingMAEGATK_typewise, samples_file = "/data/MPN/exp/scRNA/MPN_mutations/SIGURD_paper/sigurd/data/DesignMatrix_MT.csv", min_cells = 0, cells_include = colnames(scrna), type_use = "scRNAseq_MT", verbose = FALSE, mc.cores = length(patients))</span></span>
+<span><span class="co"># names(genotyping_mt_all) &lt;- patients</span></span>
+<span><span class="co"># We already loaded the data.</span></span>
+<span><span class="va">genotyping_mt_all</span> <span class="op">&lt;-</span> <span class="fu">parallel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/parallel/mclapply.html" class="external-link">mclapply</a></span><span class="op">(</span><span class="va">genotyping_mt_all</span>, <span class="va">Filtering</span>, min_variants_per_cell <span class="op">=</span> <span class="fl">1</span>, min_cells_per_variant <span class="op">=</span> <span class="fl">2</span>, fraction_threshold <span class="op">=</span> <span class="fl">0.05</span>, cells_include <span class="op">=</span> <span class="va">erythroid_cells</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span>, mc.cores <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">patients</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="selecting-variants-of-interest-for-all-samples">Selecting variants of interest for all samples<a class="anchor" aria-label="anchor" href="#selecting-variants-of-interest-for-all-samples"></a>
@@ -244,18 +256,18 @@
 <span><span class="co"># Determining the clonal lineages. This takes very long. We use parallel computing to process all samples simultaneously.</span></span>
 <span><span class="va">genotyping_mt_all</span> <span class="op">&lt;-</span> <span class="fu">parallel</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/parallel/mclapply.html" class="external-link">mclapply</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">mt_vois_all</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span><span class="op">{</span></span>
 <span>  <span class="va">sample_use</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">mt_vois_all</span><span class="op">)</span><span class="op">[</span><span class="va">x</span><span class="op">]</span></span>
-<span>  <span class="va">clones</span> <span class="op">&lt;-</span> <span class="fu">sigurd</span><span class="fu">::</span><span class="fu"><a href="../reference/ClonalDefinition.html">ClonalDefinition</a></span><span class="op">(</span>se <span class="op">=</span> <span class="va">genotyping_mt_all</span><span class="op">[[</span><span class="va">sample_use</span><span class="op">]</span><span class="op">]</span>, <span class="va">mt_vois_all</span><span class="op">[</span><span class="va">sample_use</span><span class="op">]</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span>  <span class="va">clones</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/ClonalDefinition.html">ClonalDefinition</a></span><span class="op">(</span>se <span class="op">=</span> <span class="va">genotyping_mt_all</span><span class="op">[[</span><span class="va">sample_use</span><span class="op">]</span><span class="op">]</span>, <span class="va">mt_vois_all</span><span class="op">[</span><span class="va">sample_use</span><span class="op">]</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/function.html" class="external-link">return</a></span><span class="op">(</span><span class="va">clones</span><span class="op">)</span></span>
 <span><span class="op">}</span>, mc.cores <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">mt_vois_all</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">genotyping_mt_all</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="va">patients</span></span>
-<span><span class="fu"><a href="../reference/save_object.html">save_object</a></span><span class="op">(</span><span class="va">genotyping_mt_all</span>, <span class="st">"/data/MPN/exp/scRNA/MPN_mutations/SIGURD_paper/sigurd/data/genotyping_mt_all.rds.lz4"</span>, <span class="st">"lz4"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/save_object.html">save_object</a></span><span class="op">(</span><span class="va">genotyping_mt_all</span>, <span class="st">"/data/MPN/exp/scRNA/MPN_mutations/SIGURD_paper/Paper_Figures/ZenodoFiles/genotyping_mt_all.rds.lz4"</span>, <span class="st">"lz4"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="calculating-the-diverstiy-for-all-samples">Calculating the diverstiy for all samples<a class="anchor" aria-label="anchor" href="#calculating-the-diverstiy-for-all-samples"></a>
 </h2>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># We load the previous results.</span></span>
-<span><span class="va">genotyping_mt_all</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/load_object.html">load_object</a></span><span class="op">(</span><span class="st">"/data/MPN/exp/scRNA/MPN_mutations/SIGURD_paper/sigurd/data/genotyping_mt_all.rds.lz4"</span><span class="op">)</span></span>
+<span><span class="va">genotyping_mt_all</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/load_object.html">load_object</a></span><span class="op">(</span><span class="st">"/data/MPN/exp/scRNA/MPN_mutations/SIGURD_paper/Paper_Figures/ZenodoFiles/genotyping_mt_all.rds.lz4"</span><span class="op">)</span></span>
 <span><span class="va">clonal_diversity_all</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/unlist.html" class="external-link">unlist</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">genotyping_mt_all</span>, <span class="va">ClonalDiversity</span>, grouping <span class="op">=</span> <span class="st">"Clones"</span>, diversity_measure <span class="op">=</span> <span class="st">"EffectiveSpecies"</span>, verbose <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">clonal_diversity_all</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>Sample <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">genotyping_mt_all</span><span class="op">)</span>, EffectiveSpecies <span class="op">=</span> <span class="va">clonal_diversity_all</span><span class="op">)</span></span>
 <span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">clonal_diversity_all</span>, format<span class="op">=</span><span class="st">"html"</span><span class="op">)</span></span></code></pre></div>
@@ -279,7 +291,7 @@ MPN1
 MPN1
 </td>
 <td style="text-align:right;">
-6.556187
+6.72545
 </td>
 </tr>
 <tr>
@@ -290,7 +302,7 @@ MPN2
 MPN2
 </td>
 <td style="text-align:right;">
-35.941119
+35.77652
 </td>
 </tr>
 <tr>
@@ -301,7 +313,7 @@ MPN3
 MPN3
 </td>
 <td style="text-align:right;">
-24.329734
+24.17242
 </td>
 </tr>
 <tr>
@@ -312,7 +324,7 @@ HC1
 HC1
 </td>
 <td style="text-align:right;">
-62.496136
+63.41134
 </td>
 </tr>
 <tr>
@@ -323,7 +335,7 @@ HC2
 HC2
 </td>
 <td style="text-align:right;">
-494.903187
+873.95614
 </td>
 </tr>
 <tr>
@@ -334,7 +346,7 @@ HC3
 HC3
 </td>
 <td style="text-align:right;">
-237.440220
+216.72850
 </td>
 </tr>
 <tr>
@@ -345,7 +357,7 @@ MPN6
 MPN6
 </td>
 <td style="text-align:right;">
-11.016631
+10.98086
 </td>
 </tr>
 <tr>
@@ -356,7 +368,7 @@ MPN4
 MPN4
 </td>
 <td style="text-align:right;">
-14.843004
+14.85520
 </td>
 </tr>
 <tr>
@@ -367,7 +379,7 @@ MPN5
 MPN5
 </td>
 <td style="text-align:right;">
-42.984619
+42.10990
 </td>
 </tr>
 </tbody>
