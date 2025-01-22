@@ -14,7 +14,7 @@ suppressPackageStartupMessages(library(EnhancedVolcano))
 # This setup makes this analysis different from the previous analyses. Previously, only one sample was analysed at a time. Now, we load and analyse the samples simultaneously.
 
 # Loading MPN data
-scrna <- load_object("/data/MPN/exp/scRNA/MPN_mutations/SIGURD_paper/sigurd/data/scrna_MPN.rds.lz4")
+scrna <- load_object("Zenodo_Seurat_Object.rds")
 
 # Loading the genotyping data.
 genotyping  <- LoadingVarTrix_typewise(patient = "MPN", samples_file = "DesignMatrix_VarTrix.csv", min_reads = 0, vcf_path = "/data/MPN/exp/scRNA/MPN_mutations/SIGURD_paper/sigurd/data/CosmicSubset_JAK2V617F.vcf", type_use = "scRNAseq_Somatic", min_cells = 0, verbose = FALSE)

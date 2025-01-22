@@ -1,7 +1,7 @@
 Package: sigurd
 Type: Package
 Title: Single cell Genotyping Using RNA Data
-Version: 0.3.8
+Version: 0.3.9
 Authors@R: c(
   person(given = "Martin",
          family = "Grasshoff",
