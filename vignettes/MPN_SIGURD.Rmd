@@ -41,8 +41,8 @@ Since we are loading multiple samples, this code is more complicated than the co
 scrna <- load_object("/data/MPN/exp/scRNA/MPN_mutations/SIGURD_paper/Paper_Figures/ZenodoFiles/Zenodo_Seurat_Object.rds")
 
 # Loading the genotyping data.
-# genotyping  <- LoadingVarTrix_typewise(patient = "MPN", samples_file = "/data/MPN/exp/scRNA/MPN_mutations/SIGURD_paper/sigurd/data/DesignMatrix_VarTrix.csv", min_reads = 0, vcf_path = "/data/MPN/exp/scRNA/MPN_mutations/SIGURD_paper/sigurd_v2/inst/extdata/JAK2V617F.vcf", type_use = "scRNAseq_Somatic", min_cells = 0, verbose = FALSE)
-# amplicon <- LoadingVarTrix_typewise(patient = "MPN", samples_file = "/data/MPN/exp/scRNA/MPN_mutations/SIGURD_paper/sigurd/data/DesignMatrix_Amplicon.csv", min_reads = 0, vcf_path = "/data/MPN/exp/scRNA/MPN_mutations/SIGURD_paper/sigurd_v2/inst/extdata/UCSC_JAK2V617F.vcf", type_use = "scRNAseq_Amplicon", min_cells = 0, verbose = FALSE)
+# genotyping  <- LoadingVarTrix_typewise(patient = "MPN", samples_file = "/data/MPN/exp/scRNA/MPN_mutations/SIGURD_paper/sigurd/data/DesignMatrix_VarTrix.csv", min_reads = 0, vcf_path = "/data/MPN/exp/scRNA/MPN_mutations/SIGURD_paper/sigurd/inst/extdata/JAK2V617F.vcf", type_use = "scRNAseq_Somatic", min_cells = 0, verbose = FALSE)
+# amplicon <- LoadingVarTrix_typewise(patient = "MPN", samples_file = "/data/MPN/exp/scRNA/MPN_mutations/SIGURD_paper/sigurd/data/DesignMatrix_Amplicon.csv", min_reads = 0, vcf_path = "/data/MPN/exp/scRNA/MPN_mutations/SIGURD_paper/sigurd/inst/extdata/UCSC_JAK2V617F.vcf", type_use = "scRNAseq_Amplicon", min_cells = 0, verbose = FALSE)
 # genotyping  <- AmpliconSupplementing(scRNAseq = genotyping, amplicon = amplicon, verbose = FALSE)
 
 # Filtering the genotyping object to remove false positives.
