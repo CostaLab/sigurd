@@ -1,0 +1,2 @@
+patient,sample,source,type,bam,input_path,cells
+Test,Test,VarTrix,scRNAseq_Somatic,test_data/VarTrix_Test/Test/test.bam,test_data/VarTrix_Test/,test_data/VarTrix_Test/barcodes.tsv

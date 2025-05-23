@@ -1,0 +1,2 @@
+patient,sample,source,type,bam,input_path,cells
+Test,Test,MAEGATK,scRNAseq_MT,NA,test_data/LoadingMAEGATK_typewise_Test_Data.rds,test_data/LoadingMAEGATK_typewise_Test_Barcodes.tsv

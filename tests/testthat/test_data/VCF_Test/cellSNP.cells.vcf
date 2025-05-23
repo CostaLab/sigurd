@@ -1,0 +1,41 @@
+##fileformat=VCFv4.2
+##source=cellSNP_v1.2.3
+##FILTER=<ID=PASS,Description="All filters passed">
+##FILTER=<ID=.,Description="Filter info not available">
+##INFO=<ID=DP,Number=1,Type=Integer,Description="total counts for ALT and REF">
+##INFO=<ID=AD,Number=1,Type=Integer,Description="total counts for ALT">
+##INFO=<ID=OTH,Number=1,Type=Integer,Description="total counts for other bases from REF and ALT">
+##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">
+##FORMAT=<ID=PL,Number=G,Type=Integer,Description="List of Phred-scaled genotype likelihoods">
+##FORMAT=<ID=DP,Number=1,Type=Integer,Description="total counts for ALT and REF">
+##FORMAT=<ID=AD,Number=1,Type=Integer,Description="total counts for ALT">
+##FORMAT=<ID=OTH,Number=1,Type=Integer,Description="total counts for other bases from REF and ALT">
+##FORMAT=<ID=ALL,Number=5,Type=Integer,Description="total counts for all bases in order of A,C,G,T,N">
+##contig=<ID=1>
+##contig=<ID=2>
+##contig=<ID=3>
+##contig=<ID=4>
+##contig=<ID=5>
+##contig=<ID=6>
+##contig=<ID=7>
+##contig=<ID=8>
+##contig=<ID=9>
+##contig=<ID=10>
+##contig=<ID=11>
+##contig=<ID=12>
+##contig=<ID=13>
+##contig=<ID=14>
+##contig=<ID=15>
+##contig=<ID=16>
+##contig=<ID=17>
+##contig=<ID=18>
+##contig=<ID=19>
+##contig=<ID=20>
+##contig=<ID=21>
+##contig=<ID=22>
+##contig=<ID=X>
+##contig=<ID=Y>
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO	FORMAT	AAACGGGCATTTGCCC-1	AAGCCGCGTTAGGGTG-1	ACACCAAAGCATGGCA-2	ACGCCAGTCACTTCAT-2	ACTGATGCATGCCTAA-1	AGATTGCCACCCATTC-2	AGTCTTTAGAGTGAGA-2	AGTGTCATCATGTCTT-1	ATAACGCGTCGAACAG-2	CACAGTAAGTGAAGTT-2	CAGATCACATACTCTT-1	CGAGCCAAGGCGATAC-1	CTCCTAGTCGGTGTCG-2	CTTAGGATCTCTTATG-2	GAAACTCCAAGTCTGT-2	GAACATCAGTCCATAC-1	GACTGCGCAGTAAGCG-1	TACTTACCACCCATGG-2	TACTTACTCTATCCCG-2	TGAGCATAGCGATATA-2
+1	200	.	C	G	.	PASS	AD=0;DP=1;OTH=0	GT:AD:DP:OTH:PL:ALL	.:.:.:.:.:.	.:.:.:.:.:.	.:.:.:.:.:.	.:.:.:.:.:.	.:.:.:.:.:.	.:.:.:.:.:.	.:.:.:.:.:.	.:.:.:.:.:.	.:.:.:.:.:.	.:.:.:.:.:.	.:.:.:.:.:.	.:.:.:.:.:.	.:.:.:.:.:.	.:.:.:.:.:.	.:.:.:.:.:.	.:.:.:.:.:.	.:.:.:.:.:.	.:.:.:.:.:.	0/0:0:1:0:0,3,42:0,1,0,0,0	.:.:.:.:.:.
+17	200	.	G	A	.	PASS	AD=0;DP=2;OTH=0	GT:AD:DP:OTH:PL:ALL	.:.:.:.:.:.	0/0:0:1:0:0,3,42:0,0,1,0,0	.:.:.:.:.:.	.:.:.:.:.:.	.:.:.:.:.:.	.:.:.:.:.:.	.:.:.:.:.:.	.:.:.:.:.:.	.:.:.:.:.:.	.:.:.:.:.:.	.:.:.:.:.:.	.:.:.:.:.:.	.:.:.:.:.:.	.:.:.:.:.:.	.:.:.:.:.:.	.:.:.:.:.:.	.:.:.:.:.:.	.:.:.:.:.:.	0/0:0:1:0:0,3,42:0,0,1,0,0	.:.:.:.:.:.
+2	200	.	G	C	.	PASS	AD=1;DP=1;OTH=0	GT:AD:DP:OTH:PL:ALL	.:.:.:.:.:.	.:.:.:.:.:.	.:.:.:.:.:.	.:.:.:.:.:.	.:.:.:.:.:.	.:.:.:.:.:.	1/1:1:1:0:42,3,0:0,1,0,0,0	.:.:.:.:.:.	.:.:.:.:.:.	.:.:.:.:.:.	.:.:.:.:.:.	.:.:.:.:.:.	.:.:.:.:.:.	.:.:.:.:.:.	.:.:.:.:.:.	.:.:.:.:.:.	.:.:.:.:.:.	.:.:.:.:.:.	.:.:.:.:.:.	.:.:.:.:.:.

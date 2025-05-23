@@ -1,0 +1,11 @@
+patient,sample,source,type,bam,input_path,cells
+Sample1,Minus_Sample1,VarTrix,scRNAseq_Somatic,~/test_data/Minus_Sample1/possorted_genome_bam.bam,~/test_data/VarTrix/Somatic/,~/test_data/Minus_Sample1/Minus_Sample1_barcodes.tsv
+Sample1,Minus_Sample1,VarTrix,scRNAseq_MT,~/test_data/Minus_Sample1/possorted_genome_bam.bam,~/test_data/VarTrix/MT/,~/test_data/Minus_Sample1/Minus_Sample1_barcodes.tsv
+Sample1,Minus_Sample1,MAEGATK,scRNAseq_MT,~/test_data/Minus_Sample1/possorted_genome_bam.bam,~/test_data/MAEGATK/Minus_Sample1/final/maegatk.rds,~/test_data/Minus_Sample1/Minus_Sample1_barcodes.tsv
+Sample1,Plus_Sample1,VarTrix,scRNAseq_Somatic,~/test_data/Plus_Sample1/possorted_genome_bam.bam,~/test_data/VarTrix/Somatic/,~/test_data/Plus_Sample1/Plus_Sample1_barcodes.tsv
+Sample1,Plus_Sample1,VarTrix,scRNAseq_MT,~/test_data/Plus_Sample1/possorted_genome_bam.bam,~/test_data/VarTrix/MT/,~/test_data/Plus_Sample1/Plus_Sample1_barcodes.tsv
+Sample1,Plus_Sample1,MAEGATK,scRNAseq_MT,~/test_data/Plus_Sample1/possorted_genome_bam.bam,~/test_data/MAEGATK/Plus_Sample1/final/maegatk.rds,~/test_data/Plus_Sample1/Plus_Sample1_barcodes.tsv
+SW_CellLineMix_All_mr3,SW_CellLineMix_All_mr3,MAEGATK,Amplicon_MT,NADA,~/test_data/MAESTER_data/SW_CellLineMix_All_mr3/final/SW_CellLineMix_All_mr3_maegatk.rds,NADA
+SW_CellLineMix_RNAseq_mr3,SW_CellLineMix_RNAseq_mr3,MAEGATK,scRNAseq_MT,NADA,~/test_data/MAESTER_data/SW_CellLineMix_RNAseq_mr3/final/SW_CellLineMix_RNAseq_mr3_maegatk.rds,NADA
+TenX_BPDCN712_All_mr3,TenX_BPDCN712_All_mr3,MAEGATK,Amplicon_MT,NADA,~/test_data/MAESTER_data/TenX_BPDCN712_All_mr3/final/TenX_BPDCN712_All_mr3_maegatk.rds,NADA
+TenX_BPDCN712_RNAseq_mr3,TenX_BPDCN712_RNAseq_mr3,MAEGATK,scRNAseq_MT,NADA,~/test_data/MAESTER_data/TenX_BPDCN712_RNAseq_mr3/final/TenX_BPDCN712_RNAseq_mr3_maegatk.rds,NADA

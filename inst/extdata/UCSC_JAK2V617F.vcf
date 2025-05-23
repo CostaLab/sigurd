@@ -1,0 +1,7 @@
+##fileformat=VCFv4.0
+##INFO=<ID=GENE,Number=1,Type=String,Description="Gene name">
+##INFO=<ID=CDS,Number=1,Type=String,Description="Coding sequence change">
+##INFO=<ID=AA,Number=1,Type=String,Description="Amino acid change">
+##contig=<ID=chr9>
+#CHROM	POS	ID	REF	ALT	QUAL	FILTER	INFO
+chr9	5073770	.	G	T	.	.	GENE=JAK2;CDS=c.1849G>T;AA=p.V617F

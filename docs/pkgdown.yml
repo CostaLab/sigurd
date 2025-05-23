@@ -1,0 +1,13 @@
+pandoc: 2.0.6
+pkgdown: 2.0.7
+pkgdown_sha: ~
+articles:
+  BoneMarrow_SIGURD: BoneMarrow_SIGURD.html
+  MPN_SIGURD: MPN_SIGURD.html
+  SW_CellMixture_SIGURD: SW_CellMixture_SIGURD.html
+  TenX_CellMixture_SIGURD: TenX_CellMixture_SIGURD.html
+last_built: 2025-05-23T08:43Z
+urls:
+  reference: https://costalab.github.io/sigurd/reference
+  article: https://costalab.github.io/sigurd/articles
+

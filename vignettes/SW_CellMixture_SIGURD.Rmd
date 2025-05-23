@@ -1,0 +1,98 @@
+---
+title: "Cell Mixture Analysis using Seq-Well Sequencing"
+output:
+  rmarkdown::html_vignette:
+    self_contained: true
+vignette: >
+  %\VignetteIndexEntry{Cell Mixture Analysis using Seq-Well Sequencing}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+## Cell Mixture Analysis using SIGURD
+
+In this data set, chronic myelogenous leukemia cells (K562) and brain tumor cells (BT142) were mixed and then sequenced using Seq-Well S3. The cells can be separated using the expression of marker genes. 
+
+The original script then identifies 6 variants that can distinguish between the two cell types.
+
+In this reproduction, we show that the analysis can be faithfully reproduced using a very streamlined set of functions. This greatly simplifies the analysis. Using a set of dedicated functions, the analysis can now also be easily adopted to new data sets. 
+
+## Loading necessary packages.
+
+We load the data from MAESTER. 
+
+```{r Packages}
+print("Libraries for SIGURD.")
+suppressPackageStartupMessages(library(sigurd))
+suppressPackageStartupMessages(library(SummarizedExperiment))
+suppressPackageStartupMessages(library(ggplot2))
+```
+
+## We load the Seurat object for the scRNA-seq data.
+
+```{r warning = FALSE}
+seu <- readRDS("/data/MPN/exp/scRNA/MPN_mutations/SIGURD_paper/sigurd/data/SW_CellLineMix_Seurat_Keep_Renamed.rds")
+```
+
+## Loading the data using SIGURD.
+
+SIGURD loads the data and automatically reformats the data. This code uses dedicated functions to load the and process the data, which streamlines the analysis quite substantially.
+
+```{r warning = FALSE}
+# The design matrix contains information for the genotyping data.
+genotyping <- LoadingMAEGATK_typewise(patient = "SW", samples_file = "/data/MPN/exp/scRNA/MPN_mutations/SIGURD_paper/sigurd/data/MAESTER_Reproduction.csv", min_cells = 0, type_use = "Amplicon_MT", verbose = FALSE)
+
+# Removing cells that are not in the Seurat object.
+genotyping <- Filtering(genotyping, cells_include = colnames(seu))
+
+# Adding meta data do the SIGURD object.
+colData(genotyping)$CellType <- seu$CellType
+
+```
+
+## Selecting the Variants of Interest
+
+Now, we select the variants of interest.
+
+```{r warning = FALSE}
+# Selecting informative variants. 
+voi.ch.sigurd <- VariantSelection_Quantile(genotyping, min_coverage = 20, min_quality = 30, quantiles = c(0.1, 0.9), thresholds = c(0.1, 0.9), verbose = FALSE)
+print(voi.ch.sigurd)
+```
+
+## Visualisation using SIGURD
+
+```{r warning = FALSE, fig.width = 6, fig.height = 4, dev = "CairoPNG"}
+# Determining if a cell is supporting one of the two cell types.
+cell_support <- CallSupport(SE = genotyping, VOI_group1 = voi.ch.sigurd[voi.ch.sigurd != "chrM_7990_C_T"], VOI_group2 = "chrM_7990_C_T", group1_name = "K562", group2_name = "BT142", min_mutated_reads = 3, min_reads = 30, group_factor = 10, verbose = FALSE, return_nonsupport = TRUE)
+colData(genotyping)$CellType_MT <- cell_support$Support
+cell_support <- subset(cell_support, Support %in% c("K562", "BT142")) # Selecting only cells with sufficient support for a set of variants.
+
+# Plotting the results on a heatmap.
+HeatmapVoi(SE = genotyping[,cell_support$Cell], voi = voi.ch.sigurd, annotation_trait = "CellType", minimum_coverage = 3, remove_empty_cells = FALSE)
+```
+
+## Selecting variants with comparatively high VAF between groups
+
+We now select variants with a higher VAF in the K562 cells than in the BT142 cells.
+
+```{r warning = FALSE}
+voi.ch.lineages <- sigurd::VariantSelection_Group(SE = genotyping, min_coverage = 20, quantiles = c(0.01, 0.99), thresholds = c(0.01, 0.02), min_quality = 30,
+                                                  group_of_interest = "CellType_MT", group1 = "K562", group2 = "BT142", group_factor = 5, remove_nocall = FALSE, verbose = FALSE)
+voi.ch.lineages <- gsub("chrM_9117_T_C", "chrM_2141_T_C", voi.ch.lineages) # Replace chrM_9117_T_C, which comes up because it has no coverage in some cells, with another homoplasmic variant (chrM_2141_T_C), that has better coverage)
+voi.ch.lineages <- voi.ch.lineages[!voi.ch.lineages %in% c("chrM_5378_A_G", "chrM_6384_G_A")] # These variants are not detected in the bulk data and were removed by hand.
+print(voi.ch.lineages)
+```
+
+## Visualisation using SIGURD
+
+```{r warning = FALSE, dev = "CairoPNG"}
+# Plotting the results on a heatmap.
+cell_support <- subset(cell_support, Support == "K562")
+genotyping <- Filtering(genotyping, cells_include = cell_support$Cell, verbose = FALSE)
+HeatmapVoi(SE = genotyping, voi = voi.ch.lineages, minimum_coverage = 3, sort_cells = TRUE, cluster_variants = TRUE)
+```
+

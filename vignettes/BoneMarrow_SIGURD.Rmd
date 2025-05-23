@@ -1,0 +1,111 @@
+---
+title: "Analysis of Blastic Plasmacytoid Dendritic Cell Neoplasm (BPDCN)"
+output:
+  rmarkdown::html_vignette:
+    self_contained: true
+vignette: >
+  %\VignetteIndexEntry{Analysis of Blastic Plasmacytoid Dendritic Cell Neoplasm (BPDCN)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, dev = "CairoPNG")
+```
+
+## Analysis of Blastic Plasmacytoid Dendritic Cell Neoplasm (BPDCN)
+
+Here, we compare the analysis of cells from a patient with BPDCN.
+
+The original script is available here: https://github.com/petervangalen/MAESTER-2021/blob/main/4_CH_sample/4.2_Variant_Selection.R
+
+In this setup, the cells are all from a single donor and do not have to be separated into categories. 
+
+Then small clones that might characterize the clonal lineages in the sample are selected.
+
+## Loading necessary packages.
+
+We load the data from MAESTER. 
+
+```{r Packages, warning = FALSE}
+print("Libraries for SIGURD.")
+suppressPackageStartupMessages(library(sigurd))
+suppressPackageStartupMessages(library(SummarizedExperiment))
+suppressPackageStartupMessages(library(ggplot2))
+```
+
+## Loading the data using SIGURD.
+
+```{r Loading_SIGURD, warning = FALSE, fig.keep = "none"}
+# The design matrix contains information for the genotyping data.
+genotyping <- LoadingMAEGATK_typewise(patient = "BPDCN712", samples_file = "/data/MPN/exp/scRNA/MPN_mutations/SIGURD_paper/sigurd/data/MAESTER_Reproduction.csv", type_use = "Amplicon_MT", verbose = FALSE)
+
+# Loading the scRNA-seq data.
+scrna <- readRDS("/data/MPN/exp/scRNA/MPN_mutations/SIGURD_paper/sigurd/data/BPDCN712_Seurat_with_TCR_Renamed.rds")
+```
+
+## Generating a block list
+
+Variants that are also detected in the cell mixture data is treated as possible false positives. They are used as a blacklist and are removed from the results.
+
+```{r warning = FALSE}
+# Loading the TenX Cell Mixture Genotyping.
+
+genotyping_tenx <- load_object("/data/MPN/exp/scRNA/MPN_mutations/SIGURD_paper/sigurd/data/TenX_CellMixture_Genotyping.rds.lz4")
+blocklist <- AllelFrequencyFoldChange(genotyping_tenx, group_of_interest = "CellType", group1 = "K562", group2 = "BT142", maximum_foldchange = 5, minimum_coverage = 5, minimum_allele_freq = 0.001, maximum_allele_freq = 0.999)$Variant
+
+# We add the variant chrM_1583_A_G by hand. It is identified as misleading based on downstream analysis.
+blocklist <- c(blocklist, "chrM_1583_A_G")
+```
+## Selecting the Variants of Interest
+
+Now, we select the variants of interest from the loaded data.
+
+```{r warning = FALSE}
+voi.ch.sigurd <- VariantSelection_TopCells(genotyping, min_coverage = 5, quantiles = 0.9, thresholds = 0, top_cells = 10, top_VAF = 0.5, min_quality = 30, remove_nocall = FALSE, verbose = FALSE)
+voi.ch.sigurd <- voi.ch.sigurd[!voi.ch.sigurd %in% blocklist]
+print(voi.ch.sigurd)
+```
+
+## Visualisation using SIGURD
+
+```{r Vis_SIGURD, fig.width = 6, fig.height = 4, warning = FALSE, dev = "CairoPNG"}
+genotyping <- Filtering(SE = genotyping, cells_include = colnames(scrna))
+colData(genotyping)$CellType <- scrna$CellType
+HeatmapVoi(SE = genotyping, voi = voi.ch.sigurd, annotation_trait = "CellType", sort_cells = TRUE, remove_empty_cells = TRUE, minimum_allele_freq = 0.01)
+```
+
+## Cell Type Enrichment 2593G>A
+
+We check the cell type enrichment for the variant 2593G>A.
+
+```{r fig.width = 6, fig.height = 4, warning = FALSE, dev = "CairoPNG"}
+result_enrichment <- Enrichment_FisherTest(se = genotyping, variant = "chrM_2593_G_A", use_nocall = FALSE, trait = "CellType")
+ComplexHeatmap::Heatmap(as.matrix(result_enrichment$Heatmap_Values), cluster_rows = FALSE, cluster_columns = FALSE, col= circlize::colorRamp2(c(0, max(result_enrichment$Heatmap_Values, na.rm = TRUE)), c("white", "red")))
+```
+
+## Cell Type Enrichment 6243G>A
+
+We check the cell type enrichment for the variant 6243G>A.
+
+```{r warning = FALSE}
+result_enrichment <- Enrichment_FisherTest(se = genotyping, variant = "chrM_6243_G_A", use_nocall = FALSE, trait = "CellType")
+ComplexHeatmap::Heatmap(as.matrix(result_enrichment$Heatmap_Values), cluster_rows = FALSE, cluster_columns = FALSE, col= circlize::colorRamp2(c(0, max(result_enrichment$Heatmap_Values, na.rm = TRUE)), c("white", "red")))
+```
+
+## Enrichment with somatic variants
+
+We get the number of 2593_G>A cells that are also mutated for a different somatic variant.
+
+```{r warning = FALSE}
+somatic_variants <- c("ASXL1.G642fs.1", "ASXL1.G642fs.2", "TET2.S792X", "TET2.Q1034X", "TET2.R1216X", "TET2.H1380Y")
+variants <- LoadingRawMatrix_typewise(samples_file = "/data/MPN/exp/scRNA/MPN_mutations/SIGURD_paper/sigurd/data/MAESTER_Reproduction.csv", patient = "BPDCN712", variant_use = somatic_variants, matrix_column_separator = "\t", verbose = FALSE)
+genotyping <- genotyping[voi.ch.sigurd, ]
+genotyping <- Filtering(genotyping, cells_include = colnames(variants))
+variants <- Filtering(variants, cells_include = colnames(scrna), fraction_threshold = 0.01, reject_value = "Reference")
+genotyping <- CombineSEobjects(se_1 = genotyping, se_2 = variants)
+genotyping <- ClonalDefinition(se = genotyping, variants_ls = list("chrM_2593_G_A"), grouping = NULL, identities = NULL, explicit = TRUE, explicit_not = list("chrM_6243_G_A"), explicit_min_vaf = 0.01, verbose = TRUE)
+genotyping <- genotyping[, genotyping$Clones == "C1"]
+res <- VariantWiseFisherTest(variants_list = RowWiseSplit(se = genotyping))
+knitr::kable(res, format="html")
+```
