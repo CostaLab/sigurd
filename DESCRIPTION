@@ -1,0 +1,57 @@
+Package: sigurd
+Type: Package
+Title: Single cell Genotyping Using RNA Data
+Version: 0.3.14
+Authors@R: c(
+  person(given = "Martin",
+         family = "Grasshoff",
+	 role = c("aut", "cre"),
+	 email = "mgrasshoff@ukaachen.de"),
+  person(given = "Ivan",
+         family = "Costa",
+         role = c("aut"),
+         email = "ivan.costa@rwth-aachen.de",
+         comment = c(ORCID = "0000-0003-2890-8697")))
+Maintainer: Martin Grasshoff <mgrasshoff@ukaachen.de>
+Description: Using single cell genotype data, the cells are annotated and analysed.
+URL: https://costalab.github.io/sigurd/
+License: MIT
+Encoding: UTF-8
+LazyData: true
+Imports: 
+    archive,
+    BiocGenerics,
+    ComplexHeatmap,
+    circlize,
+    data.table,
+    dplyr,
+    DropletUtils,
+    GenomeInfoDb,
+    grid,
+    Matrix,
+    MatrixGenerics,
+    methods,
+    parallel,
+    S4Vectors,
+    Seurat,
+    SummarizedExperiment,
+    scales,
+    tibble,
+    VariantAnnotation,
+    vegan
+RoxygenNote: 7.3.2
+Suggests:
+    GenomicRanges,
+    fastmatch,
+    ggplot2,
+    IRanges,
+    knitr,
+    magrittr,
+    rcompanion,
+    rmarkdown,
+    SeuratObject,
+    testthat (>= 3.0.0),
+    tidyr,
+    tidyverse
+# VignetteBuilder: knitr
+Config/testthat/edition: 3
