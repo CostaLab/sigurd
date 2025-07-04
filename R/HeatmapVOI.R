@@ -70,7 +70,7 @@ HeatmapVoi <- function(SE, voi, annotation_trait = NULL, column_title = NULL, mi
                                          column_title_gp = grid::gpar(fontsize = 10, fontface = "bold"),
                                          row_title_gp = grid::gpar(fontsize = 10, fontface = "bold"),
                                          row_names_gp = grid::gpar(fontsize = 10, fontface = "bold"),
-                                         col = circlize::colorRamp2(seq(0, round(max(fraction, na.rm = TRUE)), length.out = 9),
+                                         col = circlize::colorRamp2(seq(0, ceiling(max(fraction, na.rm = TRUE)), length.out = 9),
                                                                     c("#FCFCFC","#FFEDB0","#FFDF5F","#FEC510","#FA8E24","#F14C2B","#DA2828","#BE2222","#A31D1D")),
                                          show_row_names = TRUE, show_column_names = FALSE, cluster_columns = ifelse(sort_cells, FALSE, TRUE), cluster_rows = cluster_variants, name = "VAF",
 					 clustering_distance_rows = cluster_variants_distance, clustering_method_rows = cluster_variants_method,
