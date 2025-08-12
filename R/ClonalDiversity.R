@@ -20,7 +20,7 @@ ClonalDiversity <- function(se, grouping = "Clones", cells = NULL, diversity_mea
 
   # We check if all the cells to be used are in the SE object.
   if(!is.null(cells)){
-    cell_check <- all(cells %in% rownames(se))
+    cell_check <- all(cells %in% colnames(se))
     if(!cells){
       stop(paste0("Not all your cells are present in the SE object."))
     } else{
